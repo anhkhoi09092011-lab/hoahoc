@@ -1,0 +1,141 @@
+body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: white;
+      margin: 0;
+      padding: 20px;
+    }
+ 
+    h1 {
+      text-align: center;
+    }
+ 
+    /* Ô tìm kiếm */
+    #timKiem {
+      display: block;
+      margin: 0 auto 20px;
+      padding: 10px 15px;
+      width: 280px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+    }
+ 
+    /* Chú thích màu */
+    #chuThich {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 20px;
+      font-size: 13px;
+    }
+    .chu-thich-o {
+      padding: 4px 10px;
+      border-radius: 6px;
+      color: #111;
+    }
+ 
+    /* Khung chứa bảng (cuộn ngang nếu màn hình nhỏ) */
+    .khung-bang {
+      overflow-x: auto;
+    }
+ 
+    /* Bảng dùng lưới (grid): 18 cột, 7 hàng + 1 hàng trống + 2 hàng f-block */
+    #bang {
+      display: grid;
+      grid-template-columns: repeat(18, 60px);
+      grid-template-rows: repeat(7, 65px) 20px repeat(2, 65px);
+      gap: 4px;
+      width: max-content;
+      margin: auto;
+    }
+ 
+    /* Mỗi ô nguyên tố */
+    .o {
+      border-radius: 6px;
+      color: #111;
+      text-align: center;
+      cursor: pointer;
+      padding: 3px;
+      box-sizing: border-box;
+      transition: transform 0.15s;
+    }
+    .o:hover {
+      transform: scale(1.15);
+    }
+    .o .so   { font-size: 10px; text-align: left; }
+    .o .kh   { font-size: 20px; font-weight: bold; }
+    .o .ten  { font-size: 8px; white-space: nowrap; overflow: hidden; }
+ 
+    /* Ô bị mờ khi không khớp từ khóa tìm kiếm */
+    .mo {
+      opacity: 0.15;
+    }
+ 
+    /* Ô giữ chỗ cho họ Lantan và Actini */
+    .giu-cho {
+      border: 1px dashed #64748b;
+      border-radius: 6px;
+      color: #94a3b8;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+ 
+    /* Hộp hiện thông tin khi bấm vào nguyên tố */
+    #thongTin {
+      max-width: 400px;
+      margin: 25px auto 0;
+      padding: 15px 20px;
+      background: #1e293b;
+      border-radius: 10px;
+      text-align: center;
+    }
+ 
+    /* Màu theo loại nguyên tố */
+    .kimLoaiKiem     { background: #fb7185; }
+    .kimLoaiKiemTho  { background: #fbbf24; }
+    .kimLoaiChuyenTiep { background: #c084fc; }
+    .kimLoaiYeu      { background: #38bdf8; }
+    .banKimLoai      { background: #34d399; }
+    .phiKim          { background: #4ade80; }
+    .halogen         { background: #f472b6; }
+    .khiHiem         { background: #60a5fa; }
+    .lantanit        { background: #f59e0b; }
+    .actinit         { background: #ef4444; }
+
+    /* =================================
+   HIỆU ỨNG CÁC Ô BAY VÀO BẢNG
+   ================================= */
+
+.o {
+    opacity: 0;
+    transform:
+        translate(
+            var(--x, 0px),
+            var(--y, 0px)
+        )
+        rotate(var(--rotate, 0deg))
+        scale(0.3);
+
+    filter: blur(4px);
+
+transition:
+        transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1),
+        opacity 0.5s ease,
+        filter 0.7s ease;
+}
+
+/* Khi bắt đầu vào vị trí */
+.o.hien-ra {
+    opacity: 1;
+
+    transform:
+        translate(0, 0)
+        rotate(0deg)
+        scale(1);
+
+    filter: blur(0);
+}

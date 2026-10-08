@@ -102,7 +102,7 @@ h1 {
 .actinit           { --rgb: 45, 200, 190; }   /* xanh ngọc */
 
 /* Mỗi ô nguyên tố */
-.o,
+.o .mat,
 .chu-thich-o,
 .giu-cho {
   background: rgba(var(--rgb), 0.16);
@@ -118,9 +118,15 @@ h1 {
   width: 60px;
   height: 65px;
   margin: -32px 0 0 -30px;      /* đặt tâm ô vào gốc tọa độ */
+  cursor: pointer;
+  transform-style: preserve-3d; /* để có 2 mặt: trước và sau */
+}
+/* Mỗi ô có 2 mặt (.truoc và .sau); mặt sau xoay 180° nên nhìn từ phía sau vẫn đọc được */
+.o .mat {
+  position: absolute;
+  inset: 0;
   border-radius: 6px;
   text-align: center;
-  cursor: pointer;
   padding: 3px 4px;
   box-sizing: border-box;
   display: flex;
@@ -129,16 +135,18 @@ h1 {
   overflow: hidden;
   backface-visibility: hidden;
   opacity: 0;
+  transition: opacity 0.5s ease var(--tre, 0s), box-shadow 0.2s ease, filter 0.2s ease;
 }
+.o .sau { transform: rotateY(180deg); }
 .o .so  { font-size: 10px; text-align: left; opacity: 0.85; line-height: 1; }
 .o .kh  { font-size: 22px; font-weight: bold; line-height: 1; margin: auto 0; text-shadow: 0 0 6px rgba(var(--rgb), 0.6); }
 
 .o .kl  { font-size: 11px; line-height: 1; font-weight: bold; opacity: 1; }
 
-.o.hien-ra { opacity: 1; }
+.o.hien-ra .mat { opacity: 1; }
 
 /* Hover: sáng lên (không dùng transform vì transform đang dùng để xếp vị trí 3D) */
-.o:hover {
+.o:hover .mat {
   filter: brightness(1.5);
   box-shadow:
     inset 0 0 10px rgba(var(--rgb), 0.5),
@@ -146,17 +154,68 @@ h1 {
 }
 
 /* Ô bị mờ khi không khớp tìm kiếm */
-.o.hien-ra.mo { opacity: 0.15; }
+.o.hien-ra.mo .mat { opacity: 0.15; }
 
-/* Hộp thông tin */
-#thongTin {
-  max-width: 400px;
-  margin: 25px auto 0;
-  padding: 15px 20px;
-  background: #0a120d;
-  border: 1px solid #1f3a2a;
-  border-radius: 10px;
+/* Popup thông tin nguyên tố (màu viền/sáng theo loại nguyên tố qua --rgb) */
+.goi-y {
   text-align: center;
+  color: #888;
+  margin: -8px 0 16px;
+}
+#modal-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  background: rgba(0, 0, 0, 0.55);
+}
+#detail-modal {
+  display: none;
+  position: fixed;
+  z-index: 100;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(390px, calc(100vw - 40px));
+  box-sizing: border-box;
+  background: linear-gradient(145deg, rgba(5, 20, 10, 0.98), rgba(2, 8, 5, 0.98));
+  border: 2px solid rgb(var(--rgb, 110, 220, 60));
+  padding: 25px;
+  box-shadow:
+    0 0 30px rgba(var(--rgb, 110, 220, 60), 0.7),
+    inset 0 0 25px rgba(var(--rgb, 110, 220, 60), 0.06);
+  text-align: center;
+  border-radius: 12px;
+}
+#detail-modal h2 {
+  margin: 0 0 15px;
+  color: rgb(var(--rgb, 110, 220, 60));
+  font-size: 27px;
+}
+#modal-symbol {
+  font-size: 64px;
+  font-weight: bold;
+  color: #fff;
+  text-shadow: 0 0 20px rgba(var(--rgb, 110, 220, 60), 0.7);
+  margin-bottom: 10px;
+}
+#modal-desc {
+  color: #fff;
+  font-size: 15px;
+  line-height: 1.8;
+  text-align: left;
+}
+#detail-modal button {
+  margin-top: 18px;
+  font-family: monospace;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 6px 16px;
+  color: #000;
+  background: rgb(var(--rgb, 110, 220, 60));
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
 /* Ô giữ chỗ cho họ Lantan và Actini - màu neon */
@@ -180,6 +239,10 @@ h1 {
 .giu-cho.an {
   opacity: 0;
   transition-delay: 0s;                 /* biến mất ngay khi đổi kiểu */
+}
+.giu-cho.mo {                           /* ẩn khi đang tìm kiếm */
+  opacity: 0;
+  transition-delay: 0s;
 }
 
 /* Nhãn Cột / Nhóm / Chu kì (chỉ hiện ở dạng table) */

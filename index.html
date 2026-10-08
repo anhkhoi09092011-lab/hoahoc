@@ -8,12 +8,13 @@
 </head>
 <body>
   <h1>Bảng tuần hoàn hóa học</h1>
+  <p class="goi-y">Bấm vào một nguyên tố để xem thông tin. Kéo chuột để xoay.</p>
 
-  <input type="text" id="timKiem" placeholder="Tìm: Fe, Sắt, hoặc số 26...">
+  <input type="text" id="timKiem" placeholder="Tìm: Fe, hoặc số 26...">
 
   <div id="chuThich"></div>
 
-  <!-- 4 nút đổi kiểu sắp xếp -->
+  <!-- 3 nút đổi kiểu sắp xếp -->
   <div id="nut">
     <button data-che="table" class="dang-chon">Table</button>
     <button data-che="sphere">Sphere</button>
@@ -24,7 +25,14 @@
     <div id="bang"></div>
   </div>
 
-  <div id="thongTin">Bấm vào một nguyên tố để xem thông tin. Kéo chuột để xoay.</div>
+  <!-- Popup thông tin nguyên tố -->
+  <div id="modal-backdrop"></div>
+  <div id="detail-modal">
+    <div id="modal-symbol"></div>
+    <h2 id="modal-title"></h2>
+    <div id="modal-desc"></div>
+    <button id="close-button">Đóng cửa sổ</button>
+  </div>
 
   <script src="script.js"></script>
 </body>

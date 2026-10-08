@@ -84,7 +84,6 @@ khiHiem: "Khí hiếm",
 
 // 4. VẼ BẢNG 3D
 var bang = document.getElementById("bang");          // "sân khấu" 3D chứa các ô
-var thongTin = document.getElementById("thongTin");
 var tatCaO = [];
 var tong = duLieu.length;
 var cheDo = "table";
@@ -111,12 +110,11 @@ for (var i = 0; i < tong; i++) {
     "rotateY(" + (theta * RAD) + "deg) rotateX(" + (90 - phi * RAD) +
     "deg) translateZ(340px)");
 
-  // HELIX: hai sợi xoắn đan nhau
-  var k = Math.floor(i / 2);
-  var goc = k * 22 + (i % 2) * 180;
+  // HELIX: một sợi xoắn ốc duy nhất, mỗi ô lệch 0.32 rad, ô đầu ở trên cùng
+  var gocHelix = (i * 0.32 + Math.PI) * RAD;
   boCuc.helix.push(
-    "rotateY(" + goc + "deg) translateY(" + ((k - 29.5) * 12) +
-    "px) translateZ(420px)");
+    "rotateY(" + gocHelix + "deg) translateY(" + ((i - (tong - 1) / 2) * 7) +
+    "px) translateZ(380px)");
 }
 
 // Vị trí ngẫu nhiên lúc đầu (các ô bay vào từ đây)
@@ -136,22 +134,23 @@ duLieu.forEach(function (chuoi, i) {
   o.className = "o " + loai;
   o.style.transform = viTriNgauNhien();
 
-  o.innerHTML =
+  var noiDungO =
     '<div class="so">' + nguyenTo.so + '</div>' +
     '<div class="kh">' + nguyenTo.kyHieu + '</div>' +
     '<div class="kl">' + nguyenTo.khoiLuong + '</div>';
+  o.innerHTML =
+    '<div class="mat truoc">' + noiDungO + '</div>' +
+    '<div class="mat sau">' + noiDungO + '</div>';
 
-  // Lưu chữ để tìm kiếm
-  o.dataset.tim = (nguyenTo.kyHieu + " " + nguyenTo.ten + " " + nguyenTo.so).toLowerCase();
+  // Lưu dữ liệu để tìm kiếm: ký hiệu, tên (bỏ dấu) và số hiệu tách riêng
+  o.dataset.ky = nguyenTo.kyHieu.toLowerCase();
+  o.dataset.ten = boDau(nguyenTo.ten);
+  o.dataset.so = String(nguyenTo.so);
 
   // Bấm vào ô thì hiện thông tin (bỏ qua nếu vừa kéo chuột)
   o.addEventListener("click", function () {
     if (daKeoXa) return;
-    thongTin.innerHTML =
-      "<h2>" + nguyenTo.ten + " (" + nguyenTo.kyHieu + ")</h2>" +
-      "<p>Số hiệu nguyên tử: <b>" + nguyenTo.so + "</b></p>" +
-      "<p>Khối lượng nguyên tử: <b>" + nguyenTo.khoiLuong + " u</b></p>" +
-      "<p>Phân loại: <b>" + tenLoai[loai] + "</b></p>";
+    hienThongTin(nguyenTo, loai, o);
   });
 
   bang.appendChild(o);
@@ -210,12 +209,15 @@ function datBoCuc(ten, tuanTu) {
     var troi = 1.2 + Math.random() * 0.9;
     var tre = tuanTu ? i * 0.015 : Math.random() * 0.6;
     o.style.transition =
-      "transform " + troi + "s cubic-bezier(0.2, 0.8, 0.2, 1) " + tre + "s," +
-      "opacity 0.5s ease " + tre + "s," +
-      "box-shadow 0.2s ease, filter 0.2s ease";
+      "transform " + troi + "s cubic-bezier(0.2, 0.8, 0.2, 1) " + tre + "s";
+    o.style.setProperty("--tre", tre + "s");   // độ trễ hiện ra (opacity nằm ở 2 mặt .mat)
     o.style.transform = boCuc[ten][i];
     o.classList.add("hien-ra");
   });
+  // bỏ độ trễ sau khi hiện xong để hiệu ứng tìm kiếm không bị chậm
+  setTimeout(function () {
+    tatCaO.forEach(function (o) { o.style.removeProperty("--tre"); });
+  }, 3500);
 
   document.querySelectorAll("#nut button").forEach(function (b) {
     b.classList.toggle("dang-chon", b.dataset.che === ten);
@@ -227,7 +229,9 @@ document.querySelectorAll("#nut button").forEach(function (b) {
     if (b.dataset.che === "table") {
       // về dạng bảng thì đưa góc xoay về 0 theo đường ngắn nhất
       ry = ((ry + 180) % 360 + 360) % 360 - 180;
+      rx = ((rx + 180) % 360 + 360) % 360 - 180;
       vx = vy = 0;
+      datLai = true;
     }
     datBoCuc(b.dataset.che, false);
   });
@@ -241,6 +245,7 @@ window.addEventListener("load", function () {
 // ----- 4d. Xoay cả sân khấu bằng chuột (kéo để xoay) -----
 var rx = 0, ry = 0, vx = 0, vy = 0, z = 0;
 var dangKeo = false, daKeoXa = false, tongKeo = 0;
+var datLai = true;   // true: table đang ở thế nhìn thẳng (tự nghiêng theo chuột)
 var truocX = 0, truocY = 0;
 var chuot = { x: 0, y: 0 };
 
@@ -272,6 +277,7 @@ window.addEventListener("mousemove", function (e) {
   var dx = e.clientX - truocX, dy = e.clientY - truocY;
   truocX = e.clientX; truocY = e.clientY;
   tongKeo += Math.abs(dx) + Math.abs(dy);
+  if (tongKeo > 5) datLai = false;   // đã kéo thật -> cho xoay tự do, kể cả ra mặt sau
   ry += dx * 0.3;
   rx -= dy * 0.3;
   vy = dx * 0.3;
@@ -281,20 +287,18 @@ window.addEventListener("mousemove", function (e) {
 function vong() {
   var t = thongSo[cheDo];
 
-  if (cheDo === "table") {
-    // dạng bảng: nghiêng nhẹ theo chuột, buông ra thì tự về lại
+  if (cheDo === "table" && datLai) {
+    // dạng bảng chưa bị kéo: nghiêng nhẹ theo chuột
     if (!dangKeo) {
       rx += (-chuot.y * 8 - rx) * 0.06;
       ry += (chuot.x * 12 - ry) * 0.06;
     }
-    rx = Math.max(-30, Math.min(30, rx));
-    ry = Math.max(-40, Math.min(40, ry));
   } else if (!dangKeo) {
-    // các dạng khác: tự xoay chậm + quán tính sau khi thả chuột
+    // sau khi kéo (và ở sphere/helix): quán tính, table không giới hạn góc nên xoay ra mặt sau được
     ry += vy + t.xoay;
     rx += vx;
     vy *= 0.95; vx *= 0.95;
-    rx = Math.max(-70, Math.min(70, rx));
+    if (cheDo !== "table") rx = Math.max(-70, Math.min(70, rx));
   }
 
   z += (t.z - z) * 0.06;
@@ -306,6 +310,65 @@ function vong() {
 
 vong();
 
+// ----- POPUP THÔNG TIN -----
+var khi = ["H", "He", "N", "O", "F", "Ne", "Cl", "Ar", "Kr", "Xe", "Rn", "Og"];
+var long = ["Br", "Hg"];
+
+function layChuKi(n) {
+  if (n <= 2) return 1;
+  if (n <= 10) return 2;
+  if (n <= 18) return 3;
+  if (n <= 36) return 4;
+  if (n <= 54) return 5;
+  if (n <= 86) return 6;
+  return 7;
+}
+
+function layNhom(n) {
+  if ((n >= 57 && n <= 71) || (n >= 89 && n <= 103)) {
+    return (n === 57 || n === 89) ? 3 : "F-block";
+  }
+  return layViTri(n)[0];
+}
+
+function layTrangThai(kyHieu) {
+  if (khi.includes(kyHieu)) return "Khí";
+  if (long.includes(kyHieu)) return "Lỏng";
+  return "Rắn";
+}
+
+function hienThongTin(nguyenTo, loai, o) {
+  var modal = document.getElementById("detail-modal");
+  // lấy màu của loại nguyên tố để viền popup cùng màu với ô
+  modal.style.setProperty("--rgb", getComputedStyle(o).getPropertyValue("--rgb").trim());
+
+  document.getElementById("modal-symbol").textContent = nguyenTo.kyHieu;
+  document.getElementById("modal-title").textContent =
+    nguyenTo.ten + " (" + nguyenTo.kyHieu + ")";
+  document.getElementById("modal-desc").innerHTML =
+    "<strong>Số hiệu nguyên tử:</strong> " + nguyenTo.so + "<br>" +
+    "<strong>Ký hiệu:</strong> " + nguyenTo.kyHieu + "<br>" +
+    "<strong>Khối lượng nguyên tử:</strong> " + nguyenTo.khoiLuong + " u<br>" +
+    "<strong>Chu kỳ:</strong> " + layChuKi(nguyenTo.so) + "<br>" +
+    "<strong>Nhóm:</strong> " + layNhom(nguyenTo.so) + "<br>" +
+    "<strong>Phân loại:</strong> " + tenLoai[loai] + "<br>" +
+    "<strong>Trạng thái ở điều kiện thường:</strong> " + layTrangThai(nguyenTo.kyHieu);
+
+  document.getElementById("modal-backdrop").style.display = "block";
+  modal.style.display = "block";
+}
+
+function dongThongTin() {
+  document.getElementById("detail-modal").style.display = "none";
+  document.getElementById("modal-backdrop").style.display = "none";
+}
+
+document.getElementById("close-button").addEventListener("click", dongThongTin);
+document.getElementById("modal-backdrop").addEventListener("click", dongThongTin);
+document.addEventListener("keydown", function (e) {
+  if (e.key === "Escape") dongThongTin();
+});
+
 // 5. CHÚ THÍCH MÀU
 var chuThich = document.getElementById("chuThich");
 for (var khoa in tenLoai) {
@@ -316,13 +379,40 @@ for (var khoa in tenLoai) {
 }
 
 // 6. TÌM KIẾM: gõ chữ thì ô nào không khớp sẽ bị mờ đi
+//  - gõ số        -> chỉ khớp đúng số hiệu nguyên tử (gõ 26 -> Fe, không dính 2, 12, 126...)
+//  - gõ 1 chữ cái -> chỉ khớp theo ký hiệu (a -> Al, Ar, As, Ag, Au, At, Ac, Am)
+//  - gõ từ 2 chữ  -> khớp ký hiệu HOẶC tên bắt đầu bằng chữ đó (an -> Antimon, sat -> Sắt)
+//                    không phân biệt hoa thường, có/không dấu
+function boDau(chuoi) {
+  return chuoi.toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .replace(/đ/g, "d");
+}
+
 document.getElementById("timKiem").addEventListener("input", function () {
-  var tuKhoa = this.value.trim().toLowerCase();
+  var tuKhoa = boDau(this.value.trim());
+  var laSo = /^\d+$/.test(tuKhoa);
+
   tatCaO.forEach(function (o) {
-    if (tuKhoa === "" || o.dataset.tim.includes(tuKhoa)) {
-      o.classList.remove("mo");
+    var khop;
+    if (tuKhoa === "") {
+      khop = true;
+    } else if (laSo) {
+      khop = o.dataset.so === String(Number(tuKhoa));
     } else {
-      o.classList.add("mo");
+      // ký hiệu bắt đầu bằng từ khóa
+      khop = o.dataset.ky.indexOf(tuKhoa) === 0;
+      // từ 2 chữ trở lên: tên (hay một từ trong tên, vd "huynh", "kim") bắt đầu bằng từ khóa cũng khớp
+      if (!khop && tuKhoa.length >= 2) {
+        khop = o.dataset.ten.indexOf(tuKhoa) === 0 ||
+               o.dataset.ten.indexOf(" " + tuKhoa) !== -1;
+      }
     }
+    o.classList.toggle("mo", !khop);
+  });
+
+  // 2 ô "57-71" và "89-103" không phải nguyên tố -> ẩn đi khi đang tìm kiếm
+  giuCho.forEach(function (g) {
+    g.classList.toggle("mo", tuKhoa !== "");
   });
 });

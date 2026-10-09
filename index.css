@@ -6,9 +6,11 @@ body {
   padding: 20px;
 }
 
+
 h1 {
   text-align: center;
 }
+
 
 /* Ô tìm kiếm */
 #timKiem {
@@ -28,6 +30,7 @@ h1 {
   box-shadow: 0 0 8px rgba(110, 220, 60, 0.4);
 }
 
+
 /* Chú thích màu */
 #chuThich {
   display: flex;
@@ -41,6 +44,7 @@ h1 {
   padding: 4px 10px;
   border-radius: 6px;
 }
+
 
 /* Nút đổi kiểu sắp xếp */
 #nut {
@@ -69,6 +73,7 @@ h1 {
   color: #fff;
 }
 
+
 /* Sân khấu 3D */
 .khung-bang {
   position: relative;
@@ -80,6 +85,7 @@ h1 {
 }
 .khung-bang.dang-keo { cursor: grabbing; }
 
+
 #bang {
   position: absolute;
   left: 50%;
@@ -88,6 +94,7 @@ h1 {
   height: 0;
   transform-style: preserve-3d;
 }
+
 
 /* ===== Màu theo loại: chỉ cần đặt --rgb ===== */
 .kimLoaiKiem       { --rgb: 214, 190, 60; }   /* vàng ô liu */
@@ -101,6 +108,7 @@ h1 {
 .lantanit          { --rgb: 90, 225, 110; }   /* xanh lá nhạt */
 .actinit           { --rgb: 45, 200, 190; }   /* xanh ngọc */
 
+
 /* Mỗi ô nguyên tố */
 .o .mat,
 .chu-thich-o,
@@ -112,6 +120,7 @@ h1 {
     inset 0 0 8px rgba(var(--rgb), 0.25),
     0 0 4px rgba(var(--rgb), 0.2);
 }
+
 
 .o {
   position: absolute;
@@ -141,9 +150,12 @@ h1 {
 .o .so  { font-size: 10px; text-align: left; opacity: 0.85; line-height: 1; }
 .o .kh  { font-size: 22px; font-weight: bold; line-height: 1; margin: auto 0; text-shadow: 0 0 6px rgba(var(--rgb), 0.6); }
 
+
 .o .kl  { font-size: 11px; line-height: 1; font-weight: bold; opacity: 1; }
 
+
 .o.hien-ra .mat { opacity: 1; }
+
 
 /* Hover: sáng lên (không dùng transform vì transform đang dùng để xếp vị trí 3D) */
 .o:hover .mat {
@@ -153,8 +165,10 @@ h1 {
     0 0 16px rgba(var(--rgb), 0.8);
 }
 
+
 /* Ô bị mờ khi không khớp tìm kiếm */
 .o.hien-ra.mo .mat { opacity: 0.15; }
+
 
 /* Popup thông tin nguyên tố (màu viền/sáng theo loại nguyên tố qua --rgb) */
 .goi-y {
@@ -218,6 +232,7 @@ h1 {
   cursor: pointer;
 }
 
+
 /* Ô giữ chỗ cho họ Lantan và Actini - màu neon */
 /* Ô giữ chỗ cho họ Lantan và Actini (chỉ hiện ở dạng table) */
 .giu-cho {
@@ -245,6 +260,7 @@ h1 {
   transition-delay: 0s;
 }
 
+
 /* Nhãn Cột / Nhóm / Chu kì (chỉ hiện ở dạng table) */
 .nhan {
   position: absolute;
@@ -269,4 +285,213 @@ h1 {
 .nhan.an {
   opacity: 0;
   transition-delay: 0s;
-}
+}/* ===== MINI GAME: THỬ THÁCH NGUYÊN TỐ ===== */ #khu-do-vui { --quiz-green: #6edc3c; --quiz-border: rgba(110, 220, 60, 0.3); max-width: 850px; margin: 30px auto 50px; color: #e5e7eb; }
+
+
+.quiz-header { text-align: center; margin-bottom: 25px; }
+
+
+.quiz-tag { display: inline-block; padding: 6px 12px; border: 1px solid var(--quiz-border); border-radius: 30px; color: #9ce978; font: 11px monospace; letter-spacing: 2px; }
+
+
+.quiz-header h2 { color: #d1fae5; font-size: clamp(25px, 4vw, 36px); margin: 14px 0 8px; text-shadow: 0 0 18px rgba(110, 220, 60, 0.2); }
+
+
+.quiz-header p, .quiz-footnote { color: #9ca3af; line-height: 1.7; }
+
+
+.quiz-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-bottom: 15px; }
+
+
+.quiz-stat { padding: 15px 8px; text-align: center; border: 1px solid var(--quiz-border); border-radius: 10px; background: linear-gradient(145deg, #0c1910, #050907); }
+
+
+.quiz-stat span, .quiz-stat strong { display: block; }
+
+
+.quiz-stat span { font-size: 12px; color: #9ca3af; margin-bottom: 8px; }
+
+
+.quiz-stat strong { font-size: 23px; color: #a3f17e; }
+
+
+.quiz-progress-track { height: 5px; background: #18231a; border-radius: 10px; overflow: hidden; margin-bottom: 18px; }
+
+
+#quiz-progress-bar { width: 10%; height: 100%; background: linear-gradient(90deg, #4ade80, #bef264); box-shadow: 0 0 12px rgba(110, 220, 60, 0.5); transition: width 0.3s ease; }
+
+
+.quiz-card { padding: clamp(18px, 4vw, 32px); border: 1px solid var(--quiz-border); border-radius: 16px; background: radial-gradient(ellipse at top right, rgba(40, 100, 45, 0.13), transparent 55%), #050a07; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25); }
+
+
+.quiz-category { font: 11px monospace; letter-spacing: 2px; color: #86d968; margin-bottom: 18px; }
+
+
+.quiz-element { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; }
+
+
+#quiz-symbol { display: grid; place-items: center; width: 66px; height: 66px; flex-shrink: 0; border: 1px solid rgba(110, 220, 60, 0.65); border-radius: 12px; color: #a3f17e; background: rgba(110, 220, 60, 0.1); box-shadow: inset 0 0 15px rgba(110, 220, 60, 0.08), 0 0 16px rgba(110, 220, 60, 0.08); font-size: 28px; font-weight: bold; }
+
+
+#quiz-element-name { color: #9ca3af; font-size: 13px; }
+
+
+#quiz-question { color: #f3f4f6; font-size: clamp(18px, 3vw, 23px); line-height: 1.6; margin: 0 0 22px; }
+
+
+.quiz-answers { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+
+
+.quiz-answer { display: flex; align-items: center; gap: 12px; min-height: 60px; padding: 12px; text-align: left; color: #d1d5db; background: #0b120d; border: 1px solid #26372a; border-radius: 9px; cursor: pointer; font-size: 14px; line-height: 1.5; transition: border-color 0.2s, background 0.2s, transform 0.2s; }
+
+
+.quiz-answer:hover:not(:disabled) { border-color: #6edc3c; background: #112016; transform: translateY(-2px); }
+
+
+.quiz-answer:focus-visible, #khu-do-vui button:focus-visible { outline: 2px solid #bef264; outline-offset: 3px; }
+
+
+.quiz-answer:disabled { cursor: default; opacity: 0.85; }
+
+
+.quiz-answer .answer-letter { display: grid; place-items: center; flex-shrink: 0; width: 28px; height: 28px; border-radius: 7px; border: 1px solid #35483a; color: #a3f17e; font-weight: bold; }
+
+
+.quiz-answer.dung { border-color: #4ade80; background: rgba(34, 197, 94, 0.13); color: #bbf7d0; }
+
+
+.quiz-answer.sai { border-color: #f87171; background: rgba(248, 113, 113, 0.1); color: #fecaca; }
+
+
+.quiz-feedback { min-height: 48px; margin-top: 18px; padding: 13px; border-radius: 8px; background: rgba(255, 255, 255, 0.025); color: #9ca3af; font-size: 14px; line-height: 1.7; }
+
+
+.quiz-feedback.dung { color: #86efac; border-left: 3px solid #4ade80; }
+
+
+.quiz-feedback.sai { color: #fca5a5; border-left: 3px solid #f87171; }
+
+
+.quiz-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+
+
+#khu-do-vui button { font-family: inherit; }
+
+
+#quiz-next, #quiz-restart { padding: 11px 18px; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+
+
+#quiz-next { flex: 1; color: #071006; background: #8be866; border: 1px solid #8be866; }
+
+
+#quiz-next:hover:not(:disabled) { background: #b4f58f; box-shadow: 0 0 15px rgba(110, 220, 60, 0.2); }
+
+
+#quiz-next:disabled { opacity: 0.35; cursor: not-allowed; }
+
+
+#quiz-restart { color: #a3f17e; background: transparent; border: 1px solid var(--quiz-border); }
+
+
+#quiz-restart:hover { background: rgba(110, 220, 60, 0.1); }
+
+
+.quiz-footnote { text-align: center; font-size: 12px; margin-top: 16px; }
+
+
+@media (max-width: 520px) { #khu-do-vui { margin-top: 15px; }
+
+
+.quiz-answers { grid-template-columns: 1fr; }
+
+
+.quiz-stat { padding: 12px 4px; }
+
+
+.quiz-stat span { font-size: 11px; }
+
+
+.quiz-stat strong { font-size: 20px; }
+
+
+.quiz-actions { flex-direction: column; }
+
+
+#quiz-next, #quiz-restart { width: 100%; } }
+/* Nút mở mục đố vui */ /* ===== NÚT MỞ ĐỐ VUI NEON ===== */ .quiz-open-wrap { display: flex; justify-content: center; padding: 20px 16px 35px; perspective: 800px; }
+
+
+#quiz-open-button { position: relative; isolation: isolate; overflow: hidden; width: min(440px, 100%); min-height: 112px; padding: 22px 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 9px;
+
+
+color: #d9ffd0; background: radial-gradient(ellipse at 50% 0%, rgba(110, 220, 60, 0.17), transparent 65%), linear-gradient(135deg, #101d13 0%, #050a07 55%, #0b170d 100%);
+
+
+border: 1px solid rgba(130, 255, 100, 0.55); border-radius: 18px; cursor: pointer;
+
+
+font-family: Arial, sans-serif; font-size: 19px; font-weight: 800; letter-spacing: 0.5px;
+
+
+box-shadow: 0 0 12px rgba(110, 220, 60, 0.12), 0 0 35px rgba(110, 220, 60, 0.07), inset 0 0 22px rgba(110, 220, 60, 0.045);
+
+
+transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease; }
+
+
+/* Ánh sáng quét qua nút */ #quiz-open-button::before { content: ""; position: absolute; z-index: -1; top: -50%; left: -80%; width: 45%; height: 200%; transform: rotate(25deg); background: linear-gradient( 90deg, transparent, rgba(190, 255, 170, 0.13), transparent ); transition: left 0.65s ease; }
+
+
+#quiz-open-button:hover::before { left: 140%; }
+
+
+/* Viền sáng phía trên */ #quiz-open-button::after { content: ""; position: absolute; top: 0; left: 15%; width: 70%; height: 1px; background: linear-gradient( 90deg, transparent, #b6ff8a, transparent ); opacity: 0.8; }
+
+
+#quiz-open-button:hover { transform: translateY(-4px) scale(1.015); border-color: #b6ff8a; color: #fff; background: radial-gradient(ellipse at 50% 0%, rgba(110, 220, 60, 0.24), transparent 70%), linear-gradient(135deg, #14271a, #071009);
+
+
+box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3), 0 0 18px rgba(110, 220, 60, 0.24), 0 0 50px rgba(110, 220, 60, 0.12), inset 0 0 25px rgba(110, 220, 60, 0.08); }
+
+
+#quiz-open-button:active { transform: translateY(0) scale(0.985); }
+
+
+#quiz-open-button span { display: block; color: #92ad96; font-size: 12px; font-weight: 400; letter-spacing: 0.8px; line-height: 1.6; text-align: center; transition: color 0.3s ease; }
+
+
+#quiz-open-button:hover span { color: #c2eac2; }
+
+
+#quiz-open-button:focus-visible { outline: 2px solid #b6ff8a; outline-offset: 5px; }
+
+
+@media (max-width: 480px) { .quiz-open-wrap { padding: 16px 8px 28px; }
+
+
+#quiz-open-button { min-height: 100px; padding: 18px 14px; font-size: 17px; }
+
+
+#quiz-open-button span { font-size: 11px; } }
+
+
+@media (prefers-reduced-motion: reduce) { #quiz-open-button, #quiz-open-button::before, #quiz-open-button span { transition: none; } }
+
+
+/* Ẩn trò chơi cho đến khi người dùng bấm nút */ #khu-do-vui { display: none; }
+
+
+#khu-do-vui.quiz-dang-mo { display: block; }
+/* Sửa font và giao diện nút mở đố vui */ #quiz-open-button { box-sizing: border-box; font-family: Arial, sans-serif !important; font-size: 17px; font-weight: 700; font-style: normal; line-height: 1.5; letter-spacing: 0; text-transform: none; white-space: normal; overflow-wrap: break-word; -webkit-font-smoothing: antialiased; }
+
+
+#quiz-open-button span { font-family: Arial, sans-serif !important; font-size: 12px; font-weight: 400; line-height: 1.6; letter-spacing: 0.2px; color: #a7b8a8; }
+
+
+#quiz-open-button:hover { font-family: Arial, sans-serif !important; }
+
+
+@media (max-width: 480px) { #quiz-open-button { font-size: 16px; padding: 16px 12px; }
+
+
+#quiz-open-button span { font-size: 11px; } }

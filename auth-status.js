@@ -1,5 +1,5 @@
 // Hiện trạng thái tài khoản ở trang index (nút Đăng nhập / tên + Đăng xuất)
-// Tài khoản lưu bằng localStorage (xem auth-store.js)
+// Tài khoản lưu trên Firebase (xem auth-store.js)
 import { onThayDoi, dangXuat } from "./auth-store.js";
 
 var thanh = document.getElementById("thanh-tai-khoan");

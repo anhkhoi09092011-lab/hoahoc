@@ -1681,24 +1681,16 @@ if (nutMoQuiz && khuVucQuiz) {
 
   // Huy hiệu và điểm được lưu RIÊNG cho từng tài khoản (khóa có kèm email).
   var KHOA_LUU_GOC = "bangTuanHoan3D_huyHieu_v2:";
-  var KHOA_PHIEN = "bangTuanHoan3D_phien_v1";         // email đang đăng nhập (xem auth-store.js)
-  var KHOA_TAI_KHOAN = "bangTuanHoan3D_taiKhoan_v1";  // danh sách tài khoản (xem auth-store.js)
-  var nguoi = null;                                   // { email, ten } hoặc null nếu chưa đăng nhập
+  var nguoi = null;                                   // { uid, email, ten } hoặc null nếu chưa đăng nhập
 
+  // Người đăng nhập do auth-store.js (Firebase) đặt vào window.nguoiHienTai
   function layNguoiHienTai() {
-    try {
-      var email = localStorage.getItem(KHOA_PHIEN);
-      if (!email) return null;
-      var tatCa = JSON.parse(localStorage.getItem(KHOA_TAI_KHOAN) || "{}");
-      var tk = tatCa && tatCa[email];
-      return tk ? { email: email, ten: tk.ten || email } : null;
-    } catch (e) {
-      return null;
-    }
+    return window.nguoiHienTai || null;
   }
 
+  // Bản lưu tạm trên máy (dự phòng khi mất mạng); nguồn chính là Firestore.
   function khoaLuu() {
-    return nguoi ? KHOA_LUU_GOC + nguoi.email : null;
+    return nguoi ? KHOA_LUU_GOC + nguoi.uid : null;
   }
 
 
@@ -1789,11 +1781,11 @@ if (nutMoQuiz && khuVucQuiz) {
   }
 
 
-  function docDuLieu() {
+  function docDuLieu(thoTuMayChu) {
     try {
       var khoa = khoaLuu();
       if (!khoa) return trangThaiMoi(); // chưa đăng nhập: không đọc dữ liệu của ai
-      var raw = localStorage.getItem(khoa);
+      var raw = thoTuMayChu !== undefined ? thoTuMayChu : localStorage.getItem(khoa);
       if (!raw) return trangThaiMoi();
 
 
@@ -1865,6 +1857,41 @@ if (nutMoQuiz && khuVucQuiz) {
     } catch (e) {
       console.warn("Không thể lưu tiến trình huy hiệu:", e);
     }
+    guiLenMayChu();
+  }
+
+  var henGio = null;
+  function guiLenMayChu() {
+    if (!nguoi || !window.mayChu) return;
+    clearTimeout(henGio);
+    henGio = setTimeout(function () {
+      if (!nguoi) return;
+      window.mayChu.luuTienTrinh(trangThai).catch(function (e) {
+        console.warn("Không lưu được lên máy chủ:", e);
+      });
+    }, 600);
+  }
+
+  // Gộp tiến trình trên máy và trên máy chủ: không bao giờ làm mất tiến trình của bên nào.
+  function gopTrangThai(a, b) {
+    var ketQua = trangThaiMoi();
+    ketQua.dung = Math.max(a.dung, b.dung);
+    ketQua.luot = Math.max(a.luot, b.luot);
+    var hop = function (x, y) {
+      var tap = x.slice();
+      y.forEach(function (v) { if (tap.indexOf(v) === -1) tap.push(v); });
+      return tap;
+    };
+    ketQua.khamPha = hop(a.khamPha, b.khamPha);
+    ketQua.timKiem = hop(a.timKiem, b.timKiem);
+    ketQua.daMo = hop(a.daMo, b.daMo);
+    var tot = a.diemCao >= b.diemCao ? a : b;
+    if (a.diemCao === b.diemCao && a.diemCaoLuc && b.diemCaoLuc) {
+      tot = a.diemCaoLuc <= b.diemCaoLuc ? a : b;
+    }
+    ketQua.diemCao = tot.diemCao;
+    ketQua.diemCaoLuc = tot.diemCaoLuc;
+    return ketQua;
   }
 
 
@@ -2069,6 +2096,16 @@ if (nutMoQuiz && khuVucQuiz) {
     nguoi = layNguoiHienTai();
     trangThai = docDuLieu();
     kiemTraHuyHieu();
+
+    if (!nguoi || !window.mayChu) return;
+    var uid = nguoi.uid;
+    window.mayChu.docTienTrinh().then(function (tuMayChu) {
+      if (!nguoi || nguoi.uid !== uid) return;          // đã đổi tài khoản trong lúc chờ
+      if (tuMayChu) trangThai = gopTrangThai(trangThai, docDuLieu(JSON.stringify(tuMayChu)));
+      kiemTraHuyHieu();                                  // vẽ lại và đẩy bản đã gộp lên máy chủ
+    }).catch(function (e) {
+      console.warn("Không tải được tiến trình từ máy chủ:", e);
+    });
   });
 
   // Cùng tài khoản mở ở tab khác vừa lưu tiến trình -> cập nhật theo.
@@ -2102,12 +2139,8 @@ if (nutMoQuiz && khuVucQuiz) {
 })();
 
 
-// ===== 9. BẢNG XẾP HẠNG ĐỐ VUI (top 10 điểm cao nhất của mỗi tài khoản) =====
+// ===== 9. BẢNG XẾP HẠNG ĐỐ VUI (top 10 điểm cao nhất, lấy từ máy chủ Firebase) =====
 (function () {
-  var KHOA_TAI_KHOAN = "bangTuanHoan3D_taiKhoan_v1";
-  var KHOA_PHIEN = "bangTuanHoan3D_phien_v1";
-  var KHOA_HUY_HIEU = "bangTuanHoan3D_huyHieu_v2:";
-
   var nut = document.getElementById("rank-avatar");
   var nen = document.getElementById("rank-backdrop");
   var nutDong = document.getElementById("rank-close");
@@ -2115,50 +2148,24 @@ if (nutMoQuiz && khuVucQuiz) {
   var ghiChu = document.getElementById("rank-note");
   if (!nut || !nen || !ds) return;
 
-  function docJSON(khoa) {
-    try { return JSON.parse(localStorage.getItem(khoa)); } catch (e) { return null; }
-  }
+  var dangTai = 0;   // số thứ tự lần tải, để bỏ kết quả của lần tải cũ
 
-  function layBangXepHang() {
-    var tatCa = docJSON(KHOA_TAI_KHOAN);
-    if (!tatCa || typeof tatCa !== "object") return [];
-    var hang = [];
-    Object.keys(tatCa).forEach(function (email) {
-      var d = docJSON(KHOA_HUY_HIEU + email);
-      if (!d || !Number.isFinite(d.luot) || d.luot < 1) return; // chưa chơi lần nào thì không lên bảng
-      var diem = Number.isFinite(d.diemCao) ? Math.max(0, Math.min(Math.floor(d.diemCao), 10)) : 0;
-      hang.push({
-        email: email,
-        ten: (tatCa[email] && tatCa[email].ten) || email,
-        diem: diem,
-        luc: Number.isFinite(d.diemCaoLuc) && d.diemCaoLuc > 0 ? d.diemCaoLuc : Infinity,
-        luot: Math.floor(d.luot)
-      });
-    });
-    hang.sort(function (a, b) {
-      return b.diem - a.diem || a.luc - b.luc || a.ten.localeCompare(b.ten, "vi");
-    });
-    return hang;
-  }
-
-  function ve() {
-    var tatCa = layBangXepHang();
-    var top = tatCa.slice(0, 10);
-    var toi = null;
-    try { toi = localStorage.getItem(KHOA_PHIEN); } catch (e) {}
-
+  function thongBaoDong(chu) {
     ds.replaceChildren();
+    var li = document.createElement("li");
+    li.className = "rank-empty";
+    li.textContent = chu;
+    ds.appendChild(li);
+  }
 
+  function ve(top, toi) {
+    ds.replaceChildren();
     if (!top.length) {
-      var rong = document.createElement("li");
-      rong.className = "rank-empty";
-      rong.textContent = "Chưa có ai chơi. Hãy là người đầu tiên lên bảng!";
-      ds.appendChild(rong);
+      thongBaoDong("Chưa có ai chơi. Hãy là người đầu tiên lên bảng!");
     }
-
     top.forEach(function (h, i) {
       var li = document.createElement("li");
-      li.className = "rank-row" + (h.email === toi ? " rank-me" : "") + (i < 3 ? " rank-top" + (i + 1) : "");
+      li.className = "rank-row" + (h.uid === toi ? " rank-me" : "") + (i < 3 ? " rank-top" + (i + 1) : "");
 
       var thuTu = document.createElement("span");
       thuTu.className = "rank-pos";
@@ -2166,7 +2173,7 @@ if (nutMoQuiz && khuVucQuiz) {
 
       var ten = document.createElement("span");
       ten.className = "rank-name";
-      ten.textContent = h.ten + (h.email === toi ? " (bạn)" : "");
+      ten.textContent = h.ten + (h.uid === toi ? " (bạn)" : "");
 
       var diem = document.createElement("span");
       diem.className = "rank-score";
@@ -2178,20 +2185,37 @@ if (nutMoQuiz && khuVucQuiz) {
       ds.appendChild(li);
     });
 
-    // Nếu bạn nằm ngoài top 10 thì hiện thứ hạng của bạn ở dưới
-    var viTri = tatCa.findIndex(function (h) { return h.email === toi; });
-    if (viTri >= 10) {
-      ghiChu.textContent = "Bạn đang đứng hạng " + (viTri + 1) + " với " + tatCa[viTri].diem + "/10 điểm.";
-    } else if (toi && viTri === -1) {
-      ghiChu.textContent = "Hoàn thành một lượt đố vui để có tên trên bảng.";
-    } else if (!toi) {
+    var coToi = top.some(function (h) { return h.uid === toi; });
+    if (!toi) {
       ghiChu.textContent = "Đăng nhập và chơi đố vui để có tên trên bảng.";
-    } else {
+    } else if (coToi) {
       ghiChu.textContent = "Bằng điểm thì ai đạt trước xếp trên.";
+    } else {
+      ghiChu.textContent = "Hoàn thành đố vui với điểm đủ cao để vào top 10. Bằng điểm thì ai đạt trước xếp trên.";
     }
   }
 
-  function mo() { ve(); nen.classList.add("rank-visible"); }
+  function taiVaVe() {
+    var lanNay = ++dangTai;
+    if (!window.mayChu) {
+      thongBaoDong("Chưa kết nối được máy chủ.");
+      ghiChu.textContent = "";
+      return;
+    }
+    thongBaoDong("Đang tải bảng xếp hạng...");
+    ghiChu.textContent = "";
+    window.mayChu.layXepHang().then(function (top) {
+      if (lanNay !== dangTai) return;
+      var toi = window.nguoiHienTai ? window.nguoiHienTai.uid : null;
+      ve(top, toi);
+    }).catch(function (e) {
+      if (lanNay !== dangTai) return;
+      console.warn("Không tải được bảng xếp hạng:", e);
+      thongBaoDong("Không tải được bảng xếp hạng. Kiểm tra mạng rồi mở lại nhé.");
+    });
+  }
+
+  function mo() { nen.classList.add("rank-visible"); taiVaVe(); }
   function dong() { nen.classList.remove("rank-visible"); }
 
   nut.addEventListener("click", mo);
@@ -2201,8 +2225,8 @@ if (nutMoQuiz && khuVucQuiz) {
     if (e.key === "Escape" && nen.classList.contains("rank-visible")) dong();
   });
 
-  // Cập nhật nếu bảng đang mở mà dữ liệu đổi (đổi tài khoản, tab khác chơi xong)
-  function lamMoi() { if (nen.classList.contains("rank-visible")) ve(); }
-  window.addEventListener("tai-khoan-doi", lamMoi);
-  window.addEventListener("storage", lamMoi);
+  // Đang mở bảng mà đổi tài khoản thì tải lại để đánh dấu "(bạn)" đúng người
+  window.addEventListener("tai-khoan-doi", function () {
+    if (nen.classList.contains("rank-visible")) taiVaVe();
+  });
 })();

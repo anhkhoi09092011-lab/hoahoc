@@ -1,6 +1,6 @@
 // Xử lý đăng nhập / đăng ký (dùng chung cho dangnhap.html và dangky.html)
-// Tài khoản được lưu trong localStorage (xem auth-store.js)
-import { dangKy, dangNhap, layNguoiDung, daCoTaiKhoan } from "./auth-store.js";
+// Tài khoản được lưu trên Firebase (xem auth-store.js)
+import { dangKy, dangNhap, onThayDoi } from "./auth-store.js";
 
 var TRANG_CHU = "index.html";
 
@@ -17,9 +17,10 @@ function hienThongBao(loai, noiDung) {
 }
 
 // Đã đăng nhập sẵn thì quay về trang chủ
-if (layNguoiDung()) {
-  window.location.replace(TRANG_CHU);
-}
+// (Firebase trả lời bất đồng bộ nên phải chờ onThayDoi)
+onThayDoi(function (user) {
+  if (user) window.location.replace(TRANG_CHU);
+});
 
 // Vừa đăng ký xong thì được chuyển sang đây để đăng nhập
 if (!laDangKy && thamSo.get("dkxong") === "1") {
@@ -37,7 +38,10 @@ function dichLoi(e) {
   var m = {
     "email-da-dung": "Email này đã được đăng ký. Hãy đăng nhập.",
     "email-khong-hop-le": "Email không hợp lệ.",
-    "sai-mat-khau": "Email hoặc mật khẩu không đúng.",
+    "sai-mat-khau": "Email hoặc mật khẩu không đúng. Nếu chưa có tài khoản, hãy đăng ký.",
+    "mat-khau-yeu": "Mật khẩu quá yếu (cần ít nhất 6 ký tự).",
+    "mat-mang": "Không kết nối được máy chủ. Kiểm tra mạng rồi thử lại.",
+    "qua-nhieu-lan": "Thử quá nhiều lần. Hãy đợi một lúc rồi thử lại.",
     "khong-luu-duoc": "Không thể lưu dữ liệu trên trình duyệt (bộ nhớ đầy hoặc đang chặn lưu trữ)."
   };
   return m[e.code] || ("Có lỗi xảy ra: " + (e.code || e.message));
@@ -68,16 +72,6 @@ form.addEventListener("submit", async function (e) {
     if (matKhau !== form.nhapLai.value) return hienThongBao("loi", "Mật khẩu nhập lại không khớp.");
   } else if (!email || !matKhau) {
     return hienThongBao("loi", "Vui lòng nhập email và mật khẩu.");
-  }
-
-  // Đăng nhập bằng email chưa đăng ký -> báo và tự chuyển sang trang đăng ký
-  if (!laDangKy && !daCoTaiKhoan(email)) {
-    hienThongBao("loi", "Bạn chưa có tài khoản. Cần đăng ký! Đang chuyển sang trang đăng ký...");
-    nutGui.disabled = true;
-    setTimeout(function () {
-      window.location.href = "dangky.html?email=" + encodeURIComponent(email);
-    }, 1500);
-    return;
   }
 
   nutGui.disabled = true;

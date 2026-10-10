@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đăng nhập - Bảng tuần hoàn 3D</title>
+  <link rel="stylesheet" href="index.css">
+  <link rel="stylesheet" href="auth.css">
+</head>
+<body class="trang-auth" data-trang="dangnhap">
+  <main class="auth-card">
+    <span class="auth-tag">CHEMISTRY LAB · TÀI KHOẢN</span>
+    <h1>⚛ Đăng nhập</h1>
+    <p class="auth-sub">Chào mừng trở lại! Đăng nhập để tiếp tục khám phá bảng tuần hoàn.</p>
+
+    <form id="auth-form" novalidate>
+      <div class="auth-field">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="ban@example.com" autocomplete="email" required>
+      </div>
+
+      <div class="auth-field">
+        <label for="matKhau">Mật khẩu</label>
+        <div class="auth-pass-wrap">
+          <input type="password" id="matKhau" name="matKhau" placeholder="Nhập mật khẩu" autocomplete="current-password" required>
+          <button type="button" class="auth-toggle" data-cho="matKhau" aria-label="Hiện mật khẩu">👁</button>
+        </div>
+      </div>
+
+      <div id="auth-msg" class="auth-msg" role="alert" aria-live="polite"></div>
+
+      <button type="submit" id="auth-submit" class="auth-submit">Đăng nhập</button>
+    </form>
+
+    <p class="auth-switch">Chưa có tài khoản? <a href="dangky.html">Đăng ký ngay</a></p>
+    <a class="auth-back" href="index.html">← Về bảng tuần hoàn</a>
+  </main>
+
+  <script type="module" src="auth.js"></script>
+</body>
+</html>

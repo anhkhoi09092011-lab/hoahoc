@@ -5,116 +5,151 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bảng tuần hoàn 3D</title>
   <link rel="stylesheet" href="index.css">
+  <link rel="stylesheet" href="auth.css"> <!-- MỚI -->
 </head>
 <body>
+  <!-- MỚI: Thanh tài khoản, JavaScript tự điền Đăng nhập / Đăng ký hoặc tên người dùng -->
+  <div id="thanh-tai-khoan"></div>
 
-  <!-- ===== TIÊU ĐỀ & GỢI Ý ===== -->
   <h1>Bảng tuần hoàn hóa học</h1>
   <p class="goi-y">Bấm vào một nguyên tố để xem thông tin. Kéo chuột để xoay.</p>
 
-  <!-- ===== Ô TÌM KIẾM (gõ ký hiệu, tên hoặc số hiệu) ===== -->
   <input type="text" id="timKiem" placeholder="Tìm: Fe, hoặc số 26...">
 
-  <!-- ===== CHÚ THÍCH MÀU (JS tự tạo nội dung bên trong) ===== -->
   <div id="chuThich"></div>
 
-  <!-- ===== 3 NÚT ĐỔI KIỂU SẮP XẾP ===== -->
+  <!-- 3 nút đổi kiểu sắp xếp -->
   <div id="nut">
     <button data-che="table" class="dang-chon">Table</button>
     <button data-che="sphere">Sphere</button>
     <button data-che="helix">Helix</button>
   </div>
+  <div class="quiz-open-wrap"> <button id="quiz-open-button" type="button"> 🎯 Đố vui nguyên tố <span> →</span> </button> </div>
 
-  <!-- ===== NÚT MỞ / ĐÓNG MỤC ĐỐ VUI ===== -->
-  <div class="quiz-open-wrap">
-    <button id="quiz-open-button" type="button">
-      🎯 Đố vui nguyên tố
-      <span>→</span>
-    </button>
-  </div>
-
-  <!-- ===== KHU VỰC ĐỐ VUI NGUYÊN TỐ (mặc định ẩn, bấm nút trên mới hiện) ===== -->
+  <!-- KHU VỰC ĐỐ VUI NGUYÊN TỐ -->
   <section id="khu-do-vui">
-
-    <!-- Tiêu đề của mini game -->
     <div class="quiz-header">
       <span class="quiz-tag">CHEMISTRY LAB · MINI GAME</span>
       <h2>⚗️ Thử thách nguyên tố</h2>
       <p>Khám phá những nguyên tố hóa học ẩn trong các đồ vật quanh bạn!</p>
     </div>
 
-    <!-- 3 ô thống kê: điểm, số câu, độ chính xác -->
     <div class="quiz-stats">
-      <div class="quiz-stat">
-        <span>🏆 Điểm số</span>
-        <strong id="quiz-score">0</strong>
-      </div>
-      <div class="quiz-stat">
-        <span>🧩 Câu hỏi</span>
-        <strong id="quiz-progress">1/10</strong>
-      </div>
-      <div class="quiz-stat">
-        <span>⚡ Chính xác</span>
-        <strong id="quiz-accuracy">—</strong>
-      </div>
+      <div class="quiz-stat"> <span>🏆 Điểm số</span> <strong id="quiz-score">0</strong> </div>
+      <div class="quiz-stat"> <span>🧩 Câu hỏi</span> <strong id="quiz-progress">1/10</strong> </div>
+      <div class="quiz-stat"> <span>⚡ Chính xác</span> <strong id="quiz-accuracy">—</strong> </div>
     </div>
 
-    <!-- Thanh tiến độ -->
-    <div class="quiz-progress-track">
-      <div id="quiz-progress-bar"></div>
-    </div>
+    <div class="quiz-progress-track"> <div id="quiz-progress-bar"></div> </div>
 
-    <!-- Thẻ câu hỏi -->
     <div class="quiz-card" id="quiz-card">
-
-      <!-- Danh mục câu hỏi (vd: XÂY DỰNG, ĐIỆN TỬ...) -->
       <div class="quiz-category" id="quiz-category">ĐỜI SỐNG</div>
 
-      <!-- Biểu tượng (icon) và dòng mô tả bên cạnh -->
       <div class="quiz-element" id="quiz-element">
         <span id="quiz-symbol">Fe</span>
         <span id="quiz-element-name">Nguyên tố bí ẩn</span>
       </div>
 
-      <!-- Nội dung câu hỏi -->
       <h3 id="quiz-question">Nguyên tố nào được ứng dụng trong đời sống?</h3>
 
-      <!-- Các đáp án (JS tự tạo nút A, B, C, D) -->
       <div id="quiz-answers" class="quiz-answers"></div>
 
-      <!-- Phản hồi đúng/sai và lời giải thích -->
       <div id="quiz-feedback" class="quiz-feedback" aria-live="polite">
         Chọn một đáp án để khám phá kiến thức nhé!
       </div>
 
-      <!-- Nút điều khiển -->
       <div class="quiz-actions">
         <button id="quiz-next" disabled>Câu tiếp theo →</button>
         <button id="quiz-restart" class="quiz-restart">Chơi lại ↻</button>
       </div>
     </div>
 
-    <!-- Mẹo nhỏ ở cuối -->
     <p class="quiz-footnote">
       💡 Mẹo: Hãy liên hệ kiến thức hóa học với những vật dụng bạn gặp hằng ngày.
     </p>
   </section>
 
-  <!-- ===== SÂN KHẤU 3D: JS đặt các ô nguyên tố vào #bang ===== -->
   <div class="khung-bang">
     <div id="bang"></div>
   </div>
 
-  <!-- ===== POPUP THÔNG TIN NGUYÊN TỐ ===== -->
-  <div id="modal-backdrop"></div>   <!-- nền tối phía sau popup -->
+  <!-- Popup thông tin nguyên tố -->
+  <div id="modal-backdrop"></div>
+
   <div id="detail-modal">
-    <div id="modal-symbol"></div>   <!-- ký hiệu lớn -->
-    <h2 id="modal-title"></h2>      <!-- tên nguyên tố -->
-    <div id="modal-desc"></div>     <!-- các thông tin chi tiết -->
+    <div id="modal-symbol"></div>
+    <h2 id="modal-title"></h2>
+    <div id="modal-desc"></div>
+
+    <!-- MÔ HÌNH NGUYÊN TỬ RUTHERFORD–BOHR -->
+    <section id="atom-model">
+      <h3>⚛ Mô hình nguyên tử Rutherford–Bohr</h3>
+
+      <div class="atom-legend">
+        <span><i class="legend-proton"></i> Proton (+)</span>
+        <span><i class="legend-electron"></i> Electron (−)</span>
+        <span><i class="legend-shell"></i> Lớp electron</span>
+      </div>
+
+      <div id="atom-visual">
+        <!-- JavaScript sẽ tự vẽ mô hình SVG tại đây -->
+      </div>
+
+      <div id="atom-summary"></div>
+      <div id="atom-shell-list"></div>
+
+      <p class="atom-note">
+        Minh họa theo mô hình lớp vỏ electron; kích thước hạt và khoảng cách
+        không theo tỉ lệ thực tế.
+      </p>
+    </section>
+
     <button id="close-button">Đóng cửa sổ</button>
   </div>
 
-  <!-- ===== FILE JAVASCRIPT (đặt cuối body để HTML load xong mới chạy) ===== -->
+  <!-- HỆ THỐNG HUY HIỆU -->
+  <button id="badge-avatar" type="button" aria-label="Mở bộ sưu tập huy hiệu" title="Bộ sưu tập huy hiệu">
+    <span>🏆</span>
+    <span id="badge-count">0/10</span>
+  </button>
+
+  <!-- BẢNG XẾP HẠNG ĐỐ VUI -->
+  <button id="rank-avatar" type="button" aria-label="Mở bảng xếp hạng" title="Bảng xếp hạng">
+    <span>🏅</span>
+    <span>Top 10</span>
+  </button>
+
+  <div id="rank-backdrop">
+    <section id="rank-panel" role="dialog" aria-modal="true" aria-labelledby="rank-title">
+      <button id="rank-close" type="button" aria-label="Đóng">✕</button>
+      <div class="rank-heading-icon">🏅</div>
+      <h2 id="rank-title">BẢNG XẾP HẠNG</h2>
+      <p class="rank-subtitle">Điểm cao nhất trong đố vui nguyên tố · Top 10</p>
+      <ol id="rank-list"></ol>
+      <p id="rank-note"></p>
+    </section>
+  </div>
+
+  <div id="badge-backdrop">
+    <section id="badge-panel" role="dialog" aria-modal="true" aria-labelledby="badge-title">
+      <button id="badge-close" type="button" aria-label="Đóng">✕</button>
+
+      <div class="badge-heading-icon">🏆</div>
+      <h2 id="badge-title">BỘ SƯU TẬP HUY HIỆU</h2>
+      <p class="badge-subtitle">Khám phá nguyên tố · Chinh phục hóa học</p>
+
+      <div class="badge-total">
+        <span>Tiến trình của bạn</span>
+        <strong id="badge-total-text">0/10 huy hiệu</strong>
+        <div class="badge-track"><div id="badge-track-fill"></div></div>
+      </div>
+
+      <div id="badge-grid"></div>
+      <p id="badge-hint">Tiếp tục khám phá để mở khóa những huy hiệu mới!</p>
+    </section>
+  </div>
+
   <script src="script.js"></script>
+  <script type="module" src="auth-status.js"></script> <!-- MỚI -->
 </body>
 </html>

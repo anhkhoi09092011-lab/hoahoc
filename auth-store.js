@@ -125,14 +125,17 @@ async function luuTienTrinh(t) {
   var ten = auth.currentUser.displayName || auth.currentUser.email;
   await setDoc(doc(db, "tienTrinh", uid), {
     dung: t.dung, khamPha: t.khamPha, timKiem: t.timKiem.slice(0, 200),
-    diemCao: t.diemCao, diemCaoLuc: t.diemCaoLuc, luot: t.luot, daMo: t.daMo
+    diemCao: t.diemCao, diemCaoLuc: t.diemCaoLuc, thoiGian: t.thoiGian || 0,
+    luot: t.luot, daMo: t.daMo
   });
   if (t.luot >= 1) {
-    // "xep" là một số duy nhất để xếp hạng: điểm cao hơn trước, bằng điểm thì ai đạt sớm hơn xếp trên
-    var luc = t.diemCaoLuc > 0 ? t.diemCaoLuc : 9e12;
+    // "xep" là một số duy nhất để xếp hạng: điểm cao hơn trước,
+    // bằng điểm thì ai hoàn thành trong thời gian ngắn hơn (ms) xếp trên
+    var tg = t.thoiGian > 0 ? Math.min(t.thoiGian, 9e12) : 9e12;
     await setDoc(doc(db, "xepHang", uid), {
-      ten: ten, diemCao: t.diemCao, diemCaoLuc: t.diemCaoLuc, luot: t.luot,
-      xep: t.diemCao * 1e13 + (1e13 - luc)
+      ten: ten, diemCao: t.diemCao, diemCaoLuc: t.diemCaoLuc,
+      thoiGian: t.thoiGian || 0, luot: t.luot,
+      xep: t.diemCao * 1e13 + (1e13 - tg)
     });
   }
 }
@@ -143,7 +146,7 @@ async function layXepHang() {
   var kq = [];
   s.forEach(function (d) {
     var v = d.data();
-    kq.push({ uid: d.id, ten: v.ten || "Ẩn danh", diem: v.diemCao || 0 });
+    kq.push({ uid: d.id, ten: v.ten || "Ẩn danh", diem: v.diemCao || 0, thoiGian: v.thoiGian || 0 });
   });
   return kq;
 }

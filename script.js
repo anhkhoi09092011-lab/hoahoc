@@ -818,11 +818,55 @@ function hienThongTin(nguyenTo, loai, o) {
   // Cập nhật mô hình cho đúng nguyên tố đang mở.
   veMoHinhNguyenTu(nguyenTo.so);
 
-  if (window.ghiNhanHuyHieu) window.ghiNhanHuyHieu("khamPha", nguyenTo.so);
+  if (window.nguoiHienTai) {
+    if (window.ghiNhanHuyHieu) window.ghiNhanHuyHieu("khamPha", nguyenTo.so);
+  } else {
+    nhacDangNhapMoKhoa();
+  }
 
 
   document.getElementById("modal-backdrop").style.display = "block";
   modal.style.display = "block";
+}
+
+// Khách chưa đăng nhập: lần đầu mở ô nguyên tố thì nhắc đăng nhập để mở khóa thành tựu
+var daNhacDangNhap = false;
+function nhacDangNhapMoKhoa() {
+  if (daNhacDangNhap) return;
+  daNhacDangNhap = true;
+
+  var khung = document.getElementById("badge-toast-wrap");
+  if (!khung) {
+    khung = document.createElement("div");
+    khung.id = "badge-toast-wrap";
+    khung.setAttribute("aria-live", "polite");
+    document.body.appendChild(khung);
+  }
+
+  var thongBao = document.createElement("div");
+  thongBao.className = "badge-toast";
+
+  var bieuTuong = document.createElement("span");
+  bieuTuong.className = "badge-toast-icon";
+  bieuTuong.textContent = "🔒";
+
+  var chu = document.createElement("span");
+  chu.className = "badge-toast-text";
+  var nho = document.createElement("small");
+  nho.textContent = "THÀNH TỰU ĐANG BỊ KHÓA";
+  var noiDung = document.createElement("strong");
+  noiDung.textContent = "Cần đăng nhập để mở khóa thành tựu";
+  chu.appendChild(nho);
+  chu.appendChild(noiDung);
+
+  thongBao.appendChild(bieuTuong);
+  thongBao.appendChild(chu);
+  khung.appendChild(thongBao);
+
+  setTimeout(function () {
+    thongBao.classList.add("badge-toast-hide");
+    setTimeout(function () { thongBao.remove(); }, 500);
+  }, 4500);
 }
 
 
@@ -1329,6 +1373,60 @@ document.getElementById("timKiem").addEventListener("input", function () {
   var daTraLoi = 0;
   var khoaTraLoi = false;
 
+  // ----- Đồng hồ đố vui -----
+  // Chỉ chạy khi mục đố vui đang mở, tạm dừng khi đóng, dừng hẳn khi có kết quả.
+  var MOC_THANH_THOI_GIAN = 180000;   // thanh thời gian đầy ở mốc 3 phút (chỉ để minh họa, không giới hạn)
+  var tichLuy = 0, mocBatDau = 0, dongHoChay = false, daXong = false;
+
+  window.dinhDangThoiGian = function (ms) {
+    var tong = Math.max(0, ms) / 1000;
+    var phut = Math.floor(tong / 60);
+    var giay = tong - phut * 60;
+    return (phut < 10 ? "0" : "") + phut + ":" + (giay < 10 ? "0" : "") + giay.toFixed(1);
+  };
+
+  function thoiGianDaTroi() {
+    return tichLuy + (dongHoChay ? Date.now() - mocBatDau : 0);
+  }
+
+  function veDongHo() {
+    var t = thoiGianDaTroi();
+    var elTime = document.getElementById("quiz-time");
+    var elBar = document.getElementById("quiz-time-bar");
+    if (elTime) elTime.textContent = window.dinhDangThoiGian(t).replace(/\.\d$/, "");
+    if (elBar) elBar.style.width = Math.min(100, t / MOC_THANH_THOI_GIAN * 100) + "%";
+  }
+
+  function datLaiDongHo() {
+    tichLuy = 0;
+    dongHoChay = false;
+    daXong = false;
+    veDongHo();
+  }
+
+  function dungDongHo() {
+    if (dongHoChay) {
+      tichLuy += Date.now() - mocBatDau;
+      dongHoChay = false;
+    }
+    daXong = true;
+    veDongHo();
+    return tichLuy;
+  }
+
+  setInterval(function () {
+    var khu = document.getElementById("khu-do-vui");
+    var dangMo = !!khu && khu.classList.contains("quiz-dang-mo");
+    if (dangMo && !daXong && !dongHoChay) {
+      dongHoChay = true;
+      mocBatDau = Date.now();
+    } else if (!dangMo && dongHoChay) {
+      tichLuy += Date.now() - mocBatDau;
+      dongHoChay = false;
+    }
+    veDongHo();
+  }, 200);
+
 
 
 
@@ -1551,7 +1649,8 @@ document.getElementById("timKiem").addEventListener("input", function () {
 
 
 
-    if (window.ghiNhanHuyHieu) window.ghiNhanHuyHieu("hoanThanh", diem);
+    var thoiGianXong = dungDongHo();
+    if (window.ghiNhanHuyHieu) window.ghiNhanHuyHieu("hoanThanh", diem, thoiGianXong);
 
     el.category.textContent = "HOÀN THÀNH THỬ THÁCH";
     el.symbol.textContent =
@@ -1566,6 +1665,17 @@ document.getElementById("timKiem").addEventListener("input", function () {
 
 
     el.answers.replaceChildren();
+
+    // Khung hiển thị thời gian hoàn thành ngay trên thẻ kết quả
+    var khungThoiGian = document.createElement("div");
+    khungThoiGian.className = "quiz-result-time";
+    var nhanTG = document.createElement("span");
+    nhanTG.textContent = "⏱ Thời gian hoàn thành";
+    var giaTriTG = document.createElement("strong");
+    giaTriTG.textContent = window.dinhDangThoiGian(thoiGianXong);
+    khungThoiGian.appendChild(nhanTG);
+    khungThoiGian.appendChild(giaTriTG);
+    el.answers.appendChild(khungThoiGian);
 
 
 
@@ -1586,7 +1696,7 @@ document.getElementById("timKiem").addEventListener("input", function () {
 
     el.feedback.className = "quiz-feedback dung";
     el.feedback.textContent = danhGia +
-      " Điểm được tính theo số câu trả lời đúng.";
+      " Bằng điểm thì ai nhanh hơn xếp trên.";
 
 
 
@@ -1603,6 +1713,7 @@ document.getElementById("timKiem").addEventListener("input", function () {
     viTriCau = 0;
     diem = 0;
     daTraLoi = 0;
+    datLaiDongHo();
     hienCauHoi();
   }
 
@@ -1775,6 +1886,7 @@ if (nutMoQuiz && khuVucQuiz) {
       timKiem: [],
       diemCao: 0,
       diemCaoLuc: 0,
+      thoiGian: 0,
       luot: 0,
       daMo: []
     };
@@ -1808,6 +1920,8 @@ if (nutMoQuiz && khuVucQuiz) {
           ? Math.min(Math.floor(s.diemCao), 10) : 0,
         diemCaoLuc: Number.isFinite(s.diemCaoLuc) && s.diemCaoLuc > 0
           ? s.diemCaoLuc : 0,
+        thoiGian: Number.isFinite(s.thoiGian) && s.thoiGian > 0 && s.thoiGian <= 9e12
+          ? Math.floor(s.thoiGian) : 0,
         luot: Number.isFinite(s.luot) && s.luot >= 0
           ? Math.floor(s.luot) : 0,
         daMo: Array.isArray(s.daMo)
@@ -1885,12 +1999,22 @@ if (nutMoQuiz && khuVucQuiz) {
     ketQua.khamPha = hop(a.khamPha, b.khamPha);
     ketQua.timKiem = hop(a.timKiem, b.timKiem);
     ketQua.daMo = hop(a.daMo, b.daMo);
-    var tot = a.diemCao >= b.diemCao ? a : b;
-    if (a.diemCao === b.diemCao && a.diemCaoLuc && b.diemCaoLuc) {
+    // Bản tốt hơn: điểm cao hơn; bằng điểm thì thời gian ngắn hơn
+    var tot;
+    if (a.diemCao !== b.diemCao) {
+      tot = a.diemCao > b.diemCao ? a : b;
+    } else if (a.thoiGian && b.thoiGian) {
+      tot = a.thoiGian <= b.thoiGian ? a : b;
+    } else if (a.thoiGian || b.thoiGian) {
+      tot = a.thoiGian ? a : b;
+    } else if (a.diemCaoLuc && b.diemCaoLuc) {
       tot = a.diemCaoLuc <= b.diemCaoLuc ? a : b;
+    } else {
+      tot = a;
     }
     ketQua.diemCao = tot.diemCao;
     ketQua.diemCaoLuc = tot.diemCaoLuc;
+    ketQua.thoiGian = tot.thoiGian;
     return ketQua;
   }
 
@@ -2055,7 +2179,8 @@ if (nutMoQuiz && khuVucQuiz) {
 
 
   // Hàm được gọi từ phần trò chơi, popup và tìm kiếm.
-  window.ghiNhanHuyHieu = function (loai, giaTri) {
+  window.ghiNhanHuyHieu = function (loai, giaTri, thoiGian) {
+    if (!nguoi) return; // chưa đăng nhập: không ghi nhận, không mở khóa thành tựu
     if (loai === "dung") {
       trangThai.dung++;
     } else if (loai === "khamPha") {
@@ -2068,9 +2193,17 @@ if (nutMoQuiz && khuVucQuiz) {
       var d = Math.floor(Number(giaTri));
       if (Number.isFinite(d) && d >= 0) {
         trangThai.luot++;
-        if (d > trangThai.diemCao) {
+        var ms = Math.floor(Number(thoiGian));
+        var coThoiGian = Number.isFinite(ms) && ms > 0;
+        if (coThoiGian) ms = Math.min(ms, 9e12);
+        // Tốt hơn nếu điểm cao hơn, hoặc bằng điểm mà nhanh hơn
+        var totHon = d > trangThai.diemCao ||
+          (d === trangThai.diemCao && coThoiGian &&
+            (!trangThai.thoiGian || ms < trangThai.thoiGian));
+        if (totHon) {
           trangThai.diemCao = Math.min(d, 10);
-          trangThai.diemCaoLuc = Date.now(); // để xếp hạng khi bằng điểm: ai đạt trước xếp trên
+          trangThai.thoiGian = coThoiGian ? ms : 0;
+          trangThai.diemCaoLuc = Date.now();
         }
       }
     } else if (loai === "timKiem") {
@@ -2179,8 +2312,14 @@ if (nutMoQuiz && khuVucQuiz) {
       diem.className = "rank-score";
       diem.textContent = h.diem + "/10";
 
+      var tg = document.createElement("span");
+      tg.className = "rank-time";
+      tg.textContent = h.thoiGian > 0 && window.dinhDangThoiGian
+        ? "⏱ " + window.dinhDangThoiGian(h.thoiGian) : "";
+
       li.appendChild(thuTu);
       li.appendChild(ten);
+      li.appendChild(tg);
       li.appendChild(diem);
       ds.appendChild(li);
     });
@@ -2189,9 +2328,9 @@ if (nutMoQuiz && khuVucQuiz) {
     if (!toi) {
       ghiChu.textContent = "Đăng nhập và chơi đố vui để có tên trên bảng.";
     } else if (coToi) {
-      ghiChu.textContent = "Bằng điểm thì ai đạt trước xếp trên.";
+      ghiChu.textContent = "Bằng điểm thì ai hoàn thành nhanh hơn xếp trên.";
     } else {
-      ghiChu.textContent = "Hoàn thành đố vui với điểm đủ cao để vào top 10. Bằng điểm thì ai đạt trước xếp trên.";
+      ghiChu.textContent = "Hoàn thành đố vui với điểm đủ cao để vào top 10. Bằng điểm thì ai hoàn thành nhanh hơn xếp trên.";
     }
   }
 

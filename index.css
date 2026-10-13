@@ -1197,3 +1197,161 @@ box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3), 0 0 18px rgba(110, 220, 60, 0.24), 0 
 .quiz-result-time { grid-column: 1 / -1; padding: 22px 16px; text-align: center; border: 1px solid rgba(56, 189, 248, 0.55); border-radius: 14px; background: radial-gradient(ellipse at top, rgba(56, 189, 248, 0.14), rgba(5, 10, 7, 0.9) 70%); box-shadow: 0 0 22px rgba(56, 189, 248, 0.18), inset 0 0 18px rgba(56, 189, 248, 0.06); }
 .quiz-result-time span { display: block; margin-bottom: 8px; color: #9ca3af; font-size: 13px; letter-spacing: 1px; }
 .quiz-result-time strong { display: block; color: #7dd3fc; font-size: clamp(34px, 8vw, 52px); font-variant-numeric: tabular-nums; text-shadow: 0 0 18px rgba(56, 189, 248, 0.5); }
+
+/* ===== POPUP NGUYÊN TỐ: MÔ HÌNH TRÁI, TOÀN BỘ THÔNG TIN PHẢI ===== */
+#detail-modal {
+  width: min(1080px, calc(100vw - 36px)) !important;
+  max-height: 88vh !important;
+  overflow-y: auto !important;
+  display: none;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  grid-template-rows: auto auto auto auto;
+  gap: 12px 22px;
+  align-items: start;
+  padding: 24px !important;
+  border-radius: 22px !important;
+  text-align: left !important;
+}
+#detail-modal #modal-symbol,
+#detail-modal #modal-title { grid-column: 1 / -1 !important; text-align: center; }
+#detail-modal #modal-symbol { grid-row: 1 !important; margin: 0 !important; line-height: 1.1; }
+#detail-modal #modal-title { grid-row: 2 !important; margin: 0 0 8px !important; padding-bottom: 14px; border-bottom: 1px solid rgba(110,220,60,.25); }
+#detail-modal #atom-model { grid-column: 1 !important; grid-row: 3 / span 2 !important; width: 100%; min-width: 0; margin: 0 !important; box-sizing: border-box; }
+#detail-modal #modal-desc { grid-column: 2 !important; grid-row: 3 !important; width: 100%; min-width: 0; margin: 0; padding: 18px; box-sizing: border-box; border: 1px solid rgba(110,220,60,.22); border-radius: 14px; background: rgba(10,25,15,.78); overflow-wrap: anywhere; }
+#detail-modal #electron-details { grid-column: 2 !important; grid-row: 4 !important; width: 100%; min-width: 0; margin: 0; padding: 18px; box-sizing: border-box; border: 1px solid rgba(110,220,60,.25); border-radius: 14px; background: rgba(10,25,15,.78); color: #dbe7df; text-align: left; }
+#electron-details h3 { margin: 0 0 12px; color: #a8f58c; font-size: 18px; }
+#atom-summary { text-align: left; overflow-wrap: anywhere; }
+#atom-shell-list { justify-content: flex-start; }
+#electron-configuration { margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(110,220,60,.2); color: #c7f9b7; font-size: 14px; line-height: 1.9; overflow-wrap: anywhere; }
+#electron-configuration strong { color: #a8f58c; }
+#detail-modal #close-button { grid-column: 1 / -1 !important; grid-row: 5 !important; justify-self: center; }
+#atom-visual { max-width: 100% !important; }
+#atom-visual svg { width: 100%; height: auto; }
+.atom-orbit { transform-origin: 200px 200px; }
+@media (max-width: 680px) {
+  #detail-modal { width: calc(100vw - 20px) !important; max-height: 92vh !important; padding: 16px !important; grid-template-columns: minmax(0,1fr) !important; gap: 12px; }
+  #detail-modal #modal-symbol, #detail-modal #modal-title, #detail-modal #atom-model, #detail-modal #modal-desc, #detail-modal #electron-details, #detail-modal #close-button { grid-column: 1 !important; grid-row: auto !important; }
+  #detail-modal #atom-model { grid-row: 3 !important; }
+  #detail-modal #modal-desc { grid-row: 4 !important; }
+  #detail-modal #electron-details { grid-row: 5 !important; }
+  #detail-modal #close-button { grid-row: 6 !important; }
+}
+@media (prefers-reduced-motion: reduce) { .atom-orbit animateTransform { display: none; } }
+
+
+/* Bố cục hai cột cho thông tin nguyên tố và biểu đồ đồng vị */
+#detail-modal { width: min(1000px, calc(100vw - 32px)); max-height: calc(100vh - 32px); overflow-y: auto; grid-template-columns: minmax(280px, 0.9fr) minmax(320px, 1.1fr); column-gap: 24px; align-items: start; text-align: left; }
+#modal-symbol, #modal-title, #modal-desc, #atom-model, #electron-details { grid-column: 1; }
+#nist-isotope-source { grid-column: 2; grid-row: 1 / span 5; align-self: stretch; min-width: 0; padding: 18px; border: 1px solid rgba(var(--rgb,110,220,60),.35); border-radius: 12px; background: rgba(110,220,60,.035); text-align: left; }
+#nist-isotope-source h3 { margin: 0 0 10px; color: rgb(var(--rgb,110,220,60)); }
+#nist-isotope-source a { color: #a3f17e; }
+.isotope-note { color: #b8c9bd; font-size: 12px; line-height: 1.5; }
+.isotope-chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+.isotope-table { display: grid; gap: 4px; margin: 12px 0; font-size: 12px; }
+.isotope-row { display: grid; grid-template-columns: 1fr 1.3fr 1fr; gap: 8px; padding: 5px 7px; background: rgba(255,255,255,.035); border-radius: 4px; }
+.isotope-head { color: #a3f17e; font-weight: bold; background: rgba(110,220,60,.1); }
+#detail-modal #close-button { grid-column: 1 / -1; justify-self: center; }
+.electron-config-box { display: inline-block; font-weight: bold; cursor: pointer; border-radius: 3px; transition: background .2s ease, opacity .2s ease; }
+.electron-config-box:hover { background: rgba(127,127,127,.12); }
+.electron-config-full { display: none; }
+.electron-config-box.expanded .electron-config-short { display: none; }
+.electron-config-box.expanded .electron-config-full { display: inline-block; animation: isotopeFadeIn .25s ease both; }
+@keyframes isotopeFadeIn { from {opacity:0; transform:translateY(-3px)} to {opacity:1; transform:translateY(0)} }
+@media (max-width: 760px) { #detail-modal { display: none; grid-template-columns: minmax(0,1fr); width: calc(100vw - 20px); padding: 16px; } #modal-symbol, #modal-title, #modal-desc, #atom-model, #electron-details, #nist-isotope-source, #detail-modal #close-button { grid-column: 1; grid-row: auto; } #nist-isotope-source { padding: 12px; } }
+
+
+/* === Bố cục popup đã sửa: không chồng lấn thông tin và biểu đồ đồng vị === */
+#detail-modal {
+  box-sizing: border-box !important;
+  width: min(1180px, calc(100vw - 32px)) !important;
+  max-height: calc(100vh - 32px) !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr) !important;
+  grid-template-rows: auto auto auto auto auto auto !important;
+  column-gap: 22px !important;
+  row-gap: 14px !important;
+  align-items: start !important;
+}
+#detail-modal #modal-symbol,
+#detail-modal #modal-title {
+  grid-column: 1 / -1 !important;
+}
+#detail-modal #modal-symbol { grid-row: 1 !important; }
+#detail-modal #modal-title { grid-row: 2 !important; }
+#detail-modal #atom-model {
+  grid-column: 1 !important;
+  grid-row: 3 / span 3 !important;
+  min-width: 0 !important;
+}
+#detail-modal #modal-desc {
+  grid-column: 2 !important;
+  grid-row: 3 !important;
+  min-width: 0 !important;
+}
+#detail-modal #electron-details {
+  grid-column: 2 !important;
+  grid-row: 4 !important;
+  min-width: 0 !important;
+}
+#detail-modal #nist-isotope-source {
+  grid-column: 2 !important;
+  grid-row: 5 !important;
+  align-self: start !important;
+  min-width: 0 !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+}
+#detail-modal #close-button {
+  grid-column: 1 / -1 !important;
+  grid-row: 6 !important;
+  justify-self: center !important;
+}
+.isotope-chart { width: 100%; min-width: 0; }
+.isotope-chart svg { width: 100%; max-width: 100%; height: auto; display: block; }
+.isotope-table { width: 100%; min-width: 0; }
+.isotope-row { grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr) minmax(0, 1fr) !important; overflow-wrap: anywhere; }
+.atom-orbit {
+  transform-box: view-box;
+  transform-origin: 50% 50%;
+  animation-name: electronOrbitSpin;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+@keyframes electronOrbitSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.electron-config-box { display: inline-block; font-weight: 700; cursor: pointer; }
+.electron-config-short { display: inline-block; font-weight: 700; }
+.electron-config-full { display: none; font-weight: 700; }
+.electron-config-box.expanded .electron-config-short { display: none; }
+.electron-config-box.expanded .electron-config-full { display: inline-block; animation: isotopeFadeIn .25s ease both; }
+@media (max-width: 760px) {
+  #detail-modal {
+    grid-template-columns: minmax(0, 1fr) !important;
+    width: calc(100vw - 20px) !important;
+    max-height: 92vh !important;
+    padding: 16px !important;
+  }
+  #detail-modal #modal-symbol,
+  #detail-modal #modal-title,
+  #detail-modal #atom-model,
+  #detail-modal #modal-desc,
+  #detail-modal #electron-details,
+  #detail-modal #nist-isotope-source,
+  #detail-modal #close-button {
+    grid-column: 1 !important;
+    grid-row: auto !important;
+  }
+  #detail-modal #atom-model { grid-row: 3 !important; }
+  #detail-modal #modal-desc { grid-row: 4 !important; }
+  #detail-modal #electron-details { grid-row: 5 !important; }
+  #detail-modal #nist-isotope-source { grid-row: 6 !important; }
+  #detail-modal #close-button { grid-row: 7 !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .atom-orbit { animation: none !important; }
+  .electron-config-full { animation: none !important; }
+}

@@ -531,198 +531,110 @@ function layPhanBoLop(soProton) {
 
 
 
-// Tạo SVG an toàn bằng DOM, không dùng innerHTML cho dữ liệu nguyên tố.
+// Tạo SVG mô hình nguyên tử. Electron được gom theo lớp vào các nhóm quay quanh hạt nhân.
 function taoSVGNguyenTu(soProton, phanBo) {
   var NS = "http://www.w3.org/2000/svg";
   var kichThuoc = 400;
   var tam = kichThuoc / 2;
-
-
   var svg = document.createElementNS(NS, "svg");
   svg.setAttribute("viewBox", "0 0 400 400");
   svg.setAttribute("role", "img");
-  svg.setAttribute(
-    "aria-label",
-    "Mô hình nguyên tử có " + soProton +
-    " proton và " + soProton + " electron"
-  );
+  svg.setAttribute("aria-label", "Mô hình nguyên tử có " + soProton + " proton và " + soProton + " electron");
 
-
-  function themHinh(ten, thuocTinh) {
+  function themHinh(cha, ten, thuocTinh) {
     var hinh = document.createElementNS(NS, ten);
-
-
-    Object.keys(thuocTinh).forEach(function (khoa) {
-      hinh.setAttribute(khoa, thuocTinh[khoa]);
-    });
-
-
-    svg.appendChild(hinh);
+    Object.keys(thuocTinh).forEach(function (khoa) { hinh.setAttribute(khoa, thuocTinh[khoa]); });
+    cha.appendChild(hinh);
     return hinh;
   }
 
-
   var soLop = phanBo.length;
-  var banKinhHatNhan = Math.min(
-    10 + Math.sqrt(soProton) * 1.6,
-    30
-  );
-
-
-  // Bán kính các lớp vỏ tăng đều, vừa khung SVG.
+  var banKinhHatNhan = Math.min(10 + Math.sqrt(soProton) * 1.6, 30);
   var banKinhLop = [];
+  for (var i = 0; i < soLop; i++) banKinhLop.push(38 + i * (108 / Math.max(soLop, 1)));
+  var mauLop = ["#6edc3c", "#45d6b5", "#5bbcff", "#b18cff", "#ffb454", "#ff7fa8", "#d4e36c"];
 
-
-  for (var i = 0; i < soLop; i++) {
-    banKinhLop.push(38 + i * (108 / Math.max(soLop, 1)));
-  }
-
-
-  // Vẽ các lớp vỏ trước electron.
-  var mauLop = [
-    "#6edc3c", "#45d6b5", "#5bbcff", "#b18cff",
-    "#ffb454", "#ff7fa8", "#d4e36c"
-  ];
-
-
+  // Các vòng lớp electron cố định.
   banKinhLop.forEach(function (banKinh, i) {
-    themHinh("circle", {
-      cx: tam,
-      cy: tam,
-      r: banKinh,
-      class: "atom-shell-ring",
-      stroke: mauLop[i % mauLop.length]
-    });
+    themHinh(svg, "circle", { cx: tam, cy: tam, r: banKinh, class: "atom-shell-ring", stroke: mauLop[i % mauLop.length] });
   });
 
+  themHinh(svg, "circle", { cx: tam, cy: tam, r: banKinhHatNhan + 3, class: "atom-nucleus-glow" });
 
-  // Vẽ hạt nhân phát sáng.
-  themHinh("circle", {
-    cx: tam,
-    cy: tam,
-    r: banKinhHatNhan + 3,
-    class: "atom-nucleus-glow"
-  });
-
-
- 
-  // Xếp proton trong hạt nhân, giới hạn số vòng để tránh lặp vô hạn.
+  // Xếp proton trong hạt nhân.
   var banKinhProton = 2.8;
   var buocProton = banKinhProton * 2.15;
   var cacViTriProton = [[tam, tam]];
-
-
-  var soVongToiDa = Math.ceil(
-    (banKinhHatNhan + buocProton) / buocProton
-  ) + 2;
-
-
-  for (
-    var vong = 1;
-    vong <= soVongToiDa &&
-    cacViTriProton.length < soProton;
-    vong++
-  ) {
-    var soDiemVong = Math.max(
-      6,
-      Math.round(2 * Math.PI * vong)
-    );
-
-
-    for (
-      var j = 0;
-      j < soDiemVong &&
-      cacViTriProton.length < soProton;
-      j++
-    ) {
-      var goc = (2 * Math.PI * j / soDiemVong) +
-        (vong % 2) * 0.18;
-
-
+  var soVongToiDa = Math.ceil((banKinhHatNhan + buocProton) / buocProton) + 2;
+  for (var vong = 1; vong <= soVongToiDa && cacViTriProton.length < soProton; vong++) {
+    var soDiemVong = Math.max(6, Math.round(2 * Math.PI * vong));
+    for (var j = 0; j < soDiemVong && cacViTriProton.length < soProton; j++) {
+      var goc = (2 * Math.PI * j / soDiemVong) + (vong % 2) * 0.18;
       var x = tam + Math.cos(goc) * vong * buocProton;
       var y = tam + Math.sin(goc) * vong * buocProton;
-
-
-      if (
-        Math.hypot(x - tam, y - tam) <= banKinhHatNhan - 2
-      ) {
-        cacViTriProton.push([x, y]);
-      }
+      if (Math.hypot(x - tam, y - tam) <= banKinhHatNhan - 2) cacViTriProton.push([x, y]);
     }
   }
-
-
-  // Nếu hạt nhân quá nhỏ để vẽ đủ chấm, vẫn hiển thị đủ số proton
-  // bằng cách xếp đều các chấm trong phạm vi bán kính cho phép.
   if (cacViTriProton.length < soProton) {
     cacViTriProton = [];
-
-
     for (var p = 0; p < soProton; p++) {
       var gocProton = p * 2.399963229728653;
-      var banKinhDat = Math.sqrt(p / Math.max(soProton, 1)) *
-        Math.max(0, banKinhHatNhan - 3);
-
-
-      cacViTriProton.push([
-        tam + Math.cos(gocProton) * banKinhDat,
-        tam + Math.sin(gocProton) * banKinhDat
-      ]);
+      var banKinhDat = Math.sqrt(p / Math.max(soProton, 1)) * Math.max(0, banKinhHatNhan - 3);
+      cacViTriProton.push([tam + Math.cos(gocProton) * banKinhDat, tam + Math.sin(gocProton) * banKinhDat]);
     }
   }
-
-
   cacViTriProton.forEach(function (viTri) {
-    themHinh("circle", {
-      cx: viTri[0],
-      cy: viTri[1],
-      r: banKinhProton,
-      class: "atom-proton"
-    });
+    themHinh(svg, "circle", { cx: viTri[0], cy: viTri[1], r: banKinhProton, class: "atom-proton" });
   });
-
-
-  // Với hạt nhân lớn, ghi số proton ở giữa để vẫn đọc được.
   if (soProton >= 20) {
-    var nhan = themHinh("text", {
-      x: tam,
-      y: tam,
-      class: "atom-center-label"
-    });
+    var nhan = themHinh(svg, "text", { x: tam, y: tam, class: "atom-center-label" });
     nhan.textContent = soProton + "p+";
   }
 
-
-  // Vẽ electron thành các chấm riêng biệt trên từng lớp.
+  // Mỗi lớp có một nhóm riêng; animateTransform làm electron quay quanh tâm hạt nhân.
   phanBo.forEach(function (soElectron, index) {
     var banKinh = banKinhLop[index];
-
-
+    var orbit = themHinh(svg, "g", { class: "atom-orbit", "data-shell": index + 1 });
+    orbit.style.animationDuration = (5 + index * 1.7) + "s";
+    orbit.style.animationDirection = index % 2 ? "reverse" : "normal";
     for (var e = 0; e < soElectron; e++) {
-      // Phân bố đều quanh vòng tròn; lệch góc giữa các lớp.
-      var goc = (2 * Math.PI * e / soElectron) +
-        index * 0.32;
-
-
-      var x = tam + Math.cos(goc) * banKinh;
-      var y = tam + Math.sin(goc) * banKinh;
-
-
-      themHinh("circle", {
-        cx: x,
-        cy: y,
-        r: 4,
-        class: "atom-electron"
-      });
+      var gocElectron = (2 * Math.PI * e / soElectron) + index * 0.32;
+      var ex = tam + Math.cos(gocElectron) * banKinh;
+      var ey = tam + Math.sin(gocElectron) * banKinh;
+      themHinh(orbit, "circle", { cx: ex, cy: ey, r: 4, class: "atom-electron" });
     }
   });
-
-
   return svg;
 }
 
+// Cấu hình phân lớp electron, giữ nguyên dữ liệu và các ngoại lệ đã dùng cho mô hình lớp.
+function layCauHinhPhanLop(soProton) {
+  var cacPhanLop = [["1s",2],["2s",2],["2p",6],["3s",2],["3p",6],["4s",2],["3d",10],["4p",6],["5s",2],["4d",10],["5p",6],["6s",2],["4f",14],["5d",10],["6p",6],["7s",2],["5f",14],["6d",10],["7p",6]];
+  var ngoaiLe = {24:[["4s",1],["3d",5]],29:[["4s",1],["3d",10]],41:[["5s",1],["4d",4]],42:[["5s",1],["4d",5]],44:[["5s",1],["4d",7]],45:[["5s",1],["4d",8]],46:[["5s",0],["4d",10]],47:[["5s",1],["4d",10]],78:[["6s",1],["5d",9]],79:[["6s",1],["5d",10]]};
+  var conLai = soProton, ketQua = [];
+  cacPhanLop.forEach(function (muc) {
+    var so = Math.min(conLai, muc[1]);
+    if (so > 0) ketQua.push({ten:muc[0], so:so});
+    conLai -= so;
+  });
+  var ngoai = ngoaiLe[soProton];
+  if (ngoai) {
+    ketQua = ketQua.filter(function (m) { return m.ten !== ngoai[0][0] && m.ten !== ngoai[1][0]; });
+    ngoai.forEach(function (m) { if (m[1] > 0) ketQua.push({ten:m[0], so:m[1]}); });
+    var thuTu = cacPhanLop.map(function (m) { return m[0]; });
+    ketQua.sort(function (a,b) { return thuTu.indexOf(a.ten)-thuTu.indexOf(b.ten); });
+  }
+  return ketQua.map(function (m) { return m.ten + "<sup>" + m.so + "</sup>"; }).join(" ");
+}
 
 
+function layCauHinhRutGon(soProton) {
+  var khiHiem = [{so:86,k:"Rn"},{so:54,k:"Xe"},{so:36,k:"Kr"},{so:18,k:"Ar"},{so:10,k:"Ne"},{so:2,k:"He"}];
+  var full = layCauHinhPhanLop(soProton);
+  for (var i=0;i<khiHiem.length;i++){ if(soProton<=khiHiem[i].so) continue; var prefix=layCauHinhPhanLop(khiHiem[i].so); if(full.indexOf(prefix)===0) return "["+khiHiem[i].k+"]"+full.slice(prefix.length); }
+  return full;
+}
+function toggleCauHinhElectron(el){ var box=el.closest(".electron-config-box"); if(box) box.classList.toggle("expanded"); }
 
 // Cập nhật toàn bộ mô hình khi chọn nguyên tố.
 function veMoHinhNguyenTu(soProton) {
@@ -779,10 +691,74 @@ function veMoHinhNguyenTu(soProton) {
     muc.appendChild(so);
     danhSachLop.appendChild(muc);
   });
+
+  var cauHinh = document.getElementById("electron-configuration");
+  if (cauHinh) {
+    var rutGon = layCauHinhRutGon(soProton);
+    var dayDu = layCauHinhPhanLop(soProton);
+    if (/^\[[A-Za-z]+\]/.test(rutGon)) {
+      cauHinh.innerHTML = "<strong>Cấu hình phân lớp:</strong><br><span class=\"electron-config-box\"><span class=\"electron-config-short\" role=\"button\" tabindex=\"0\" onclick=\"toggleCauHinhElectron(this)\" onkeydown=\"if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleCauHinhElectron(this)}\">" + rutGon + "</span><span class=\"electron-config-full\" role=\"button\" tabindex=\"0\" onclick=\"toggleCauHinhElectron(this)\" onkeydown=\"if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleCauHinhElectron(this)}\">" + dayDu + "</span></span>";
+    } else { cauHinh.innerHTML = "<strong>Cấu hình phân lớp:</strong><br>" + dayDu; }
+  }
 }
 
 
 
+
+
+var DU_LIEU_DONG_VI_TU_NHIEN = {"H": [[1, 1.007825, 99.9885], [2, 2.014102, 0.0115]], "He": [[3, 3.016029, 0.000137], [4, 4.002603, 99.999863]], "Li": [[6, 6.015123, 7.59], [7, 7.016005, 92.41]], "B": [[10, 10.012937, 19.9], [11, 11.009305, 80.1]], "C": [[12, 12.0, 98.93], [13, 13.003355, 1.07]], "N": [[14, 14.003074, 99.636], [15, 15.000109, 0.364]], "O": [[16, 15.994915, 99.757], [17, 16.999132, 0.038], [18, 17.99916, 0.205]], "Ne": [[20, 19.99244, 90.48], [21, 20.993847, 0.27], [22, 21.991386, 9.25]], "Mg": [[24, 23.985042, 78.99], [25, 24.985837, 10.0], [26, 25.982593, 11.01]], "Si": [[28, 27.976927, 92.223], [29, 28.976495, 4.685], [30, 29.97377, 3.092]], "S": [[32, 31.972071, 94.99], [33, 32.971459, 0.75], [34, 33.967868, 4.25], [36, 35.967081, 0.01]], "Cl": [[35, 34.968853, 75.78], [37, 36.965903, 24.22]], "Ar": [[36, 35.967545, 0.3336], [38, 37.962732, 0.0629], [40, 39.962383, 99.6035]], "K": [[39, 38.963707, 93.2581], [40, 39.963999, 0.0117], [41, 40.961826, 6.7302]], "Ca": [[40, 39.962591, 96.941], [42, 41.958618, 0.647], [43, 42.958767, 0.135], [44, 43.955482, 2.086], [46, 45.953689, 0.004], [48, 47.952523, 0.187]], "Fe": [[54, 53.939609, 5.845], [56, 55.934936, 91.754], [57, 56.935393, 2.119], [58, 57.933274, 0.282]], "Cu": [[63, 62.929598, 69.15], [65, 64.92779, 30.85]], "Zn": [[64, 63.929142, 49.17], [66, 65.926034, 27.73], [67, 66.927128, 4.04], [68, 67.924845, 18.45], [70, 69.92532, 0.61]], "Br": [[79, 78.918338, 50.69], [81, 80.916291, 49.31]], "Ag": [[107, 106.905092, 51.839], [109, 108.904756, 48.161]], "Sn": [[112, 111.904824, 0.97], [114, 113.902783, 0.66], [115, 114.903344, 0.34], [116, 115.901743, 14.54], [117, 116.902954, 7.68], [118, 117.901607, 24.22], [119, 118.903311, 8.59], [120, 119.902202, 32.58], [122, 121.903444, 4.63], [124, 123.905277, 5.79]], "Xe": [[124, 123.905893, 0.095], [126, 125.904274, 0.089], [128, 127.903531, 1.91], [129, 128.90478, 26.401], [130, 129.903509, 4.071], [131, 130.905084, 21.232], [132, 131.904155, 26.909], [134, 133.905394, 10.436], [136, 135.907214, 8.857]], "Hg": [[196, 195.965833, 0.15], [198, 197.966769, 9.97], [199, 198.968281, 16.87], [200, 199.968327, 23.1], [201, 200.970303, 13.18], [202, 201.970644, 29.86], [204, 203.973494, 6.87]], "Pb": [[204, 203.973044, 1.4], [206, 205.974466, 24.1], [207, 206.975897, 22.1], [208, 207.976652, 52.4]]};
+function veBieuDoDongVi(kyHieu, khoiLuong) {
+  var panel = document.getElementById("nist-isotope-source");
+  if (!panel) return;
+  var data = DU_LIEU_DONG_VI_TU_NHIEN[kyHieu];
+  var chart = panel.querySelector(".isotope-chart");
+  var note = panel.querySelector(".isotope-note");
+  var table = panel.querySelector(".isotope-table");
+
+  if (!data || !data.length) {
+    chart.innerHTML = "";
+    table.innerHTML = "";
+    note.textContent = "Chưa có dữ liệu đồng vị tích hợp cho nguyên tố này. Có thể tra cứu tại nguồn NIST bên dưới.";
+    return;
+  }
+
+  var W = 520, H = 250, L = 44, R = 16, T = 24, B = 42;
+  var maxMass = Math.max.apply(null, data.map(function (d) { return d[0]; }));
+  var minMass = Math.min.apply(null, data.map(function (d) { return d[0]; }));
+  var maxPct = Math.max.apply(null, data.map(function (d) { return d[2]; }));
+  var maxY = maxPct <= 1 ? 1 : (maxPct <= 10 ? 10 : Math.ceil(maxPct / 10) * 10);
+  var y = function (v) { return H - B - v / maxY * (H - T - B); };
+  var x = function (mass) {
+    if (maxMass === minMass) return (L + W - R) / 2;
+    return L + 18 + (mass - minMass) / (maxMass - minMass) * (W - L - R - 36);
+  };
+
+  var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Biểu đồ tỉ lệ đồng vị tự nhiên của ' + kyHieu + '">';
+  for (var tick = 0; tick <= 4; tick++) {
+    var value = maxY * tick / 4;
+    var yy = y(value);
+    svg += '<line x1="' + L + '" y1="' + yy + '" x2="' + (W - R) + '" y2="' + yy + '" stroke="currentColor" stroke-opacity=".18"/>';
+    svg += '<text x="' + (L - 8) + '" y="' + (yy + 4) + '" text-anchor="end" fill="currentColor" opacity=".8" font-size="11">' + value.toFixed(value % 1 ? 1 : 0) + '%</text>';
+  }
+  data.forEach(function (d) {
+    var xx = x(d[0]), yy = y(d[2]);
+    svg += '<line x1="' + xx + '" y1="' + y(0) + '" x2="' + xx + '" y2="' + yy + '" stroke="#8ee66b" stroke-width="2.4"/>';
+    svg += '<circle cx="' + xx + '" cy="' + yy + '" r="3.5" fill="#c9ffad"/>';
+    svg += '<text x="' + xx + '" y="' + Math.max(13, yy - 8) + '" text-anchor="middle" fill="currentColor" font-size="11">' + d[2] + '%</text>';
+    svg += '<text x="' + xx + '" y="' + (H - B + 18) + '" text-anchor="middle" fill="currentColor" font-size="11">' + d[0] + '</text>';
+  });
+  svg += '<line x1="' + L + '" y1="' + T + '" x2="' + L + '" y2="' + y(0) + '" stroke="currentColor" stroke-opacity=".7"/>';
+  svg += '<line x1="' + L + '" y1="' + y(0) + '" x2="' + (W - R) + '" y2="' + y(0) + '" stroke="currentColor" stroke-opacity=".7"/>';
+  svg += '<text x="' + ((L + W - R) / 2) + '" y="' + (H - 5) + '" text-anchor="middle" fill="currentColor" font-size="11">Số khối đồng vị</text></svg>';
+
+  chart.innerHTML = svg;
+  note.textContent = "Mỗi vạch biểu diễn một đồng vị; chiều cao thể hiện phần trăm phổ biến tự nhiên.";
+  table.innerHTML =
+    '<div class="isotope-row isotope-head"><span>Đồng vị</span><span>Khối lượng (u)</span><span>Tỉ lệ tự nhiên</span></div>' +
+    data.map(function (d) {
+      return '<div class="isotope-row"><span>' + kyHieu + '-' + d[0] + '</span><span>' + d[1] + '</span><span>' + d[2] + '%</span></div>';
+    }).join('');
+}
 
 // ===== POPUP THÔNG TIN NGUYÊN TỐ =====
 function hienThongTin(nguyenTo, loai, o) {
@@ -807,13 +783,24 @@ function hienThongTin(nguyenTo, loai, o) {
   document.getElementById("modal-desc").innerHTML =
     "<strong>Số hiệu nguyên tử:</strong> " + nguyenTo.so + "<br>" +
     "<strong>Ký hiệu:</strong> " + nguyenTo.kyHieu + "<br>" +
-    "<strong>Khối lượng nguyên tử:</strong> " + nguyenTo.khoiLuong + " u<br>" +
+    "<strong>Khối lượng nguyên tử chuẩn:</strong> " + nguyenTo.khoiLuong + " u<br>" +
+    "<strong>Số proton:</strong> " + nguyenTo.so + "<br>" +
+    "<strong>Số electron (nguyên tử trung hòa):</strong> " + nguyenTo.so + "<br>" +
     "<strong>Chu kỳ:</strong> " + layChuKi(nguyenTo.so) + "<br>" +
     "<strong>Nhóm:</strong> " + layNhom(nguyenTo.so) + "<br>" +
     "<strong>Phân loại:</strong> " + tenLoai[loai] + "<br>" +
     "<strong>Trạng thái ở điều kiện thường:</strong> " +
     layTrangThai(nguyenTo.kyHieu);
 
+  var isotopePanel = document.getElementById("nist-isotope-source");
+  if (!isotopePanel) {
+    isotopePanel = document.createElement("section");
+    isotopePanel.id = "nist-isotope-source";
+    isotopePanel.innerHTML = '<h3>Phân bố đồng vị trong tự nhiên</h3><p class="isotope-note"></p><div class="isotope-chart"></div><div class="isotope-table"></div><a href="https://physics.nist.gov/cgi-bin/Compositions/stand_alone.pl" target="_blank" rel="noopener noreferrer">Nguồn dữ liệu tham khảo: NIST ↗</a>';
+    var closeButton = document.getElementById("close-button");
+    modal.insertBefore(isotopePanel, closeButton);
+  }
+  veBieuDoDongVi(nguyenTo.kyHieu, nguyenTo.khoiLuong);
 
   // Cập nhật mô hình cho đúng nguyên tố đang mở.
   veMoHinhNguyenTu(nguyenTo.so);
@@ -826,7 +813,7 @@ function hienThongTin(nguyenTo, loai, o) {
 
 
   document.getElementById("modal-backdrop").style.display = "block";
-  modal.style.display = "block";
+  modal.style.display = "grid";
 }
 
 // Khách chưa đăng nhập: lần đầu mở ô nguyên tố thì nhắc đăng nhập để mở khóa thành tựu

@@ -1355,3 +1355,95 @@ box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3), 0 0 18px rgba(110, 220, 60, 0.24), 0 
   .atom-orbit { animation: none !important; }
   .electron-config-full { animation: none !important; }
 }
+
+/* ===== THẺ NGƯỜI TÌM RA NGUYÊN TỐ (trong popup) ===== */
+.nguoi-phat-hien {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 16px;
+  padding: 14px 16px;
+  border: 1px solid rgba(var(--rgb, 110, 220, 60), 0.5);
+  border-radius: 14px;
+  background:
+    radial-gradient(ellipse at top left, rgba(var(--rgb, 110, 220, 60), 0.16), transparent 70%),
+    rgba(5, 14, 8, 0.85);
+  box-shadow: inset 0 0 16px rgba(var(--rgb, 110, 220, 60), 0.08), 0 0 14px rgba(var(--rgb, 110, 220, 60), 0.15);
+  line-height: 1.4;
+}
+.npd-icon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 46px;
+  height: 46px;
+  font-size: 24px;
+  border-radius: 50%;
+  border: 1px solid rgba(var(--rgb, 110, 220, 60), 0.6);
+  background: rgba(var(--rgb, 110, 220, 60), 0.12);
+  box-shadow: 0 0 12px rgba(var(--rgb, 110, 220, 60), 0.35);
+}
+.npd-noidung { flex: 1; min-width: 0; }
+.npd-nhan {
+  font: 10px monospace;
+  letter-spacing: 2px;
+  color: rgb(var(--rgb, 110, 220, 60));
+  margin-bottom: 4px;
+}
+.npd-ten {
+  color: #f3fff0;
+  font-size: 15px;
+  font-weight: bold;
+  overflow-wrap: anywhere;
+}
+.npd-nam {
+  flex-shrink: 0;
+  text-align: center;
+  padding: 6px 12px;
+  border-left: 1px solid rgba(var(--rgb, 110, 220, 60), 0.3);
+}
+.npd-nam small { display: block; color: #9ca3af; font-size: 10px; margin-bottom: 2px; }
+.npd-nam strong {
+  display: block;
+  color: rgb(var(--rgb, 110, 220, 60));
+  font-size: 20px;
+  text-shadow: 0 0 10px rgba(var(--rgb, 110, 220, 60), 0.6);
+  font-variant-numeric: tabular-nums;
+}
+@media (max-width: 480px) {
+  .nguoi-phat-hien { flex-wrap: wrap; }
+  .npd-nam { border-left: none; width: 100%; padding: 6px 0 0; text-align: left; display: flex; gap: 8px; align-items: baseline; }
+}
+/* ===== KHUNG "NHỮNG ĐIỀU ÍT AI BIẾT" (trong popup) ===== */
+#detail-modal #fun-facts {
+  grid-column: 1 / -1 !important;
+  grid-row: 6 !important;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 18px;
+  border: 1px solid rgba(var(--rgb, 110, 220, 60), 0.4);
+  border-radius: 14px;
+  background:
+    radial-gradient(ellipse at top left, rgba(var(--rgb, 110, 220, 60), 0.12), transparent 70%),
+    rgba(10, 25, 15, 0.78);
+  box-shadow: inset 0 0 16px rgba(var(--rgb, 110, 220, 60), 0.06);
+  text-align: left;
+}
+#fun-facts h3 {
+  margin: 0 0 12px;
+  color: rgb(var(--rgb, 110, 220, 60));
+  font-size: 18px;
+}
+#fun-facts-list {
+  min-height: 80px;
+  color: #dbe7df;
+  font-size: 14px;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+#detail-modal #close-button { grid-row: 7 !important; }
+@media (max-width: 760px) {
+  #detail-modal #fun-facts { grid-column: 1 !important; grid-row: 7 !important; padding: 12px; }
+  #detail-modal #close-button { grid-row: 8 !important; }
+}

@@ -360,7 +360,15 @@ window.addEventListener("mousemove", function (e) {
   rx -= dy * 0.3;
   vy = dx * 0.3;
   vx = -dy * 0.3;
+  if (cheDo === "table") gioiHanTable();
 });
+
+// Dạng table: chỉ cho xoay trong một góc giới hạn, không cho xoay ra mặt sau
+var GIOI_HAN_TABLE_Y = 60, GIOI_HAN_TABLE_X = 40;
+function gioiHanTable() {
+  if (Math.abs(ry) > GIOI_HAN_TABLE_Y) { ry = Math.sign(ry) * GIOI_HAN_TABLE_Y; vy = 0; }
+  if (Math.abs(rx) > GIOI_HAN_TABLE_X) { rx = Math.sign(rx) * GIOI_HAN_TABLE_X; vx = 0; }
+}
 
 
 
@@ -378,11 +386,12 @@ function vong() {
       ry += (chuot.x * 12 - ry) * 0.06;
     }
   } else if (!dangKeo) {
-    // sau khi kéo (và ở sphere/helix): quán tính, table không giới hạn góc nên xoay ra mặt sau được
+    // sau khi kéo (và ở sphere/helix): quán tính; table bị giới hạn góc nên không xoay ra mặt sau
     ry += vy + t.xoay;
     rx += vx;
     vy *= 0.95; vx *= 0.95;
     if (cheDo !== "table") rx = Math.max(-70, Math.min(70, rx));
+    else gioiHanTable();
   }
 
 
@@ -551,7 +560,12 @@ function taoSVGNguyenTu(soProton, phanBo) {
   var soLop = phanBo.length;
   var banKinhHatNhan = Math.min(10 + Math.sqrt(soProton) * 1.6, 30);
   var banKinhLop = [];
-  for (var i = 0; i < soLop; i++) banKinhLop.push(38 + i * (108 / Math.max(soLop, 1)));
+  // Các lớp giãn đều từ gần hạt nhân ra gần sát mép khung để mô hình cân đối, không bị dồn vào giữa.
+  var banKinhTrong = Math.max(banKinhHatNhan + 20, 44);
+  var banKinhNgoai = 180;
+  for (var i = 0; i < soLop; i++) {
+    banKinhLop.push(soLop === 1 ? 100 : banKinhTrong + i * ((banKinhNgoai - banKinhTrong) / (soLop - 1)));
+  }
   var mauLop = ["#6edc3c", "#45d6b5", "#5bbcff", "#b18cff", "#ffb454", "#ff7fa8", "#d4e36c"];
 
   // Các vòng lớp electron cố định.
@@ -595,7 +609,7 @@ function taoSVGNguyenTu(soProton, phanBo) {
   phanBo.forEach(function (soElectron, index) {
     var banKinh = banKinhLop[index];
     var orbit = themHinh(svg, "g", { class: "atom-orbit", "data-shell": index + 1 });
-    orbit.style.animationDuration = (5 + index * 1.7) + "s";
+    orbit.style.animationDuration = (16 + index * 5) + "s";   // quay chậm
     orbit.style.animationDirection = index % 2 ? "reverse" : "normal";
     for (var e = 0; e < soElectron; e++) {
       var gocElectron = (2 * Math.PI * e / soElectron) + index * 0.32;
@@ -760,6 +774,100 @@ function veBieuDoDongVi(kyHieu, khoiLuong) {
     }).join('');
 }
 
+// ===== NGƯỜI TÌM RA NGUYÊN TỐ =====
+// Mỗi mục theo thứ tự số hiệu nguyên tử: "Người / nhóm phát hiện|Năm".
+// Năm "Cổ đại" nghĩa là đã được con người biết đến từ thời tiền sử / cổ đại.
+// Một số nguyên tố có nhiều người cùng được ghi nhận; ở đây ghi người/nhóm thường được nhắc đến nhất.
+var DU_LIEU_NGUOI_PHAT_HIEN = [
+  "Henry Cavendish|1766", "Pierre Janssen & Norman Lockyer (quang phổ Mặt Trời); William Ramsay (phân lập trên Trái Đất)|1868",
+  "Johan August Arfwedson|1817", "Louis-Nicolas Vauquelin|1798",
+  "Joseph Louis Gay-Lussac & Louis Jacques Thénard; Humphry Davy|1808", "Đã được biết đến từ thời cổ đại|Cổ đại",
+  "Daniel Rutherford|1772", "Joseph Priestley & Carl Wilhelm Scheele|1774",
+  "Henri Moissan (phân lập)|1886", "William Ramsay & Morris Travers|1898",
+  "Humphry Davy|1807", "Humphry Davy|1808",
+  "Hans Christian Ørsted|1825", "Jöns Jacob Berzelius|1823",
+  "Hennig Brand|1669", "Đã được biết đến từ thời cổ đại|Cổ đại",
+  "Carl Wilhelm Scheele|1774", "Lord Rayleigh & William Ramsay|1894",
+  "Humphry Davy|1807", "Humphry Davy|1808",
+  "Lars Fredrik Nilson|1879", "William Gregor|1791",
+  "Andrés Manuel del Río; Nils Gabriel Sefström (tái phát hiện)|1801", "Louis-Nicolas Vauquelin|1797",
+  "Johan Gottlieb Gahn|1774", "Đã được biết đến từ thời cổ đại|Cổ đại",
+  "Georg Brandt|1735", "Axel Fredrik Cronstedt|1751",
+  "Đã được biết đến từ thời cổ đại|Cổ đại", "Andreas Sigismund Marggraf|1746",
+  "Paul-Émile Lecoq de Boisbaudran|1875", "Clemens Winkler|1886",
+  "Albertus Magnus (thường được ghi nhận)|~1250", "Jöns Jacob Berzelius & Johan Gottlieb Gahn|1817",
+  "Antoine Jérôme Balard & Carl Jacob Löwig|1826", "William Ramsay & Morris Travers|1898",
+  "Robert Bunsen & Gustav Kirchhoff|1861", "Adair Crawford|1790",
+  "Johan Gadolin|1794", "Martin Heinrich Klaproth|1789",
+  "Charles Hatchett|1801", "Carl Wilhelm Scheele|1778",
+  "Carlo Perrier & Emilio Segrè|1937", "Karl Ernst Claus|1844",
+  "William Hyde Wollaston|1803", "William Hyde Wollaston|1803",
+  "Đã được biết đến từ thời cổ đại|Cổ đại", "Friedrich Stromeyer|1817",
+  "Ferdinand Reich & Hieronymus Theodor Richter|1863", "Đã được biết đến từ thời cổ đại|Cổ đại",
+  "Đã được biết đến từ thời cổ đại|Cổ đại", "Franz-Joseph Müller von Reichenstein|1782",
+  "Bernard Courtois|1811", "William Ramsay & Morris Travers|1898",
+  "Robert Bunsen & Gustav Kirchhoff|1860", "Humphry Davy|1808",
+  "Carl Gustaf Mosander|1839", "Jöns Jacob Berzelius & Wilhelm Hisinger; Martin Klaproth (độc lập)|1803",
+  "Carl Auer von Welsbach|1885", "Carl Auer von Welsbach|1885",
+  "Jacob Marinsky, Lawrence Glendenin & Charles Coryell|1945", "Paul-Émile Lecoq de Boisbaudran|1879",
+  "Eugène-Anatole Demarçay|1901", "Jean Charles Galissard de Marignac|1880",
+  "Carl Gustaf Mosander|1843", "Paul-Émile Lecoq de Boisbaudran|1886",
+  "Per Teodor Cleve|1879", "Carl Gustaf Mosander|1843",
+  "Per Teodor Cleve|1879", "Jean Charles Galissard de Marignac|1878",
+  "Georges Urbain|1907", "Dirk Coster & George de Hevesy|1923",
+  "Anders Gustaf Ekeberg|1802", "Fausto & Juan José Elhuyar|1783",
+  "Walter Noddack, Ida Tacke & Otto Berg|1925", "Smithson Tennant|1803",
+  "Smithson Tennant|1803", "Antonio de Ulloa (ghi nhận ở châu Âu)|1735",
+  "Đã được biết đến từ thời cổ đại|Cổ đại", "Đã được biết đến từ thời cổ đại|Cổ đại",
+  "William Crookes|1861", "Đã được biết đến từ thời cổ đại|Cổ đại",
+  "Đã được biết đến từ thời cổ đại|Cổ đại", "Marie & Pierre Curie|1898",
+  "Dale Corson, Kenneth MacKenzie & Emilio Segrè|1940", "Friedrich Ernst Dorn|1900",
+  "Marguerite Perey|1939", "Marie & Pierre Curie|1898",
+  "André-Louis Debierne|1899", "Jöns Jacob Berzelius|1829",
+  "Otto Hahn & Lise Meitner|1917", "Martin Heinrich Klaproth|1789",
+  "Edwin McMillan & Philip Abelson|1940", "Glenn Seaborg, Edwin McMillan, Joseph Kennedy & Arthur Wahl|1940",
+  "Glenn Seaborg, Ralph James, Leon Morgan & Albert Ghiorso|1944", "Glenn Seaborg, Ralph James & Albert Ghiorso|1944",
+  "Stanley Thompson, Albert Ghiorso, Glenn Seaborg & Kenneth Street|1949", "Stanley Thompson, Kenneth Street, Albert Ghiorso & Glenn Seaborg|1950",
+  "Albert Ghiorso và cộng sự (Berkeley)|1952", "Albert Ghiorso và cộng sự (Berkeley)|1952",
+  "Albert Ghiorso, Glenn Seaborg và cộng sự|1955", "Nhóm Georgy Flerov (JINR, Dubna)|1966",
+  "Albert Ghiorso và cộng sự (Berkeley)|1961", "Nhóm Georgy Flerov (Dubna) & Albert Ghiorso (Berkeley)|1964",
+  "Nhóm Dubna (Nga) & Berkeley (Mỹ)|1968", "Albert Ghiorso và cộng sự (Berkeley)|1974",
+  "Peter Armbruster & Gottfried Münzenberg (GSI)|1981", "Peter Armbruster & Gottfried Münzenberg (GSI)|1984",
+  "Peter Armbruster & Gottfried Münzenberg (GSI)|1982", "Sigurd Hofmann và cộng sự (GSI)|1994",
+  "Sigurd Hofmann và cộng sự (GSI)|1994", "Sigurd Hofmann và cộng sự (GSI)|1996",
+  "Nhóm Kosuke Morita (RIKEN, Nhật Bản)|2004", "Nhóm Dubna (Nga) & Livermore (Mỹ)|1998",
+  "Nhóm Dubna (Nga) & Livermore (Mỹ)|2003", "Nhóm Dubna (Nga) & Livermore (Mỹ)|2000",
+  "Nhóm Dubna, Oak Ridge & Livermore (Nga – Mỹ)|2010", "Yuri Oganessian và cộng sự (Dubna – Livermore)|2002"
+];
+
+function escHTML(s) {
+  return String(s).replace(/[&<>"]/g, function (c) {
+    return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+  });
+}
+
+// Thẻ "Người tìm ra" hiển thị ở cuối phần thông tin chính của popup
+function taoTheNguoiPhatHien(so) {
+  var muc = DU_LIEU_NGUOI_PHAT_HIEN[so - 1];
+  if (!muc) return "";
+  var phan = muc.split("|");
+  var coDai = phan[1] === "Cổ đại";
+  var nhan = coDai ? "Nguồn gốc" : "Năm phát hiện";
+  var nguoi = coDai
+    ? "Không rõ người đầu tiên — con người đã biết và sử dụng từ thời cổ đại"
+    : phan[0];
+
+  return '<div class="nguoi-phat-hien">' +
+    '<div class="npd-icon" aria-hidden="true">🔭</div>' +
+    '<div class="npd-noidung">' +
+      '<div class="npd-nhan">NGƯỜI TÌM RA</div>' +
+      '<div class="npd-ten">' + escHTML(nguoi) + '</div>' +
+    '</div>' +
+    '<div class="npd-nam"><small>' + nhan + '</small><strong>' +
+      (coDai ? "Cổ đại" : escHTML(phan[1])) + '</strong></div>' +
+  '</div>';
+}
+
 // ===== POPUP THÔNG TIN NGUYÊN TỐ =====
 function hienThongTin(nguyenTo, loai, o) {
   var modal = document.getElementById("detail-modal");
@@ -790,7 +898,8 @@ function hienThongTin(nguyenTo, loai, o) {
     "<strong>Nhóm:</strong> " + layNhom(nguyenTo.so) + "<br>" +
     "<strong>Phân loại:</strong> " + tenLoai[loai] + "<br>" +
     "<strong>Trạng thái ở điều kiện thường:</strong> " +
-    layTrangThai(nguyenTo.kyHieu);
+    layTrangThai(nguyenTo.kyHieu) +
+    taoTheNguoiPhatHien(nguyenTo.so);
 
   var isotopePanel = document.getElementById("nist-isotope-source");
   if (!isotopePanel) {
@@ -985,372 +1094,504 @@ document.getElementById("timKiem").addEventListener("input", function () {
 });
 // ===== 7. MINI GAME: THỬ THÁCH NGUYÊN TỐ =====
 (function () {
-  var nganHangCauHoi = [
-    {
-      icon: "🏗️",
-      context: "XÂY DỰNG",
-      question: "Nguyên tố nào là thành phần chính để sản xuất thép dùng trong cầu và nhà cao tầng?",
-      answers: ["Fe — Sắt", "Cu — Đồng", "He — Heli", "Ne — Neon"],
-      correct: 0,
-      explain: "Sắt là nguyên liệu chính để sản xuất thép. Thép được sử dụng rộng rãi trong kết cấu nhà, cầu và nhiều công trình xây dựng."
-    },
-    {
-      icon: "🔌",
-      context: "ĐIỆN TỬ",
-      question: "Dây điện thường sử dụng nguyên tố nào nhờ khả năng dẫn điện tốt?",
-      answers: ["S — Lưu huỳnh", "Cu — Đồng", "P — Photpho", "Cl — Clo"],
-      correct: 1,
-      explain: "Đồng dẫn điện tốt, dễ kéo thành sợi nên được sử dụng phổ biến trong dây điện và mạch điện."
-    },
-    {
-      icon: "💻",
-      context: "CÔNG NGHỆ",
-      question: "Nguyên tố nào là vật liệu bán dẫn quan trọng trong chip máy tính?",
-      answers: ["Ar — Argon", "Ca — Canxi", "Si — Silic", "Au — Vàng"],
-      correct: 2,
-      explain: "Silic tinh khiết được dùng làm chất bán dẫn trong vi mạch. Việc pha tạp có kiểm soát giúp điều chỉnh tính chất điện của nó."
-    },
-    {
-      icon: "🚰",
-      context: "XỬ LÝ NƯỚC",
-      question: "Nguyên tố nào được sử dụng trong các hợp chất khử trùng nước uống và hồ bơi?",
-      answers: ["Fe — Sắt", "Ag — Bạc", "N — Nitơ", "Cl — Clo"],
-      correct: 3,
-      explain: "Các hợp chất chứa clo được sử dụng để khử trùng nước. Clo dùng đúng liều lượng giúp kiểm soát nhiều vi sinh vật gây bệnh."
-    },
-    {
-      icon: "🎈",
-      context: "ĐỜI SỐNG",
-      question: "Khí nào thường được bơm vào bóng bay để bóng có thể bay lên?",
-      answers: ["O₂ — Oxi", "He — Heli", "CO₂ — Cacbon đioxit", "Cl₂ — Clo"],
-      correct: 1,
-      explain: "Heli nhẹ hơn không khí và không cháy nên được dùng trong bóng bay. Tuy nhiên, không nên hít khí từ bóng bay vì có thể gây thiếu oxi."
-    },
-    {
-      icon: "🥫",
-      context: "ĐỒ GIA DỤNG",
-      question: "Nguyên tố nào được dùng để sản xuất nhiều loại lon nước và giấy bạc bọc thực phẩm?",
-      answers: ["Al — Nhôm", "Hg — Thủy ngân", "Br — Brom", "U — Urani"],
-      correct: 0,
-      explain: "Nhôm nhẹ, dễ tạo hình và có lớp oxit bảo vệ bề mặt. Nhôm được sử dụng trong lon đồ uống và lá nhôm dùng trong thực phẩm."
-    },
-    {
-      icon: "✏️",
-      context: "HỌC TẬP",
-      question: "Chất nào trong ruột bút chì chủ yếu được tạo nên từ một dạng của cacbon?",
-      answers: ["Kim cương", "Than chì", "Canxi cacbonat", "Silic tinh khiết"],
-      correct: 1,
-      explain: "Ruột bút chì chứa than chì, một dạng cấu trúc của cacbon. Các lớp của than chì dễ trượt và để lại vết trên giấy."
-    },
-    {
-      icon: "🦴",
-      context: "CƠ THỂ NGƯỜI",
-      question: "Nguyên tố nào là thành phần khoáng chất quan trọng của xương và răng?",
-      answers: ["Ne — Neon", "He — Heli", "Ca — Canxi", "Ar — Argon"],
-      correct: 2,
-      explain: "Canxi có trong các khoáng chất cấu tạo nên xương và răng. Trong cơ thể, canxi còn tham gia co cơ và truyền tín hiệu tế bào."
-    },
-    {
-      icon: "🧂",
-      context: "NHÀ BẾP",
-      question: "Muối ăn thông thường chứa hợp chất nào được tạo thành từ natri và clo?",
-      answers: ["NaOH", "Na₂CO₃", "HCl", "NaCl"],
-      correct: 3,
-      explain: "Muối ăn chủ yếu là natri clorua (NaCl), gồm hai nguyên tố natri và clo. Đây là hợp chất ion, không phải hỗn hợp kim loại natri với khí clo."
-    },
-    {
-      icon: "🔋",
-      context: "NĂNG LƯỢNG",
-      question: "Nguyên tố nào được sử dụng rộng rãi trong pin sạc của điện thoại và máy tính xách tay?",
-      answers: ["Li — Liti", "Ne — Neon", "Ca — Canxi", "Kr — Krypton"],
-      correct: 0,
-      explain: "Pin lithium-ion sử dụng liti trong vật liệu điện cực. Đây là công nghệ pin sạc phổ biến trong điện thoại, laptop và nhiều thiết bị điện tử."
-    },
-    {
-      icon: "💡",
-      context: "THIẾT BỊ ĐIỆN",
-      question: "Nguyên tố nào có nhiệt độ nóng chảy rất cao và từng được dùng phổ biến làm dây tóc bóng đèn sợi đốt?",
-      answers: ["Na — Natri", "W — Vonfram", "Pb — Chì", "Zn — Kẽm"],
-      correct: 1,
-      explain: "Vonfram có nhiệt độ nóng chảy rất cao nên thích hợp làm dây tóc bóng đèn sợi đốt. Đèn LED hiện đại hoạt động theo nguyên lý khác."
-    },
-    {
-      icon: "📱",
-      context: "THIẾT BỊ ĐIỆN TỬ",
-      question: "Nguyên tố quý nào có khả năng chống ăn mòn và được sử dụng ở một số đầu nối, tiếp điểm điện tử?",
-      answers: ["K — Kali", "Ca — Canxi", "Au — Vàng", "S — Lưu huỳnh"],
-      correct: 2,
-      explain: "Vàng có khả năng chống ăn mòn tốt và dẫn điện tốt nên được dùng ở một số đầu nối, tiếp điểm điện tử. Lượng vàng trong mỗi thiết bị thường nhỏ."
-    },
-    {
-      icon: "🌱",
-      context: "NÔNG NGHIỆP",
-      question: "Nguyên tố nào là thành phần dinh dưỡng quan trọng trong nhiều loại phân bón giúp cây phát triển?",
-      answers: ["Ar — Argon", "Au — Vàng", "He — Heli", "N — Nitơ"],
-      correct: 3,
-      explain: "Nitơ là nguyên tố thiết yếu cho sự phát triển của cây. Nhiều loại phân bón cung cấp nitơ dưới dạng hợp chất như amoni hoặc nitrat."
-    },
-    {
-      icon: "🍽️",
-      context: "ĐỒ DÙNG",
-      question: "Nguyên tố nào thường có mặt trong thép không gỉ giúp tăng khả năng chống ăn mòn?",
-      answers: ["Cr — Crom", "H — Hiđro", "C — Cacbon", "Ne — Neon"],
-      correct: 0,
-      explain: "Crom giúp thép không gỉ hình thành lớp màng oxit mỏng bảo vệ bề mặt, nhờ đó tăng khả năng chống ăn mòn."
-    },
-    {
-      icon: "🧲",
-      context: "CÔNG NGHỆ XANH",
-      question: "Nguyên tố đất hiếm nào được sử dụng trong nhiều nam châm vĩnh cửu mạnh của tua-bin gió?",
-      answers: ["Na — Natri", "Nd — Neodim", "O — Oxi", "He — Heli"],
-      correct: 1,
-      explain: "Neodim được dùng trong nam châm neodim-sắt-bo (NdFeB), có lực từ mạnh và được sử dụng trong một số thiết kế máy phát điện tua-bin gió."
-    },
-    {
-      icon: "🥇",
-      context: "KIM LOẠI QUÝ",
-      question: "Ký hiệu hóa học của vàng là gì?",
-      answers: ["Ag", "Au", "Fe", "Cu"],
-      correct: 1,
-      explain: "Vàng có ký hiệu Au, bắt nguồn từ tên Latin Aurum."
-    },
-    {
-      icon: "🌬️",
-      context: "KHÔNG KHÍ",
-      question: "Khí nào chiếm tỉ lệ lớn nhất trong không khí khô?",
-      answers: ["O₂ — Oxi", "CO₂ — Cacbon đioxit", "N₂ — Nitơ", "H₂ — Hiđro"],
-      correct: 2,
-      explain: "Nitơ chiếm khoảng 78% thể tích không khí khô, còn oxi chiếm khoảng 21%."
-    },
-    {
-      icon: "⚛️",
-      context: "CẤU TẠO NGUYÊN TỬ",
-      question: "Hạt nào mang điện tích dương trong hạt nhân nguyên tử?",
-      answers: ["Electron", "Neutron", "Proton", "Photon"],
-      correct: 2,
-      explain: "Proton mang điện tích dương và nằm trong hạt nhân nguyên tử."
-    },
-    {
-      icon: "🔬",
-      context: "CẤU TẠO NGUYÊN TỬ",
-      question: "Hạt nào mang điện tích âm?",
-      answers: ["Proton", "Electron", "Neutron", "Hạt nhân"],
-      correct: 1,
-      explain: "Electron mang điện tích âm và phân bố trong vùng không gian quanh hạt nhân."
-    },
-    {
-      icon: "🧪",
-      context: "NGUYÊN TỐ",
-      question: "Nguyên tố nào có số hiệu nguyên tử bằng 1?",
-      answers: ["He — Heli", "H — Hiđro", "Li — Liti", "O — Oxi"],
-      correct: 1,
-      explain: "Hiđro có một proton trong hạt nhân nên có số hiệu nguyên tử bằng 1."
-    },
-    {
-      icon: "💧",
-      context: "HÓA HỌC ĐỜI SỐNG",
-      question: "Công thức hóa học của nước là gì?",
-      answers: ["HO", "H₂O", "H₂O₂", "CO₂"],
-      correct: 1,
-      explain: "Một phân tử nước gồm hai nguyên tử hiđro và một nguyên tử oxi."
-    },
-    {
-      icon: "🪙",
-      context: "KIM LOẠI",
-      question: "Ký hiệu hóa học của bạc là gì?",
-      answers: ["Au", "Ag", "Al", "Ar"],
-      correct: 1,
-      explain: "Bạc có ký hiệu Ag, bắt nguồn từ tên Latin Argentum."
-    },
-    {
-      icon: "🧲",
-      context: "TỪ TÍNH",
-      question: "Kim loại nào sau đây bị nam châm hút mạnh trong điều kiện thông thường?",
-      answers: ["Vàng", "Bạc", "Sắt", "Đồng"],
-      correct: 2,
-      explain: "Sắt là vật liệu sắt từ và bị nam châm hút mạnh."
-    },
-    {
-      icon: "🧠",
-      context: "BẢNG TUẦN HOÀN",
-      question: "Nguyên tố nào có ký hiệu hóa học là K?",
-      answers: ["Canxi", "Kali", "Coban", "Krypton"],
-      correct: 1,
-      explain: "K là ký hiệu của kali, bắt nguồn từ tên Latin Kalium."
-    },
-    {
-      icon: "💎",
-      context: "VẬT LIỆU",
-      question: "Kim cương chủ yếu được cấu tạo từ nguyên tố nào?",
-      answers: ["Silic", "Cacbon", "Canxi", "Sắt"],
-      correct: 1,
-      explain: "Kim cương là một dạng thù hình của cacbon, có cấu trúc mạng tinh thể rất bền."
-    },
-    {
-      icon: "🫁",
-      context: "SỰ SỐNG",
-      question: "Nguyên tố nào cần thiết cho quá trình hô hấp tế bào của con người?",
-      answers: ["Heli", "Neon", "Oxi", "Argon"],
-      correct: 2,
-      explain: "Oxi được sử dụng trong hô hấp hiếu khí để giúp tế bào giải phóng năng lượng từ chất dinh dưỡng."
-    },
-    {
-      icon: "🧴",
-      context: "HÓA HỌC ĐỜI SỐNG",
-      question: "Chất nào có công thức NaCl?",
-      answers: ["Baking soda", "Muối ăn", "Đường ăn", "Giấm ăn"],
-      correct: 1,
-      explain: "NaCl là natri clorua, thành phần chính của muối ăn thông thường."
-    },
-    {
-      icon: "🧯",
-      context: "KHÍ HIẾM",
-      question: "Nguyên tố nào có ký hiệu Ne?",
-      answers: ["Nitơ", "Niken", "Neon", "Natri"],
-      correct: 2,
-      explain: "Neon là một nguyên tố khí hiếm, có số hiệu nguyên tử 10."
-    },
-    {
-      icon: "🥫",
-      context: "KIM LOẠI",
-      question: "Ký hiệu hóa học của nhôm là gì?",
-      answers: ["Am", "Al", "Au", "Ag"],
-      correct: 1,
-      explain: "Nhôm có ký hiệu Al, là kim loại nhẹ được dùng phổ biến trong công nghiệp."
-    },
-    {
-      icon: "🦴",
-      context: "CƠ THỂ NGƯỜI",
-      question: "Nguyên tố nào là thành phần khoáng chất quan trọng của xương và răng?",
-      answers: ["Ne — Neon", "Ca — Canxi", "He — Heli", "Ar — Argon"],
-      correct: 1,
-      explain: "Canxi góp phần tạo nên cấu trúc khoáng của xương và răng."
-    },
-    {
-      icon: "🧂",
-      context: "HÓA HỌC",
-      question: "Ký hiệu hóa học của natri là gì?",
-      answers: ["N", "Na", "Ni", "Ne"],
-      correct: 1,
-      explain: "Natri có ký hiệu Na, bắt nguồn từ tên Latin Natrium."
-    },
-    {
-      icon: "🪙",
-      context: "KIM LOẠI",
-      question: "Nguyên tố nào có số hiệu nguyên tử bằng 26?",
-      answers: ["Cu — Đồng", "Fe — Sắt", "Zn — Kẽm", "Ag — Bạc"],
-      correct: 1,
-      explain: "Sắt có 26 proton trong hạt nhân và số hiệu nguyên tử bằng 26."
-    },
-    {
-      icon: "🧫",
-      context: "AXIT VÀ BAZƠ",
-      question: "Dung dịch có pH nhỏ hơn 7 thường có tính chất gì ở khoảng 25°C?",
-      answers: ["Tính axit", "Tính bazơ", "Trung tính", "Tính kim loại"],
-      correct: 0,
-      explain: "Ở khoảng 25°C, dung dịch có pH nhỏ hơn 7 thường được xem là có tính axit."
-    },
-    {
-      icon: "🌱",
-      context: "NÔNG NGHIỆP",
-      question: "Nguyên tố nào là thành phần thiết yếu trong nhiều loại phân bón giúp cây phát triển?",
-      answers: ["Ne — Neon", "Au — Vàng", "N — Nitơ", "He — Heli"],
-      correct: 2,
-      explain: "Nitơ cần thiết để cây tổng hợp protein và nhiều hợp chất sinh học quan trọng."
-    },
-    {
-      icon: "🍽️",
-      context: "ĐỒ DÙNG",
-      question: "Nguyên tố nào giúp tăng khả năng chống ăn mòn của thép không gỉ?",
-      answers: ["Cr — Crom", "He — Heli", "Ne — Neon", "Ar — Argon"],
-      correct: 0,
-      explain: "Crom giúp hình thành lớp oxit bảo vệ trên bề mặt thép không gỉ."
-    },
-    {
-      icon: "🔋",
-      context: "PIN VÀ NĂNG LƯỢNG",
-      question: "Nguyên tố nào được sử dụng trong pin lithium-ion?",
-      answers: ["Li — Liti", "Ne — Neon", "Ar — Argon", "He — Heli"],
-      correct: 0,
-      explain: "Pin lithium-ion sử dụng liti trong vật liệu điện cực và được dùng phổ biến trong thiết bị điện tử."
-    },
-    {
-      icon: "💡",
-      context: "THIẾT BỊ ĐIỆN",
-      question: "Nguyên tố nào từng được dùng phổ biến làm dây tóc bóng đèn sợi đốt?",
-      answers: ["Na — Natri", "W — Vonfram", "Pb — Chì", "Ca — Canxi"],
-      correct: 1,
-      explain: "Vonfram có nhiệt độ nóng chảy rất cao nên thích hợp cho dây tóc bóng đèn sợi đốt."
-    },
-    {
-      icon: "🌌",
-      context: "VŨ TRỤ",
-      question: "Nguyên tố nào chiếm phần lớn thành phần của Mặt Trời?",
-      answers: ["Sắt", "Oxi", "Hiđro", "Vàng"],
-      correct: 2,
-      explain: "Mặt Trời chủ yếu gồm hiđro và heli; hiđro là nguyên tố phổ biến nhất trong thành phần của nó."
-    },
-    {
-      icon: "🧪",
-      context: "BẢNG TUẦN HOÀN",
-      question: "Các nguyên tố trong cùng một chu kỳ nằm theo hướng nào trên bảng tuần hoàn?",
-      answers: ["Cột dọc", "Hàng ngang", "Đường chéo", "Vòng tròn"],
-      correct: 1,
-      explain: "Chu kỳ là hàng ngang của bảng tuần hoàn hóa học."
-    },
-    {
-      icon: "📊",
-      context: "BẢNG TUẦN HOÀN",
-      question: "Các nhóm trong bảng tuần hoàn được trình bày theo hướng nào?",
-      answers: ["Hàng ngang", "Cột dọc", "Đường chéo", "Hình xoắn ốc"],
-      correct: 1,
-      explain: "Các nhóm là những cột dọc trong bảng tuần hoàn hiện đại."
-    },
-    {
-      icon: "⚛️",
-      context: "CẤU TẠO NGUYÊN TỬ",
-      question: "Trong nguyên tử trung hòa về điện, số electron bằng số hạt nào?",
-      answers: ["Proton", "Nơtron", "Phân tử", "Đồng vị"],
-      correct: 0,
-      explain: "Nguyên tử trung hòa có số electron bằng số proton."
-    },
-    {
-      icon: "🪨",
-      context: "KIM LOẠI",
-      question: "Ký hiệu hóa học của đồng là gì?",
-      answers: ["Co", "Cu", "Cd", "Cr"],
-      correct: 1,
-      explain: "Đồng có ký hiệu Cu, bắt nguồn từ tên Latin Cuprum."
-    },
-    {
-      icon: "🧴",
-      context: "HÓA HỌC",
-      question: "Ký hiệu hóa học của clo là gì?",
-      answers: ["C", "Cl", "Co", "Ca"],
-      correct: 1,
-      explain: "Clo có ký hiệu Cl và được dùng trong một số quy trình khử trùng nước."
-    },
-    {
-      icon: "🪙",
-      context: "KIM LOẠI QUÝ",
-      question: "Nguyên tố nào có số hiệu nguyên tử bằng 79?",
-      answers: ["Ag — Bạc", "Au — Vàng", "Pt — Bạch kim", "Hg — Thủy ngân"],
-      correct: 1,
-      explain: "Vàng có số hiệu nguyên tử 79, tức mỗi nguyên tử vàng có 79 proton."
-    },
-    {
-      icon: "🌡️",
-      context: "TRẠNG THÁI VẬT CHẤT",
-      question: "Kim loại nào ở trạng thái lỏng trong điều kiện phòng thông thường?",
-      answers: ["Fe — Sắt", "Cu — Đồng", "Hg — Thủy ngân", "Al — Nhôm"],
-      correct: 2,
-      explain: "Thủy ngân là kim loại ở trạng thái lỏng trong điều kiện phòng thông thường."
-    }
-  ];
-
-
-
-
+    var nganHangCauHoi = [
+  {
+    icon: "🏗️",
+    context: "XÂY DỰNG",
+    question: "Nguyên tố nào là thành phần chính để sản xuất thép dùng trong cầu và nhà cao tầng?",
+    answers: ["Fe — Sắt", "Cu — Đồng", "He — Heli", "Ne — Neon"],
+    correct: 0,
+    explain: "Sắt là nguyên liệu chính để sản xuất thép. Thép được sử dụng rộng rãi trong kết cấu nhà, cầu và nhiều công trình xây dựng."
+  },
+  {
+    icon: "🔌",
+    context: "ĐIỆN TỬ",
+    question: "Dây điện thường sử dụng nguyên tố nào nhờ khả năng dẫn điện tốt?",
+    answers: ["S — Lưu huỳnh", "Cu — Đồng", "P — Photpho", "Cl — Clo"],
+    correct: 1,
+    explain: "Đồng dẫn điện tốt, dễ kéo thành sợi nên được sử dụng phổ biến trong dây điện và mạch điện."
+  },
+  {
+    icon: "💻",
+    context: "CÔNG NGHỆ",
+    question: "Nguyên tố nào là vật liệu bán dẫn quan trọng trong chip máy tính?",
+    answers: ["Ar — Argon", "Ca — Canxi", "Si — Silic", "Au — Vàng"],
+    correct: 2,
+    explain: "Silic tinh khiết được dùng làm chất bán dẫn trong vi mạch. Việc pha tạp có kiểm soát giúp điều chỉnh tính chất điện của nó."
+  },
+  {
+    icon: "🚰",
+    context: "XỬ LÝ NƯỚC",
+    question: "Nguyên tố nào được sử dụng trong các hợp chất khử trùng nước uống và hồ bơi?",
+    answers: ["Fe — Sắt", "Ag — Bạc", "N — Nitơ", "Cl — Clo"],
+    correct: 3,
+    explain: "Các hợp chất chứa clo được sử dụng để khử trùng nước. Clo dùng đúng liều lượng giúp kiểm soát nhiều vi sinh vật gây bệnh."
+  },
+  {
+    icon: "🎈",
+    context: "ĐỜI SỐNG",
+    question: "Khí nào thường được bơm vào bóng bay để bóng có thể bay lên?",
+    answers: ["O₂ — Oxi", "He — Heli", "CO₂ — Cacbon đioxit", "Cl₂ — Clo"],
+    correct: 1,
+    explain: "Heli nhẹ hơn không khí và không cháy nên được dùng trong bóng bay. Không nên hít khí từ bóng bay vì có thể gây thiếu oxi."
+  },
+  {
+    icon: "🥫",
+    context: "ĐỒ GIA DỤNG",
+    question: "Nguyên tố nào được dùng để sản xuất nhiều loại lon nước và giấy bạc bọc thực phẩm?",
+    answers: ["Al — Nhôm", "Hg — Thủy ngân", "Br — Brom", "U — Urani"],
+    correct: 0,
+    explain: "Nhôm nhẹ, dễ tạo hình và có lớp oxit bảo vệ bề mặt. Nhôm được sử dụng trong lon đồ uống và lá nhôm dùng trong thực phẩm."
+  },
+  {
+    icon: "✏️",
+    context: "HỌC TẬP",
+    question: "Chất nào trong ruột bút chì chủ yếu được tạo nên từ một dạng của cacbon?",
+    answers: ["Kim cương", "Than chì", "Canxi cacbonat", "Silic tinh khiết"],
+    correct: 1,
+    explain: "Ruột bút chì chứa than chì, một dạng cấu trúc của cacbon. Các lớp của than chì dễ trượt và để lại vết trên giấy."
+  },
+  {
+    icon: "🦴",
+    context: "CƠ THỂ NGƯỜI",
+    question: "Nguyên tố nào là thành phần khoáng chất quan trọng của xương và răng?",
+    answers: ["Ne — Neon", "He — Heli", "Ca — Canxi", "Ar — Argon"],
+    correct: 2,
+    explain: "Canxi có trong các khoáng chất cấu tạo nên xương và răng. Trong cơ thể, canxi còn tham gia co cơ và truyền tín hiệu tế bào."
+  },
+  {
+    icon: "🌱",
+    context: "NÔNG NGHIỆP",
+    question: "Nguyên tố nào là thành phần quan trọng của nhiều loại phân bón giúp cây phát triển lá?",
+    answers: ["Au — Vàng", "Ne — Neon", "He — Heli", "N — Nitơ"],
+    correct: 3,
+    explain: "Nitơ là thành phần của protein và diệp lục. Phân bón chứa nitơ giúp cây phát triển, nhưng cần sử dụng đúng liều lượng."
+  },
+  {
+    icon: "🧴",
+    context: "SỨC KHỎE",
+    question: "Nguyên tố nào thường có trong kem đánh răng dưới dạng hợp chất giúp ngăn ngừa sâu răng?",
+    answers: ["F — Flo", "Fe — Sắt", "Ag — Bạc", "Pb — Chì"],
+    correct: 0,
+    explain: "Các hợp chất fluoride giúp tăng khả năng chống axit của men răng và hỗ trợ ngăn ngừa sâu răng."
+  },
+  {
+    icon: "🔋",
+    context: "PIN",
+    question: "Nguyên tố nào được sử dụng phổ biến trong pin lithium-ion của điện thoại?",
+    answers: ["Ar — Argon", "Li — Liti", "Ne — Neon", "He — Heli"],
+    correct: 1,
+    explain: "Liti là thành phần quan trọng của nhiều loại pin lithium-ion nhờ đặc tính điện hóa phù hợp."
+  },
+  {
+    icon: "🍳",
+    context: "NHÀ BẾP",
+    question: "Nguyên tố nào thường có trong thép không gỉ dùng làm nồi và dụng cụ nhà bếp?",
+    answers: ["Ne — Neon", "He — Heli", "Cr — Crom", "Ar — Argon"],
+    correct: 2,
+    explain: "Crom giúp thép không gỉ hình thành lớp oxit bảo vệ, tăng khả năng chống ăn mòn."
+  },
+  {
+    icon: "🪙",
+    context: "TRANG SỨC",
+    question: "Nguyên tố nào được dùng phổ biến để chế tác trang sức có giá trị cao?",
+    answers: ["Na — Natri", "K — Kali", "Ca — Canxi", "Au — Vàng"],
+    correct: 3,
+    explain: "Vàng có tính dẻo, ít bị ăn mòn và có vẻ ngoài đặc trưng nên được dùng làm trang sức."
+  },
+  {
+    icon: "📷",
+    context: "NHIẾP ẢNH",
+    question: "Nguyên tố nào từng được dùng trong các hợp chất nhạy sáng của phim ảnh truyền thống?",
+    answers: ["Ag — Bạc", "He — Heli", "Ne — Neon", "N — Nitơ"],
+    correct: 0,
+    explain: "Các muối bạc nhạy sáng được sử dụng trong phim ảnh truyền thống để ghi lại hình ảnh."
+  },
+  {
+    icon: "🚗",
+    context: "GIAO THÔNG",
+    question: "Nguyên tố nào là thành phần chính của thép dùng để chế tạo nhiều bộ phận ô tô?",
+    answers: ["He — Heli", "Fe — Sắt", "Ne — Neon", "Ar — Argon"],
+    correct: 1,
+    explain: "Thép có nền là sắt được sử dụng rộng rãi trong khung xe và nhiều bộ phận ô tô nhờ độ bền và khả năng gia công."
+  },
+  {
+    icon: "🛩️",
+    context: "HÀNG KHÔNG",
+    question: "Nguyên tố nào thường được dùng trong hợp kim nhẹ cho máy bay?",
+    answers: ["Hg — Thủy ngân", "Pb — Chì", "Al — Nhôm", "Br — Brom"],
+    correct: 2,
+    explain: "Nhôm và nhiều hợp kim nhôm có khối lượng riêng thấp, phù hợp với các kết cấu cần giảm trọng lượng."
+  },
+  {
+    icon: "🩺",
+    context: "Y TẾ",
+    question: "Nguyên tố nào được sử dụng trong một số thiết bị chụp cộng hưởng từ dưới dạng chất siêu dẫn?",
+    answers: ["Ne — Neon", "Cl — Clo", "He — Heli", "Nb — Niobi"],
+    correct: 3,
+    explain: "Một số hợp kim chứa niobi có tính siêu dẫn và được sử dụng trong cuộn dây của máy MRI."
+  },
+  {
+    icon: "💡",
+    context: "CHIẾU SÁNG",
+    question: "Nguyên tố nào thường được dùng làm khí trong một số bóng đèn để hạn chế dây tóc bị oxi hóa?",
+    answers: ["Ar — Argon", "O — Oxi", "Cl — Clo", "F — Flo"],
+    correct: 0,
+    explain: "Argon là khí trơ, được dùng trong một số bóng đèn để hạn chế phản ứng hóa học với dây tóc."
+  },
+  {
+    icon: "🧪",
+    context: "PHÒNG THÍ NGHIỆM",
+    question: "Nguyên tố nào thường được dùng để tạo môi trường khí trơ khi cần tránh phản ứng với không khí?",
+    answers: ["O — Oxi", "Ar — Argon", "Cl — Clo", "F — Flo"],
+    correct: 1,
+    explain: "Argon tương đối trơ về mặt hóa học nên được dùng để bảo vệ mẫu và vật liệu khỏi phản ứng với không khí."
+  },
+  {
+    icon: "⚡",
+    context: "NĂNG LƯỢNG",
+    question: "Nguyên tố nào được dùng làm nhiên liệu trong một số nhà máy điện hạt nhân?",
+    answers: ["He — Heli", "Ne — Neon", "U — Urani", "Ar — Argon"],
+    correct: 2,
+    explain: "Một số đồng vị của urani có thể tham gia phản ứng phân hạch và được dùng làm nhiên liệu hạt nhân."
+  },
+  {
+    icon: "🛡️",
+    context: "CHỐNG ĂN MÒN",
+    question: "Nguyên tố nào được dùng để mạ một số chi tiết nhằm tăng độ cứng và khả năng chống mài mòn?",
+    answers: ["Na — Natri", "K — Kali", "He — Heli", "Cr — Crom"],
+    correct: 3,
+    explain: "Crom được sử dụng trong một số lớp mạ để tăng độ cứng, khả năng chống mài mòn và cải thiện bề mặt."
+  },
+  {
+    icon: "🧲",
+    context: "NAM CHÂM",
+    question: "Nguyên tố nào là thành phần quan trọng để tạo ra nhiều loại nam châm mạnh?",
+    answers: ["Nd — Neodim", "Ne — Neon", "He — Heli", "Ar — Argon"],
+    correct: 0,
+    explain: "Neodim được dùng trong các nam châm neodim mạnh, có mặt trong nhiều động cơ và thiết bị điện tử."
+  },
+  {
+    icon: "📱",
+    context: "MÀN HÌNH",
+    question: "Nguyên tố nào được dùng trong một số vật liệu dẫn điện trong suốt của màn hình cảm ứng?",
+    answers: ["Pb — Chì", "In — Indi", "Hg — Thủy ngân", "U — Urani"],
+    correct: 1,
+    explain: "Oxit indi-thiếc là vật liệu dẫn điện trong suốt được sử dụng trong nhiều loại màn hình cảm ứng."
+  },
+  {
+    icon: "🛠️",
+    context: "DỤNG CỤ",
+    question: "Nguyên tố nào được thêm vào một số loại thép để cải thiện độ cứng và độ bền?",
+    answers: ["He — Heli", "Ne — Neon", "V — Vanadi", "Ar — Argon"],
+    correct: 2,
+    explain: "Vanadi được dùng trong một số hợp kim thép để cải thiện cơ tính, tùy thuộc vào thành phần và cách xử lý."
+  },
+  {
+    icon: "🧯",
+    context: "AN TOÀN",
+    question: "Nguyên tố nào là thành phần của khí carbon dioxide được sử dụng trong một số bình chữa cháy?",
+    answers: ["Fe — Sắt", "Au — Vàng", "Cu — Đồng", "C — Cacbon"],
+    correct: 3,
+    explain: "Cacbon là thành phần của CO₂. Khí này được dùng trong một số bình chữa cháy, đặc biệt với đám cháy liên quan đến thiết bị điện."
+  },
+  {
+    icon: "🧼",
+    context: "CHẤT TẨY RỬA",
+    question: "Nguyên tố nào có trong xút ăn da, một hóa chất dùng trong sản xuất xà phòng?",
+    answers: ["Na — Natri", "Au — Vàng", "He — Heli", "Ne — Neon"],
+    correct: 0,
+    explain: "Natri có trong natri hiđroxit (NaOH), một nguyên liệu được sử dụng trong quy trình sản xuất nhiều loại xà phòng."
+  },
+  {
+    icon: "🪟",
+    context: "VẬT LIỆU",
+    question: "Nguyên tố nào là thành phần chính của cát thạch anh dùng sản xuất thủy tinh thông thường?",
+    answers: ["Fe — Sắt", "Si — Silic", "Au — Vàng", "He — Heli"],
+    correct: 1,
+    explain: "Silic có trong silica (SiO₂), nguyên liệu chính để sản xuất phần lớn thủy tinh thông thường."
+  },
+  {
+    icon: "🎆",
+    context: "PHÁO HOA",
+    question: "Nguyên tố nào có thể tạo màu đỏ trong một số loại pháo hoa?",
+    answers: ["Ne — Neon", "He — Heli", "Sr — Stronti", "Ar — Argon"],
+    correct: 2,
+    explain: "Một số hợp chất stronti tạo màu đỏ trong pháo hoa. Việc sản xuất và sử dụng pháo hoa cần tuân thủ quy định an toàn."
+  },
+  {
+    icon: "🧰",
+    context: "HỢP KIM",
+    question: "Nguyên tố nào được dùng trong hợp kim đồng thau cùng với đồng?",
+    answers: ["O — Oxi", "N — Nitơ", "He — Heli", "Zn — Kẽm"],
+    correct: 3,
+    explain: "Đồng thau là hợp kim chủ yếu của đồng và kẽm, thường dùng làm phụ kiện, nhạc cụ và nhiều chi tiết cơ khí."
+  },
+  {
+    icon: "🧴",
+    context: "MỸ PHẨM",
+    question: "Nguyên tố nào có trong titan đioxit, chất tạo màu trắng được sử dụng trong một số sản phẩm?",
+    answers: ["Ti — Titan", "He — Heli", "Ne — Neon", "Ar — Argon"],
+    correct: 0,
+    explain: "Titan đioxit là hợp chất màu trắng được dùng trong một số loại sơn, lớp phủ và sản phẩm khác tùy quy định."
+  },
+  {
+    icon: "🛞",
+    context: "CAO SU",
+    question: "Nguyên tố nào có trong lưu huỳnh được dùng để lưu hóa cao su?",
+    answers: ["He — Heli", "S — Lưu huỳnh", "Ne — Neon", "Ar — Argon"],
+    correct: 1,
+    explain: "Lưu huỳnh giúp hình thành các liên kết giữa những mạch cao su trong quá trình lưu hóa, cải thiện tính chất của vật liệu."
+  },
+  {
+    icon: "🛰️",
+    context: "KHÔNG GIAN",
+    question: "Nguyên tố nào là khí nhẹ được dùng trong một số ứng dụng làm lạnh và nghiên cứu nhiệt độ rất thấp?",
+    answers: ["Cl — Clo", "Br — Brom", "He — Heli", "I — Iot"],
+    correct: 2,
+    explain: "Heli lỏng có nhiệt độ sôi rất thấp, được sử dụng trong các hệ thống làm lạnh khoa học và một số thiết bị siêu dẫn."
+  },
+  {
+    icon: "🧲",
+    context: "ĐIỆN ĐỘNG CƠ",
+    question: "Nguyên tố nào thường có trong thép điện dùng làm lõi máy biến áp và động cơ?",
+    answers: ["Au — Vàng", "He — Heli", "Ne — Neon", "Si — Silic"],
+    correct: 3,
+    explain: "Thép điện thường chứa một lượng silic giúp cải thiện tính chất từ và giảm tổn hao năng lượng."
+  },
+  {
+    icon: "🛡️",
+    context: "BẢO VỆ KIM LOẠI",
+    question: "Nguyên tố nào được dùng làm lớp phủ bảo vệ thép khỏi gỉ trong tôn mạ kẽm?",
+    answers: ["Zn — Kẽm", "He — Heli", "Ne — Neon", "Ar — Argon"],
+    correct: 0,
+    explain: "Kẽm tạo lớp phủ bảo vệ thép và có thể giúp bảo vệ thép ngay cả khi lớp phủ bị trầy xước nhẹ."
+  },
+  {
+    icon: "🖨️",
+    context: "IN ẤN",
+    question: "Nguyên tố nào được dùng trong một số hợp kim hàn có nhiệt độ nóng chảy thấp?",
+    answers: ["He — Heli", "Sn — Thiếc", "Ne — Neon", "Ar — Argon"],
+    correct: 1,
+    explain: "Thiếc là thành phần của nhiều hợp kim hàn, được dùng để nối các chi tiết kim loại và linh kiện điện tử."
+  },
+  {
+    icon: "🎸",
+    context: "NHẠC CỤ",
+    question: "Nguyên tố nào được dùng trong một số dây đàn và hợp kim có độ bền cao?",
+    answers: ["He — Heli", "Ne — Neon", "Ni — Niken", "Ar — Argon"],
+    correct: 2,
+    explain: "Niken được dùng trong nhiều hợp kim và một số loại dây đàn nhờ các tính chất cơ học và khả năng chống ăn mòn."
+  },
+  {
+    icon: "🧫",
+    context: "HÓA HỌC",
+    question: "Nguyên tố nào là thành phần của axit sulfuric, một hóa chất quan trọng trong công nghiệp?",
+    answers: ["He — Heli", "Ne — Neon", "Ar — Argon", "S — Lưu huỳnh"],
+    correct: 3,
+    explain: "Lưu huỳnh là thành phần của axit sulfuric (H₂SO₄), hóa chất được dùng trong nhiều ngành công nghiệp."
+  },
+  {
+    icon: "🧪",
+    context: "SẢN XUẤT HÓA CHẤT",
+    question: "Nguyên tố nào được sử dụng trong sản xuất axit nitric và nhiều loại phân bón?",
+    answers: ["N — Nitơ", "Au — Vàng", "He — Heli", "Ne — Neon"],
+    correct: 0,
+    explain: "Nitơ là nguyên liệu quan trọng trong sản xuất amoniac và nhiều hợp chất chứa nitơ dùng trong công nghiệp, nông nghiệp."
+  },
+  {
+    icon: "🦷",
+    context: "NHA KHOA",
+    question: "Nguyên tố nào có trong một số vật liệu nha khoa và hợp kim dùng làm mão răng?",
+    answers: ["He — Heli", "Ti — Titan", "Ne — Neon", "Ar — Argon"],
+    correct: 1,
+    explain: "Titan và một số hợp kim titan có tính tương thích sinh học tốt, được dùng trong implant và một số ứng dụng nha khoa."
+  },
+  {
+    icon: "🧴",
+    context: "BẢO QUẢN THỰC PHẨM",
+    question: "Khí nào được dùng trong một số bao bì thực phẩm để giảm tiếp xúc với oxi?",
+    answers: ["O₂ — Oxi", "Cl₂ — Clo", "N₂ — Nitơ", "F₂ — Flo"],
+    correct: 2,
+    explain: "Nitơ là khí tương đối trơ trong điều kiện đóng gói thông thường, được dùng để thay thế một phần không khí trong bao bì."
+  },
+  {
+    icon: "🧲",
+    context: "THIẾT BỊ ĐIỆN",
+    question: "Nguyên tố nào có tính sắt từ và được dùng trong lõi của nhiều thiết bị điện từ?",
+    answers: ["He — Heli", "Ne — Neon", "Ar — Argon", "Fe — Sắt"],
+    correct: 3,
+    explain: "Sắt có tính sắt từ và được sử dụng trong nhiều lõi điện từ, động cơ và máy biến áp dưới dạng vật liệu phù hợp."
+  },
+  {
+    icon: "📡",
+    context: "VIỄN THÔNG",
+    question: "Nguyên tố nào được dùng trong một số hợp chất bán dẫn phát sáng của đèn LED?",
+    answers: ["Ga — Gali", "He — Heli", "Ne — Neon", "Ar — Argon"],
+    correct: 0,
+    explain: "Gali có trong nhiều hợp chất bán dẫn như gallium nitride, được sử dụng trong LED và các thiết bị điện tử công suất."
+  },
+  {
+    icon: "🧯",
+    context: "VẬT LIỆU CHỊU NHIỆT",
+    question: "Nguyên tố nào được sử dụng trong một số hợp kim chịu nhiệt của động cơ phản lực?",
+    answers: ["He — Heli", "Ni — Niken", "Ne — Neon", "Ar — Argon"],
+    correct: 1,
+    explain: "Niken là thành phần quan trọng của nhiều siêu hợp kim chịu nhiệt được dùng trong tua-bin và động cơ phản lực."
+  },
+  {
+    icon: "🏥",
+    context: "THIẾT BỊ Y TẾ",
+    question: "Nguyên tố nào được sử dụng trong một số thiết bị cấy ghép nhờ khả năng tương thích sinh học?",
+    answers: ["Pb — Chì", "Hg — Thủy ngân", "Ti — Titan", "Cd — Cadimi"],
+    correct: 2,
+    explain: "Titan và một số hợp kim titan được sử dụng trong implant vì có tính tương thích sinh học và khả năng chống ăn mòn."
+  },
+  {
+    icon: "🧱",
+    context: "VẬT LIỆU XÂY DỰNG",
+    question: "Nguyên tố nào có trong thạch cao, vật liệu dùng làm tấm trần và vách?",
+    answers: ["Au — Vàng", "He — Heli", "Ne — Neon", "Ca — Canxi"],
+    correct: 3,
+    explain: "Canxi có trong canxi sunfat ngậm nước, thành phần chính của thạch cao xây dựng."
+  },
+  {
+    icon: "🧵",
+    context: "DỆT MAY",
+    question: "Nguyên tố nào là thành phần của nhiều loại thuốc nhuộm và hóa chất xử lý vải?",
+    answers: ["C — Cacbon", "He — Heli", "Ne — Neon", "Ar — Argon"],
+    correct: 0,
+    explain: "Cacbon là thành phần nền của rất nhiều hợp chất hữu cơ, bao gồm nhiều loại thuốc nhuộm và hóa chất dệt may."
+  },
+  {
+    icon: "🪫",
+    context: "ẮC QUY",
+    question: "Nguyên tố nào là thành phần quan trọng của ắc quy chì-axit trên nhiều phương tiện?",
+    answers: ["He — Heli", "Pb — Chì", "Ne — Neon", "Ar — Argon"],
+    correct: 1,
+    explain: "Ắc quy chì-axit sử dụng chì và các hợp chất của chì trong các điện cực."
+  },
+  {
+    icon: "🔬",
+    context: "QUANG HỌC",
+    question: "Nguyên tố nào được dùng trong một số loại kính quang học và thiết bị laser?",
+    answers: ["Na — Natri", "K — Kali", "Nd — Neodim", "Cl — Clo"],
+    correct: 2,
+    explain: "Neodim có thể được dùng trong vật liệu laser, chẳng hạn tinh thể pha neodim trong một số hệ thống laser."
+  },
+  {
+    icon: "🧴",
+    context: "CHẤT XÚC TÁC",
+    question: "Nguyên tố nào được dùng làm chất xúc tác trong một số bộ chuyển đổi xúc tác của ô tô?",
+    answers: ["He — Heli", "Ne — Neon", "Ar — Argon", "Pt — Bạch kim"],
+    correct: 3,
+    explain: "Bạch kim là một trong các kim loại có thể được dùng trong bộ chuyển đổi xúc tác để xử lý khí thải."
+  },
+  {
+    icon: "🪙",
+    context: "TIỀN TỆ",
+    question: "Nguyên tố nào được dùng trong một số đồng xu và hợp kim chống ăn mòn?",
+    answers: ["Cu — Đồng", "He — Heli", "Ne — Neon", "Ar — Argon"],
+    correct: 0,
+    explain: "Đồng được dùng trong nhiều hợp kim làm tiền xu và các sản phẩm kim loại nhờ tính dẻo và khả năng chống ăn mòn phù hợp."
+  },
+  {
+    icon: "🧊",
+    context: "LÀM LẠNH",
+    question: "Nguyên tố nào là thành phần của nước đá khô dùng để giữ lạnh khi vận chuyển?",
+    answers: ["He — Heli", "C — Cacbon", "Ne — Neon", "Ar — Argon"],
+    correct: 1,
+    explain: "Đá khô là cacbon đioxit rắn (CO₂), được dùng để làm lạnh trong một số hoạt động bảo quản và vận chuyển."
+  },
+  {
+    icon: "🧽",
+    context: "LỌC NƯỚC",
+    question: "Nguyên tố nào có trong than hoạt tính được dùng để hấp phụ một số chất trong nước?",
+    answers: ["He — Heli", "Ne — Neon", "C — Cacbon", "Ar — Argon"],
+    correct: 2,
+    explain: "Than hoạt tính chủ yếu là cacbon có cấu trúc xốp, được dùng để hấp phụ một số chất trong nước và không khí."
+  },
+  {
+    icon: "🛠️",
+    context: "CÔNG CỤ CẮT",
+    question: "Nguyên tố nào có trong cacbua vonfram dùng để chế tạo nhiều dụng cụ cắt cứng?",
+    answers: ["He — Heli", "Ne — Neon", "Ar — Argon", "W — Vonfram"],
+    correct: 3,
+    explain: "Vonfram là thành phần của cacbua vonfram, vật liệu có độ cứng cao được sử dụng trong nhiều dụng cụ cắt và gia công."
+  },
+  {
+    icon: "🧪",
+    context: "CÔNG NGHIỆP HÓA CHẤT",
+    question: "Nguyên tố nào được dùng trong một số chất xúc tác để sản xuất hóa chất công nghiệp?",
+    answers: ["V — Vanadi", "He — Heli", "Ne — Neon", "Ar — Argon"],
+    correct: 0,
+    explain: "Một số hợp chất vanadi được dùng làm chất xúc tác, chẳng hạn trong quy trình sản xuất axit sulfuric."
+  },
+  {
+    icon: "🪟",
+    context: "KÍNH CỬA SỔ",
+    question: "Nguyên tố nào có thể được dùng trong một số lớp phủ kính giúp kiểm soát nhiệt?",
+    answers: ["He — Heli", "Sn — Thiếc", "Ne — Neon", "Ar — Argon"],
+    correct: 1,
+    explain: "Các hợp chất thiếc được dùng trong một số lớp phủ kính chức năng, tùy theo công nghệ sản xuất."
+  },
+  {
+    icon: "🧬",
+    context: "SINH HỌC",
+    question: "Nguyên tố nào là thành phần thiết yếu của ADN, ARN và ATP?",
+    answers: ["He — Heli", "Ne — Neon", "P — Photpho", "Ar — Argon"],
+    correct: 2,
+    explain: "Photpho có trong nhóm photphat của ADN, ARN và ATP, phân tử quan trọng trong trao đổi năng lượng của tế bào."
+  },
+  {
+    icon: "🌾",
+    context: "PHÂN BÓN",
+    question: "Nguyên tố nào là thành phần của nhiều loại phân lân giúp cây phát triển rễ?",
+    answers: ["He — Heli", "Ne — Neon", "Ar — Argon", "P — Photpho"],
+    correct: 3,
+    explain: "Photpho là chất dinh dưỡng thiết yếu cho cây, tham gia chuyển hóa năng lượng và phát triển rễ."
+  },
+  {
+    icon: "🧴",
+    context: "SẢN PHẨM GIA DỤNG",
+    question: "Nguyên tố nào có trong một số chất tẩy trắng và khử trùng dưới dạng hợp chất?",
+    answers: ["Cl — Clo", "He — Heli", "Ne — Neon", "Ar — Argon"],
+    correct: 0,
+    explain: "Một số hợp chất chứa clo được dùng làm chất tẩy trắng hoặc khử trùng. Cần sử dụng đúng hướng dẫn và không trộn các chất tẩy rửa với nhau."
+  },
+  {
+    icon: "🔩",
+    context: "KIM LOẠI NHẸ",
+    question: "Nguyên tố nào được dùng trong một số hợp kim nhẹ cho thiết bị và phương tiện?",
+    answers: ["He — Heli", "Mg — Magie", "Ne — Neon", "Ar — Argon"],
+    correct: 1,
+    explain: "Magie có khối lượng riêng thấp và được sử dụng trong một số hợp kim nhẹ."
+  },
+  {
+    icon: "🔧",
+    context: "MẠ KIM LOẠI",
+    question: "Nguyên tố nào được dùng trong một số lớp mạ để tạo bề mặt sáng và chống ăn mòn?",
+    answers: ["He — Heli", "Ne — Neon", "Ni — Niken", "Ar — Argon"],
+    correct: 2,
+    explain: "Niken được dùng trong nhiều quy trình mạ để tạo lớp phủ bảo vệ và cải thiện bề mặt sản phẩm."
+  },
+  {
+    icon: "🧪",
+    context: "SẢN XUẤT PHÂN BÓN",
+    question: "Nguyên tố nào là nguyên liệu quan trọng để sản xuất amoniac công nghiệp, dùng làm phân bón sau khi chuyển thành hợp chất?",
+    answers: ["N — Nitơ", "Au — Vàng", "Ne — Neon", "Ag — Bạc"],
+    correct: 0,
+    explain: "Nitơ được sử dụng trong quy trình Haber–Bosch để sản xuất amoniac, nguyên liệu quan trọng của nhiều loại phân bón."
+  },
+  {
+    icon: "🌡️",
+    context: "THIẾT BỊ ĐO",
+    question: "Nguyên tố nào từng được dùng trong nhiệt kế thủy tinh truyền thống nhưng hiện bị hạn chế ở nhiều nơi vì độc tính?",
+    answers: ["Al — Nhôm", "Hg — Thủy ngân", "O — Oxi", "He — Heli"],
+    correct: 1,
+    explain: "Thủy ngân từng được dùng trong nhiệt kế vì nở đều theo nhiệt độ, nhưng độc tính khiến nhiều nơi chuyển sang nhiệt kế không chứa thủy ngân."
+  }
+];
 
 
   var soCauMoiLuot = 10;

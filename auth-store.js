@@ -10,7 +10,7 @@ import {
   signOut, onAuthStateChanged, updateProfile
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
-  getFirestore, doc, getDoc, setDoc, collection, query, orderBy, limit, getDocs
+  getFirestore, doc, getDoc, setDoc, collection, query, orderBy, limit, getDocs, onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { firebaseConfig } from "./firebase-config.js";
 
@@ -119,25 +119,54 @@ async function docTienTrinh() {
   return s.exists() ? s.data() : null;
 }
 
+// Số dùng để xếp hạng: điểm cao hơn trước; bằng điểm thì thời gian (ms) ngắn hơn xếp trên.
+// Luôn TÍNH LẠI từ điểm + thời gian (không tin trường "xep" cũ trên máy chủ, vì dữ liệu cũ có thể tính khác).
+function tinhXep(diem, thoiGian) {
+  var tg = thoiGian > 0 ? Math.min(thoiGian, 9e12) : 9e12;
+  return (Number(diem) || 0) * 1e13 + (1e13 - tg);
+}
+
 async function luuTienTrinh(t) {
   var uid = uidHienTai();
   if (!uid) return;
   var ten = auth.currentUser.displayName || auth.currentUser.email;
-  await setDoc(doc(db, "tienTrinh", uid), {
-    dung: t.dung, khamPha: t.khamPha, timKiem: t.timKiem.slice(0, 200),
-    diemCao: t.diemCao, diemCaoLuc: t.diemCaoLuc, thoiGian: t.thoiGian || 0,
-    luot: t.luot, daMo: t.daMo
-  });
-  if (t.luot >= 1) {
-    // "xep" là một số duy nhất để xếp hạng: điểm cao hơn trước,
-    // bằng điểm thì ai hoàn thành trong thời gian ngắn hơn (ms) xếp trên
-    var tg = t.thoiGian > 0 ? Math.min(t.thoiGian, 9e12) : 9e12;
-    await setDoc(doc(db, "xepHang", uid), {
-      ten: ten, diemCao: t.diemCao, diemCaoLuc: t.diemCaoLuc,
-      thoiGian: t.thoiGian || 0, luot: t.luot,
-      xep: t.diemCao * 1e13 + (1e13 - tg)
+  var loiDau = null;
+
+  // 1) Tiến trình riêng tư (huy hiệu...). Lỗi ở đây KHÔNG được chặn việc cập nhật bảng xếp hạng.
+  try {
+    await setDoc(doc(db, "tienTrinh", uid), {
+      dung: t.dung, khamPha: t.khamPha, timKiem: t.timKiem.slice(0, 200),
+      diemCao: t.diemCao, diemCaoLuc: t.diemCaoLuc, thoiGian: t.thoiGian || 0,
+      luot: t.luot, daMo: t.daMo
     });
+  } catch (e) { loiDau = loiDau || e; }
+
+  // 2) Bảng xếp hạng công khai: luôn giữ kết quả TỐT NHẤT trong nhiều lần chơi.
+  if (t.luot >= 1) {
+    try {
+      var ref = doc(db, "xepHang", uid);
+      var xepMoi = tinhXep(t.diemCao, t.thoiGian);
+      var cu = null;
+      try {
+        var snap = await getDoc(ref);
+        if (snap.exists()) cu = snap.data();
+      } catch (e) { /* không đọc được thì cứ ghi bản của mình */ }
+
+      var giuBanCu = cu && tinhXep(cu.diemCao, cu.thoiGian) > xepMoi;
+      var diemGhi = giuBanCu ? (Number(cu.diemCao) || 0) : t.diemCao;
+      var tgGhi = giuBanCu ? (Number(cu.thoiGian) || 0) : (t.thoiGian || 0);
+      await setDoc(ref, {
+        ten: ten,
+        diemCao: diemGhi,
+        diemCaoLuc: giuBanCu ? (Number(cu.diemCaoLuc) || 0) : (t.diemCaoLuc || 0),
+        thoiGian: tgGhi,
+        luot: Math.max(t.luot || 0, cu ? (Number(cu.luot) || 0) : 0),
+        xep: tinhXep(diemGhi, tgGhi)
+      });
+    } catch (e) { loiDau = loiDau || e; }
   }
+
+  if (loiDau) throw loiDau;
 }
 
 async function layXepHang() {
@@ -151,8 +180,23 @@ async function layXepHang() {
   return kq;
 }
 
+// Theo dõi bảng xếp hạng theo thời gian thực: mỗi khi ai đó lưu điểm, cb được gọi lại ngay.
+// Trả về hàm để hủy theo dõi.
+function dangKyXepHang(cb, cbLoi) {
+  var q = query(collection(db, "xepHang"), orderBy("xep", "desc"), limit(10));
+  return onSnapshot(q, function (s) {
+    var kq = [];
+    s.forEach(function (d) {
+      var v = d.data();
+      kq.push({ uid: d.id, ten: v.ten || "Ẩn danh", diem: v.diemCao || 0, thoiGian: v.thoiGian || 0 });
+    });
+    cb(kq);
+  }, function (e) { if (cbLoi) cbLoi(e); });
+}
+
 window.mayChu = {
   docTienTrinh: docTienTrinh,
   luuTienTrinh: luuTienTrinh,
-  layXepHang: layXepHang
+  layXepHang: layXepHang,
+  dangKyXepHang: dangKyXepHang
 };

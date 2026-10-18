@@ -720,58 +720,170 @@ function veMoHinhNguyenTu(soProton) {
 
 
 
-var DU_LIEU_DONG_VI_TU_NHIEN = {"H": [[1, 1.007825, 99.9885], [2, 2.014102, 0.0115]], "He": [[3, 3.016029, 0.000137], [4, 4.002603, 99.999863]], "Li": [[6, 6.015123, 7.59], [7, 7.016005, 92.41]], "B": [[10, 10.012937, 19.9], [11, 11.009305, 80.1]], "C": [[12, 12.0, 98.93], [13, 13.003355, 1.07]], "N": [[14, 14.003074, 99.636], [15, 15.000109, 0.364]], "O": [[16, 15.994915, 99.757], [17, 16.999132, 0.038], [18, 17.99916, 0.205]], "Ne": [[20, 19.99244, 90.48], [21, 20.993847, 0.27], [22, 21.991386, 9.25]], "Mg": [[24, 23.985042, 78.99], [25, 24.985837, 10.0], [26, 25.982593, 11.01]], "Si": [[28, 27.976927, 92.223], [29, 28.976495, 4.685], [30, 29.97377, 3.092]], "S": [[32, 31.972071, 94.99], [33, 32.971459, 0.75], [34, 33.967868, 4.25], [36, 35.967081, 0.01]], "Cl": [[35, 34.968853, 75.78], [37, 36.965903, 24.22]], "Ar": [[36, 35.967545, 0.3336], [38, 37.962732, 0.0629], [40, 39.962383, 99.6035]], "K": [[39, 38.963707, 93.2581], [40, 39.963999, 0.0117], [41, 40.961826, 6.7302]], "Ca": [[40, 39.962591, 96.941], [42, 41.958618, 0.647], [43, 42.958767, 0.135], [44, 43.955482, 2.086], [46, 45.953689, 0.004], [48, 47.952523, 0.187]], "Fe": [[54, 53.939609, 5.845], [56, 55.934936, 91.754], [57, 56.935393, 2.119], [58, 57.933274, 0.282]], "Cu": [[63, 62.929598, 69.15], [65, 64.92779, 30.85]], "Zn": [[64, 63.929142, 49.17], [66, 65.926034, 27.73], [67, 66.927128, 4.04], [68, 67.924845, 18.45], [70, 69.92532, 0.61]], "Br": [[79, 78.918338, 50.69], [81, 80.916291, 49.31]], "Ag": [[107, 106.905092, 51.839], [109, 108.904756, 48.161]], "Sn": [[112, 111.904824, 0.97], [114, 113.902783, 0.66], [115, 114.903344, 0.34], [116, 115.901743, 14.54], [117, 116.902954, 7.68], [118, 117.901607, 24.22], [119, 118.903311, 8.59], [120, 119.902202, 32.58], [122, 121.903444, 4.63], [124, 123.905277, 5.79]], "Xe": [[124, 123.905893, 0.095], [126, 125.904274, 0.089], [128, 127.903531, 1.91], [129, 128.90478, 26.401], [130, 129.903509, 4.071], [131, 130.905084, 21.232], [132, 131.904155, 26.909], [134, 133.905394, 10.436], [136, 135.907214, 8.857]], "Hg": [[196, 195.965833, 0.15], [198, 197.966769, 9.97], [199, 198.968281, 16.87], [200, 199.968327, 23.1], [201, 200.970303, 13.18], [202, 201.970644, 29.86], [204, 203.973494, 6.87]], "Pb": [[204, 203.973044, 1.4], [206, 205.974466, 24.1], [207, 206.975897, 22.1], [208, 207.976652, 52.4]]};
+var DU_LIEU_DONG_VI_TU_NHIEN = {"H": [[1, 1.007825, 99.9885], [2, 2.014102, 0.0115]], "He": [[3, 3.016029, 0.000137], [4, 4.002603, 99.999863]], "Li": [[6, 6.015123, 7.59], [7, 7.016005, 92.41]], "Be": [[9, 9.012183, 100]], "B": [[10, 10.012937, 19.9], [11, 11.009305, 80.1]], "C": [[12, 12.0, 98.93], [13, 13.003355, 1.07]], "N": [[14, 14.003074, 99.636], [15, 15.000109, 0.364]], "O": [[16, 15.994915, 99.757], [17, 16.999132, 0.038], [18, 17.99916, 0.205]], "F": [[19, 18.998403, 100]], "Ne": [[20, 19.99244, 90.48], [21, 20.993847, 0.27], [22, 21.991386, 9.25]], "Na": [[23, 22.989769, 100]], "Mg": [[24, 23.985042, 78.99], [25, 24.985837, 10.0], [26, 25.982593, 11.01]], "Al": [[27, 26.981539, 100]], "Si": [[28, 27.976927, 92.223], [29, 28.976495, 4.685], [30, 29.97377, 3.092]], "P": [[31, 30.973762, 100]], "S": [[32, 31.972071, 94.99], [33, 32.971459, 0.75], [34, 33.967868, 4.25], [36, 35.967081, 0.01]], "Cl": [[35, 34.968853, 75.78], [37, 36.965903, 24.22]], "Ar": [[36, 35.967545, 0.3336], [38, 37.962732, 0.0629], [40, 39.962383, 99.6035]], "K": [[39, 38.963707, 93.2581], [40, 39.963999, 0.0117], [41, 40.961826, 6.7302]], "Ca": [[40, 39.962591, 96.941], [42, 41.958618, 0.647], [43, 42.958767, 0.135], [44, 43.955482, 2.086], [46, 45.953689, 0.004], [48, 47.952523, 0.187]], "Sc": [[45, 44.955908, 100]], "Ti": [[46, 45.952628, 8.25], [47, 46.951759, 7.44], [48, 47.947942, 73.72], [49, 48.947866, 5.41], [50, 49.944787, 5.18]], "V": [[50, 49.947156, 0.25], [51, 50.943957, 99.75]], "Cr": [[50, 49.946042, 4.345], [52, 51.940506, 83.789], [53, 52.940648, 9.501], [54, 53.938879, 2.365]], "Mn": [[55, 54.938044, 100]], "Fe": [[54, 53.939609, 5.845], [56, 55.934936, 91.754], [57, 56.935393, 2.119], [58, 57.933274, 0.282]], "Co": [[59, 58.933194, 100]], "Ni": [[58, 57.935342, 68.077], [60, 59.930786, 26.223], [61, 60.931056, 1.1399], [62, 61.928345, 3.6346], [64, 63.927967, 0.9255]], "Cu": [[63, 62.929598, 69.15], [65, 64.92779, 30.85]], "Zn": [[64, 63.929142, 49.17], [66, 65.926034, 27.73], [67, 66.927128, 4.04], [68, 67.924845, 18.45], [70, 69.92532, 0.61]], "Ga": [[69, 68.925574, 60.108], [71, 70.924703, 39.892]], "Ge": [[70, 69.924249, 20.57], [72, 71.922076, 27.45], [73, 72.923459, 7.75], [74, 73.921178, 36.5], [76, 75.921403, 7.73]], "As": [[75, 74.921595, 100]], "Se": [[74, 73.922476, 0.89], [76, 75.919214, 9.37], [77, 76.919914, 7.63], [78, 77.917309, 23.77], [80, 79.916522, 49.61], [82, 81.9167, 8.73]], "Br": [[79, 78.918338, 50.69], [81, 80.916291, 49.31]], "Kr": [[78, 77.920365, 0.355], [80, 79.916378, 2.286], [82, 81.913483, 11.593], [83, 82.914127, 11.5], [84, 83.911498, 56.987], [86, 85.910611, 17.279]], "Rb": [[85, 84.91179, 72.17], [87, 86.909181, 27.83]], "Sr": [[84, 83.913419, 0.56], [86, 85.909261, 9.86], [87, 86.908878, 7], [88, 87.905612, 82.58]], "Y": [[89, 88.90584, 100]], "Zr": [[90, 89.904698, 51.45], [91, 90.90564, 11.22], [92, 91.905035, 17.15], [94, 93.906311, 17.38], [96, 95.908271, 2.8]], "Nb": [[93, 92.906373, 100]], "Mo": [[92, 91.906808, 14.53], [94, 93.905085, 9.15], [95, 94.905839, 15.84], [96, 95.904676, 16.67], [97, 96.906018, 9.6], [98, 97.905405, 24.39], [100, 99.907472, 9.82]], "Ru": [[96, 95.90759, 5.54], [98, 97.905287, 1.87], [99, 98.905934, 12.76], [100, 99.904214, 12.6], [101, 100.905577, 17.06], [102, 101.904344, 31.55], [104, 103.905428, 18.62]], "Rh": [[103, 102.905498, 100]], "Pd": [[102, 101.905602, 1.02], [104, 103.90403, 11.14], [105, 104.90508, 22.33], [106, 105.90348, 27.33], [108, 107.903892, 26.46], [110, 109.905172, 11.72]], "Ag": [[107, 106.905092, 51.839], [109, 108.904756, 48.161]], "Cd": [[106, 105.90646, 1.25], [108, 107.904183, 0.89], [110, 109.903007, 12.49], [111, 110.904183, 12.8], [112, 111.902763, 24.13], [113, 112.904408, 12.22], [114, 113.903365, 28.73], [116, 115.904763, 7.49]], "In": [[113, 112.904062, 4.29], [115, 114.903879, 95.71]], "Sn": [[112, 111.904824, 0.97], [114, 113.902783, 0.66], [115, 114.903344, 0.34], [116, 115.901743, 14.54], [117, 116.902954, 7.68], [118, 117.901607, 24.22], [119, 118.903311, 8.59], [120, 119.902202, 32.58], [122, 121.903444, 4.63], [124, 123.905277, 5.79]], "Sb": [[121, 120.903812, 57.21], [123, 122.904213, 42.79]], "Te": [[120, 119.904059, 0.09], [122, 121.903044, 2.55], [123, 122.90427, 0.89], [124, 123.902817, 4.74], [125, 124.90443, 7.07], [126, 125.903311, 18.84], [128, 127.904461, 31.74], [130, 129.906223, 34.08]], "I": [[127, 126.904472, 100]], "Xe": [[124, 123.905893, 0.095], [126, 125.904274, 0.089], [128, 127.903531, 1.91], [129, 128.90478, 26.401], [130, 129.903509, 4.071], [131, 130.905084, 21.232], [132, 131.904155, 26.909], [134, 133.905394, 10.436], [136, 135.907214, 8.857]], "Cs": [[133, 132.905452, 100]], "Ba": [[130, 129.906321, 0.106], [132, 131.905061, 0.101], [134, 133.904508, 2.417], [135, 134.905688, 6.592], [136, 135.904576, 7.854], [137, 136.905827, 11.232], [138, 137.905247, 71.698]], "La": [[138, 137.907115, 0.08881], [139, 138.906356, 99.91119]], "Ce": [[136, 135.907129, 0.185], [138, 137.905991, 0.251], [140, 139.905443, 88.45], [142, 141.90925, 11.114]], "Pr": [[141, 140.907658, 100]], "Nd": [[142, 141.907729, 27.152], [143, 142.90982, 12.174], [144, 143.910093, 23.798], [145, 144.912579, 8.293], [146, 145.913123, 17.189], [148, 147.916899, 5.756], [150, 149.920902, 5.638]], "Sm": [[144, 143.912006, 3.07], [147, 146.914904, 14.99], [148, 147.914829, 11.24], [149, 148.917192, 13.82], [150, 149.917283, 7.38], [152, 151.91974, 26.75], [154, 153.922217, 22.75]], "Eu": [[151, 150.919858, 47.81], [153, 152.921238, 52.19]], "Gd": [[152, 151.9198, 0.2], [154, 153.920874, 2.18], [155, 154.92263, 14.8], [156, 155.922131, 20.47], [157, 156.923969, 15.65], [158, 157.924112, 24.84], [160, 159.927062, 21.86]], "Tb": [[159, 158.925355, 100]], "Dy": [[156, 155.924285, 0.056], [158, 157.924416, 0.095], [160, 159.925205, 2.329], [161, 160.92694, 18.889], [162, 161.926806, 25.475], [163, 162.928738, 24.896], [164, 163.929182, 28.26]], "Ho": [[165, 164.930329, 100]], "Er": [[162, 161.928788, 0.139], [164, 163.929209, 1.601], [166, 165.9303, 33.503], [167, 166.932055, 22.869], [168, 167.932377, 26.978], [170, 169.93547, 14.91]], "Tm": [[169, 168.934218, 100]], "Yb": [[168, 167.93389, 0.123], [170, 169.934766, 2.982], [171, 170.93633, 14.09], [172, 171.936386, 21.68], [173, 172.938215, 16.103], [174, 173.938866, 32.026], [176, 175.942576, 12.996]], "Lu": [[175, 174.940775, 97.401], [176, 175.94269, 2.599]], "Hf": [[174, 173.940046, 0.16], [176, 175.941408, 5.26], [177, 176.943228, 18.6], [178, 177.943706, 27.28], [179, 178.945823, 13.62], [180, 179.946557, 35.08]], "Ta": [[180, 179.947465, 0.01201], [181, 180.947996, 99.98799]], "W": [[180, 179.946711, 0.12], [182, 181.948204, 26.5], [183, 182.950223, 14.31], [184, 183.950931, 30.64], [186, 185.954363, 28.43]], "Re": [[185, 184.952954, 37.4], [187, 186.95575, 62.6]], "Os": [[184, 183.952488, 0.02], [186, 185.953835, 1.59], [187, 186.955747, 1.96], [188, 187.955835, 13.24], [189, 188.958144, 16.15], [190, 189.958444, 26.26], [192, 191.961477, 40.78]], "Ir": [[191, 190.960589, 37.3], [193, 192.962922, 62.7]], "Pt": [[190, 189.95993, 0.012], [192, 191.961039, 0.782], [194, 193.962681, 32.86], [195, 194.964792, 33.78], [196, 195.964952, 25.21], [198, 197.967895, 7.356]], "Au": [[197, 196.966569, 100]], "Hg": [[196, 195.965833, 0.15], [198, 197.966769, 9.97], [199, 198.968281, 16.87], [200, 199.968327, 23.1], [201, 200.970303, 13.18], [202, 201.970644, 29.86], [204, 203.973494, 6.87]], "Tl": [[203, 202.972345, 29.52], [205, 204.974428, 70.48]], "Pb": [[204, 203.973044, 1.4], [206, 205.974466, 24.1], [207, 206.975897, 22.1], [208, 207.976652, 52.4]], "Bi": [[209, 208.980399, 100]], "Th": [[232, 232.038056, 100]], "Pa": [[231, 231.035884, 100]], "U": [[234, 234.040952, 0.0054], [235, 235.04393, 0.7204], [238, 238.050788, 99.2742]]};
+// Các đồng vị phóng xạ được hiển thị trong bảng nhưng không gán phần trăm tự nhiên.
+// Dữ liệu hiện tại tích hợp triti (H-3) làm ví dụ.
+var DONG_VI_PHONG_XA = {
+  H: [[3, 3.016049]], C: [[14, 14.003242]], N: [[13, 13.005739]], O: [[15, 15.003066]],
+  P: [[32, 31.973907]], S: [[35, 34.969032]], K: [[40, 39.963999]], Ca: [[41, 40.962278]],
+  Fe: [[55, 54.938294]], Co: [[60, 59.933822]], Ni: [[63, 62.929669]], Cu: [[64, 63.929764]],
+  Zn: [[65, 64.929241]], Kr: [[85, 84.912527]], Sr: [[90, 89.907738]], Tc: [[98, 97.907216]],
+  Ru: [[106, 105.907329]], Pd: [[107, 106.905128]], Ag: [[110, 109.906110]], Cd: [[109, 108.904986]],
+  In: [[115, 114.903878]], Sn: [[121, 120.904243]], Sb: [[124, 123.905277]], Te: [[127, 126.904473]],
+  I: [[131, 130.906126]], Xe: [[133, 132.905910]], Cs: [[137, 136.907089]], Ba: [[140, 139.910606]],
+  La: [[140, 139.911038]], Ce: [[144, 143.913653]], Pm: [[145, 144.912755]], Sm: [[151, 150.919939]],
+  Eu: [[152, 151.921752]], Gd: [[153, 152.921238]], Tb: [[158, 157.925420]], Dy: [[165, 164.931703]],
+  Ho: [[166, 165.932290]], Er: [[169, 168.935183]], Tm: [[170, 169.935477]], Yb: [[169, 168.935182]],
+  Lu: [[176, 175.942576]], Hf: [[182, 181.950563]], Ta: [[180, 179.947466]], W: [[185, 184.953419]],
+  Re: [[186, 185.954986]], Os: [[194, 193.965078]], Ir: [[192, 191.962605]], Pt: [[193, 192.962984]],
+  Au: [[198, 197.968243]], Hg: [[203, 202.970602]], Tl: [[204, 203.973863]], Pb: [[210, 209.984188]],
+  Bi: [[210, 209.984120]], Po: [[210, 209.982874]], At: [[210, 209.987148]], Rn: [[222, 222.017578]],
+  Fr: [[223, 223.019736]], Ra: [[226, 226.025410]], Ac: [[227, 227.027752]], Th: [[230, 230.033134]],
+  Pa: [[231, 231.035884]], U: [[239, 239.054293]], Np: [[237, 237.048173]], Pu: [[239, 239.052163]],
+  Am: [[241, 241.056829]], Cm: [[244, 244.062752]], Bk: [[247, 247.070307]], Cf: [[251, 251.079588]],
+  Es: [[252, 252.082980]], Fm: [[257, 257.095106]], Md: [[258, 258.098431]], No: [[259, 259.101030]],
+  Lr: [[266, 266.119830]], Rf: [[267, 267.121790]], Db: [[268, 268.125670]], Sg: [[269, 269.128630]],
+  Bh: [[270, 270.133360]], Hs: [[269, 269.133750]], Mt: [[278, 278.156310]], Ds: [[281, 281.162060]],
+  Rg: [[282, 282.169120]], Cn: [[285, 285.177120]], Nh: [[286, 286.182210]], Fl: [[289, 289.190420]],
+  Mc: [[290, 290.196790]], Lv: [[293, 293.204490]], Ts: [[294, 294.210460]], Og: [[294, 294.213920]]
+};
+
+// Nguồn dữ liệu: NIST Atomic Weights and Isotopic Compositions — All isotopes.
+// Các đồng vị không có isotopic composition trong bảng NIST được hiển thị "—".
+// Nếu trình duyệt chặn truy cập chéo nguồn (CORS) hoặc đang ngoại tuyến, dữ liệu dự phòng tích hợp sẵn vẫn được dùng.
+var NIST_ISOTOPE_URL = "https://physics.nist.gov/cgi-bin/Compositions/stand_alone.pl?ascii=ascii&isotype=all";
+var NIST_DA_TAI = false;
+var NIST_DANG_TAI = null;
+
+function taiDongViTuNIST() {
+  if (NIST_DA_TAI || typeof fetch !== "function") return Promise.resolve(false);
+  if (NIST_DANG_TAI) return NIST_DANG_TAI;   // chỉ tải 1 lần, dù mở nhiều popup liên tiếp
+  NIST_DANG_TAI = fetch(NIST_ISOTOPE_URL)
+    .then(function (response) {
+      if (!response.ok) throw new Error("NIST HTTP " + response.status);
+      return response.text();
+    })
+    .then(function (text) {
+      var result = {};
+      var currentSymbol = "";
+      text.split(/\r?\n/).forEach(function (line) {
+        var clean = line.replace(/\s+/g, " ").trim();
+        if (!clean || /^_{3,}/.test(clean) || /Relative Atomic Mass|Atomic Weights|Isotope/.test(clean)) return;
+        var first = clean.match(/^(\d{1,3})\s+([A-Z][a-z]?)\s+(\d{1,3})\s+([0-9]+(?:\.[0-9]+)?(?:\([0-9#]+\))?)(.*)$/);
+        var cont = clean.match(/^(?:[DT]\s+)?(\d{1,3})\s+([0-9]+(?:\.[0-9]+)?(?:\([0-9#]+\))?)(.*)$/);
+        var massNumber, massText, rest;
+        if (first) {
+          currentSymbol = first[2];
+          massNumber = Number(first[3]);
+          massText = first[4];
+          rest = first[5] || "";
+        } else if (cont && currentSymbol) {
+          massNumber = Number(cont[1]);
+          massText = cont[2];
+          rest = cont[3] || "";
+        } else return;
+        var mass = Number(massText.replace(/\([^)]*\)/g, ""));
+        if (!Number.isFinite(mass) || !massNumber || !currentSymbol) return;
+        // Chống dữ liệu lệch dòng: khối lượng nguyên tử phải xấp xỉ số khối
+        if (Math.abs(mass - massNumber) > 3) return;
+        // Trong bảng "all isotopes" của NIST, ô tỉ lệ tự nhiên để trống = không có tỉ lệ tự nhiên.
+        // Chỉ lấy các đồng vị đó rồi gộp với dữ liệu phóng xạ dự phòng.
+        var abundance = rest.match(/^\s+(0?\.\d+(?:\([0-9#]+\))?|1(?:\([0-9#]+\))?)(?:\s|$)/);
+        if (!abundance) {
+          if (!result[currentSymbol]) result[currentSymbol] = [];
+          if (!result[currentSymbol].some(function (x) { return x[0] === massNumber; })) {
+            result[currentSymbol].push([massNumber, mass]);
+          }
+        }
+      });
+      var count = Object.keys(result).reduce(function (n, k) { return n + result[k].length; }, 0);
+      if (count < 100) throw new Error("NIST data parse incomplete");
+      Object.keys(result).forEach(function (symbol) {
+        var merged = (DONG_VI_PHONG_XA[symbol] || []).slice();
+        result[symbol].forEach(function (iso) {
+          if (!merged.some(function (x) { return Number(x[0]) === Number(iso[0]); })) merged.push(iso);
+        });
+        merged.sort(function (a, b) { return a[0] - b[0]; });
+        DONG_VI_PHONG_XA[symbol] = merged;
+      });
+      NIST_DA_TAI = true;
+      return true;
+    })
+    .catch(function (error) {
+      console.warn("Không tải được dữ liệu đồng vị NIST; dùng dữ liệu dự phòng.", error);
+      return false;
+    });
+  return NIST_DANG_TAI;
+}
+
 function veBieuDoDongVi(kyHieu, khoiLuong) {
   var panel = document.getElementById("nist-isotope-source");
   if (!panel) return;
-  var data = DU_LIEU_DONG_VI_TU_NHIEN[kyHieu];
+  var data = DU_LIEU_DONG_VI_TU_NHIEN[kyHieu] || [];
+  var radioactive = DONG_VI_PHONG_XA[kyHieu] || [];
   var chart = panel.querySelector(".isotope-chart");
   var note = panel.querySelector(".isotope-note");
   var table = panel.querySelector(".isotope-table");
+  if (!chart || !note || !table) return;
 
-  if (!data || !data.length) {
+  if (!data.length && !radioactive.length) {
     chart.innerHTML = "";
     table.innerHTML = "";
     note.textContent = "Chưa có dữ liệu đồng vị tích hợp cho nguyên tố này. Có thể tra cứu tại nguồn NIST bên dưới.";
     return;
   }
 
-  var W = 520, H = 250, L = 44, R = 16, T = 24, B = 42;
-  var maxMass = Math.max.apply(null, data.map(function (d) { return d[0]; }));
-  var minMass = Math.min.apply(null, data.map(function (d) { return d[0]; }));
-  var maxPct = Math.max.apply(null, data.map(function (d) { return d[2]; }));
-  var maxY = maxPct <= 1 ? 1 : (maxPct <= 10 ? 10 : Math.ceil(maxPct / 10) * 10);
-  var y = function (v) { return H - B - v / maxY * (H - T - B); };
-  var x = function (mass) {
-    if (maxMass === minMass) return (L + W - R) / 2;
-    return L + 18 + (mass - minMass) / (maxMass - minMass) * (W - L - R - 36);
-  };
-
-  var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Biểu đồ tỉ lệ đồng vị tự nhiên của ' + kyHieu + '">';
-  for (var tick = 0; tick <= 4; tick++) {
-    var value = maxY * tick / 4;
-    var yy = y(value);
-    svg += '<line x1="' + L + '" y1="' + yy + '" x2="' + (W - R) + '" y2="' + yy + '" stroke="currentColor" stroke-opacity=".18"/>';
-    svg += '<text x="' + (L - 8) + '" y="' + (yy + 4) + '" text-anchor="end" fill="currentColor" opacity=".8" font-size="11">' + value.toFixed(value % 1 ? 1 : 0) + '%</text>';
-  }
-  data.forEach(function (d) {
-    var xx = x(d[0]), yy = y(d[2]);
-    svg += '<line x1="' + xx + '" y1="' + y(0) + '" x2="' + xx + '" y2="' + yy + '" stroke="#8ee66b" stroke-width="2.4"/>';
-    svg += '<circle cx="' + xx + '" cy="' + yy + '" r="3.5" fill="#c9ffad"/>';
-    svg += '<text x="' + xx + '" y="' + Math.max(13, yy - 8) + '" text-anchor="middle" fill="currentColor" font-size="11">' + d[2] + '%</text>';
-    svg += '<text x="' + xx + '" y="' + (H - B + 18) + '" text-anchor="middle" fill="currentColor" font-size="11">' + d[0] + '</text>';
+  // Chỉ đồng vị có tỉ lệ tự nhiên hợp lệ mới được vẽ trên biểu đồ.
+  var naturalData = data.filter(function (d) {
+    return d[2] !== null && d[2] !== undefined && d[2] !== "" && Number.isFinite(Number(d[2]));
   });
-  svg += '<line x1="' + L + '" y1="' + T + '" x2="' + L + '" y2="' + y(0) + '" stroke="currentColor" stroke-opacity=".7"/>';
-  svg += '<line x1="' + L + '" y1="' + y(0) + '" x2="' + (W - R) + '" y2="' + y(0) + '" stroke="currentColor" stroke-opacity=".7"/>';
-  svg += '<text x="' + ((L + W - R) / 2) + '" y="' + (H - 5) + '" text-anchor="middle" fill="currentColor" font-size="11">Số khối đồng vị</text></svg>';
+  if (!naturalData.length) {
+    chart.innerHTML = "";
+  } else {
+    var W = 520, H = 250, L = 44, R = 16, T = 24, B = 42;
+    var maxMass = Math.max.apply(null, naturalData.map(function (d) { return d[0]; }));
+    var minMass = Math.min.apply(null, naturalData.map(function (d) { return d[0]; }));
+    var maxPct = Math.max.apply(null, naturalData.map(function (d) { return Number(d[2]); }));
+    var maxY = maxPct <= 1 ? 1 : (maxPct <= 10 ? 10 : Math.ceil(maxPct / 10) * 10);
+    var y = function (v) { return H - B - v / maxY * (H - T - B); };
+    var x = function (mass) {
+      if (maxMass === minMass) return (L + W - R) / 2;
+      return L + 18 + (mass - minMass) / (maxMass - minMass) * (W - L - R - 36);
+    };
+    var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Biểu đồ tỉ lệ đồng vị tự nhiên của ' + kyHieu + '">';
+    for (var tick = 0; tick <= 4; tick++) {
+      var value = maxY * tick / 4;
+      var yy = y(value);
+      svg += '<line x1="' + L + '" y1="' + yy + '" x2="' + (W - R) + '" y2="' + yy + '" stroke="currentColor" stroke-opacity=".18"/>';
+      svg += '<text x="' + (L - 8) + '" y="' + (yy + 4) + '" text-anchor="end" fill="currentColor" opacity=".8" font-size="11">' + value.toFixed(value % 1 ? 1 : 0) + '%</text>';
+    }
+    naturalData.forEach(function (d) {
+      var xx = x(d[0]), yy = y(Number(d[2]));
+      svg += '<line x1="' + xx + '" y1="' + y(0) + '" x2="' + xx + '" y2="' + yy + '" stroke="#8ee66b" stroke-width="2.4"/>';
+      svg += '<circle cx="' + xx + '" cy="' + yy + '" r="3.5" fill="#c9ffad"/>';
+      svg += '<text x="' + xx + '" y="' + Math.max(13, yy - 8) + '" text-anchor="middle" fill="currentColor" font-size="11">' + d[2] + '%</text>';
+      svg += '<text x="' + xx + '" y="' + (H - B + 18) + '" text-anchor="middle" fill="currentColor" font-size="11">' + d[0] + '</text>';
+    });
+    svg += '<line x1="' + L + '" y1="' + T + '" x2="' + L + '" y2="' + y(0) + '" stroke="currentColor" stroke-opacity=".7"/>';
+    svg += '<line x1="' + L + '" y1="' + y(0) + '" x2="' + (W - R) + '" y2="' + y(0) + '" stroke="currentColor" stroke-opacity=".7"/>';
+    svg += '<text x="' + ((L + W - R) / 2) + '" y="' + (H - 5) + '" text-anchor="middle" fill="currentColor" font-size="11">Số khối đồng vị</text></svg>';
+    chart.innerHTML = svg;
+  }
 
-  chart.innerHTML = svg;
-  note.textContent = "Mỗi vạch biểu diễn một đồng vị; chiều cao thể hiện phần trăm phổ biến tự nhiên.";
-  table.innerHTML =
-    '<div class="isotope-row isotope-head"><span>Đồng vị</span><span>Khối lượng (u)</span><span>Tỉ lệ tự nhiên</span></div>' +
-    data.map(function (d) {
-      return '<div class="isotope-row"><span>' + kyHieu + '-' + d[0] + '</span><span>' + d[1] + '</span><span>' + d[2] + '%</span></div>';
-    }).join('');
+  var rows = '<div class="isotope-row isotope-head"><span>Đồng vị</span><span>Khối lượng (u)</span><span>Tỉ lệ tự nhiên</span></div>';
+  rows += data.map(function (d) {
+    return '<div class="isotope-row"><span>' + kyHieu + '-' + d[0] + '</span><span>' + d[1] + '</span><span>' + d[2] + '%</span></div>';
+  }).join('');
+  radioactive.forEach(function (d) {
+    // Không thêm trùng nếu đồng vị đã có trong dữ liệu nền.
+    if (data.some(function (natural) { return Number(natural[0]) === Number(d[0]); })) return;
+    rows += '<div class="isotope-row"><span>' + kyHieu + '-' + d[0] +
+      ' <span class="radioactive-icon" title="Vì là nguyên tố phóng xạ nên không thể xác định chính xác đồng vị" aria-label="Vì là nguyên tố phóng xạ nên không thể xác định chính xác đồng vị">☢</span></span>' +
+      '<span>' + d[1] + '</span><span>—</span></div>';
+  });
+  table.innerHTML = rows;
+  note.textContent = "";
+  note.style.display = "none";
 }
 
 // ===== NGƯỜI TÌM RA NGUYÊN TỐ =====
@@ -868,6 +980,115 @@ function taoTheNguoiPhatHien(so) {
   '</div>';
 }
 
+// ===== NHỮNG ĐIỀU ÍT AI BIẾT =====
+// Khóa là số hiệu nguyên tử. Nguyên tố chưa có dữ liệu sẽ hiện dòng "Chưa có thông tin".
+var DU_LIEU_FUN_FACT = {
+  1: "Là nguyên tố nhẹ nhất và phổ biến nhất trong vũ trụ.",
+  2: "Được phát hiện trên Mặt Trời trước khi người ta tìm thấy nó trên Trái Đất.",
+  3: "Là kim loại nhẹ nhất, được dùng làm pin lithium-ion trong điện thoại và xe điện.",
+  4: "Rất độc: hít phải bụi beri có thể gây bệnh phổi mạn tính.",
+  5: "Hợp chất của bo tạo ngọn lửa màu xanh lá trong pháo hoa.",
+  6: "Là nền tảng của sự sống, tạo nên cả than chì mềm lẫn kim cương cứng.",
+  7: "Chiếm khoảng 78% khí quyển Trái Đất; nitơ lỏng lạnh đến mức làm đông cứng nhiều vật tức thì.",
+  8: "Cần cho hô hấp; oxi lỏng và oxi rắn có màu xanh nhạt.",
+  9: "Là nguyên tố phản ứng mạnh nhất trong bảng tuần hoàn và rất độc.",
+  10: "Phát sáng màu đỏ cam khi có dòng điện chạy qua, thường dùng làm biển hiệu.",
+  11: "Phản ứng dữ dội với nước nên phải bảo quản ngâm trong dầu.",
+  12: "Cháy với ánh sáng trắng chói, từng được dùng làm đèn flash trong nhiếp ảnh.",
+  13: "Là kim loại phổ biến nhất trong vỏ Trái Đất, nhưng từng đắt hơn vàng vì rất khó tách.",
+  14: "Là chất bán dẫn nền tảng của vi mạch; Thung lũng Silicon được đặt tên theo nguyên tố này.",
+  15: "Được phát hiện khi Hennig Brand chưng cất nước tiểu để tìm cách tạo ra vàng.",
+  16: "Được biết từ thời cổ đại; một số hợp chất như H₂S có mùi rất khó chịu.",
+  17: "Là khí màu vàng lục, nặng hơn không khí và từng bị dùng làm vũ khí hóa học.",
+  18: "Là khí hiếm phổ biến thứ ba trong khí quyển, thường dùng trong bóng đèn.",
+  19: "Nhẹ và mềm; khi thả vào nước, kali cháy với ngọn lửa màu tím.",
+  20: "Là thành phần chính của xương và răng, và là kim loại phổ biến thứ năm trong vỏ Trái Đất.",
+  21: "Hợp kim nhôm–scandi vừa nhẹ vừa bền, được dùng trong ngành hàng không.",
+  22: "Bền gần như thép nhưng nhẹ hơn nhiều, nên rất được ưa chuộng trong kỹ thuật.",
+  23: "Tên lấy theo nữ thần Vanadis của Bắc Âu vì các hợp chất của nó có màu sắc rực rỡ.",
+  24: "Tạo màu đỏ cho ruby và màu xanh cho ngọc lục bảo, đồng thời giúp thép không gỉ chống ăn mòn.",
+  25: "Cần thiết cho quá trình trao đổi chất của cơ thể và được dùng nhiều trong sản xuất thép.",
+  26: "Là thành phần chính của lõi Trái Đất và có trong hemoglobin giúp máu vận chuyển oxi.",
+  27: "Hợp chất của coban tạo ra màu xanh lam bền đẹp cho gốm sứ và thủy tinh.",
+  28: "Là một trong số ít kim loại có từ tính tự nhiên ở nhiệt độ phòng.",
+  29: "Có màu đặc trưng khác hẳn xám hay bạc và có khả năng kháng khuẩn tự nhiên.",
+  30: "Thường được dùng để mạ lên sắt thép nhằm chống gỉ.",
+  31: "Nóng chảy ở nhiệt độ rất thấp, có thể tan ngay trong lòng bàn tay.",
+  32: "Là chất bán dẫn quan trọng, từng được dùng trong những chiếc transistor đầu tiên.",
+  33: "Nổi tiếng là chất độc, nhưng một lượng rất nhỏ từng được dùng làm thuốc.",
+  34: "Có tính quang dẫn nên từng được dùng trong những máy photocopy đời đầu.",
+  35: "Là một trong hai đơn chất ở thể lỏng ở nhiệt độ phòng, có màu nâu đỏ.",
+  36: "Tên có gốc Hy Lạp nghĩa là \"kẻ ẩn náu\", vì nó rất khó bị phát hiện.",
+  37: "Cháy với ngọn lửa đỏ sẫm và phản ứng mạnh với nước.",
+  38: "Tạo ánh sáng đỏ khi cháy nên được dùng trong pháo hoa và pháo sáng.",
+  39: "Tên lấy từ làng Ytterby ở Thụy Điển; từng dùng để tạo màu đỏ trong tivi màu đời cũ.",
+  40: "Dạng zirconia được dùng làm đá quý nhân tạo giá rẻ.",
+  41: "Từng có tên là \"columbium\" trước khi được đổi tên theo thần thoại Hy Lạp.",
+  42: "Chịu nhiệt rất tốt, thường được thêm vào thép để tạo hợp kim siêu bền.",
+  43: "Hoàn toàn phóng xạ; tên của nó có nghĩa là \"nhân tạo\".",
+  44: "Thuộc nhóm kim loại bạch kim, được dùng làm chất xúc tác trong công nghệ năng lượng.",
+  52: "Tiếp xúc với telu có thể khiến hơi thở có mùi tỏi kéo dài nhiều tuần; nó thường đi cùng vàng trong quặng.",
+  53: "Thăng hoa từ thể rắn màu tím sang hơi màu tím và rất cần cho tuyến giáp.",
+  54: "Năm 1962, xenon trở thành khí hiếm đầu tiên được tạo thành hợp chất; nó còn dùng trong đèn pha và động cơ ion.",
+  55: "Phản ứng nổ với nước; đồng vị Cs-133 được dùng để định nghĩa \"1 giây\".",
+  56: "BaSO₄ không tan trong nước nên được dùng làm chất cản quang khi chụp X-quang dạ dày.",
+  57: "Tên có nghĩa là \"ẩn nấp\" và là nguyên tố mở đầu cho họ lantan.",
+  58: "Là nguyên tố đất hiếm phổ biến nhất, dùng làm đá lửa trong bật lửa.",
+  59: "Dùng trong kính didymium để lọc ánh sáng vàng cho thợ thổi thủy tinh.",
+  60: "Tạo ra nam châm Nd₂Fe₁₄B, loại nam châm vĩnh cửu mạnh nhất hiện nay.",
+  61: "Hoàn toàn phóng xạ; vỏ Trái Đất chứa rất ít promethi.",
+  62: "Nam châm samari–coban vẫn hoạt động ở nhiệt độ trên 700°C.",
+  63: "Phát huỳnh quang đỏ dưới tia cực tím nên được dùng để chống làm giả tiền.",
+  64: "Được dùng làm chất tương phản khi chụp cộng hưởng từ (MRI).",
+  65: "Phát ánh sáng xanh lục nên được dùng trong điểm ảnh của màn hình.",
+  66: "Hấp thụ neutron tốt nên được dùng làm thanh điều khiển trong lò phản ứng hạt nhân.",
+  67: "Có từ tính rất cao; laser holmi được dùng để tán sỏi thận.",
+  68: "Được dùng để khuếch đại tín hiệu trong cáp quang.",
+  69: "Tên bắt nguồn từ Thule, tên cổ của vùng Scandinavia; một đồng vị phóng xạ của nó có thể làm nguồn tia X trong thiết bị chuyên dụng.",
+  70: "Được dùng trong đồng hồ nguyên tử cực kỳ chính xác; hai chiếc đặt ở độ cao khác nhau sẽ chạy lệch nhau chút ít do trọng trường khác nhau.",
+  71: "Đồng vị Lu-177 được dùng trong một số liệu pháp điều trị ung thư nhắm đích.",
+  72: "Luôn đi kèm zirconi trong khoáng vật và có tính chất hóa học rất giống nhau, nên việc tách hai nguyên tố này từng rất khó.",
+  73: "Chống ăn mòn tốt và tương thích với cơ thể nên được dùng trong một số thiết bị cấy ghép y tế.",
+  74: "Có nhiệt độ nóng chảy rất cao nên từng được dùng làm dây tóc bóng đèn.",
+  75: "Được thêm vào siêu hợp kim của tua-bin động cơ phản lực để giữ độ bền ở nhiệt độ cực cao.",
+  76: "Thuộc nhóm nguyên tố tự nhiên có khối lượng riêng lớn nhất; hợp chất osmi tetroxit rất độc.",
+  77: "Lớp đất đá giàu iridi khoảng 66 triệu năm tuổi là bằng chứng ủng hộ giả thuyết tiểu hành tinh va vào Trái Đất làm khủng long tuyệt chủng.",
+  78: "Được dùng làm chất xúc tác trong bộ chuyển đổi khí thải của ô tô.",
+  79: "Hiệu ứng tương đối tính làm thay đổi năng lượng electron của vàng, góp phần tạo nên màu vàng đặc trưng.",
+  80: "Là kim loại ở thể lỏng ở nhiệt độ phòng, nhưng hơi thủy ngân rất độc với hệ thần kinh.",
+  81: "Được William Crookes phát hiện nhờ quang phổ; tên gọi liên quan đến vạch màu xanh lục của nó.",
+  82: "Hấp thụ bức xạ tốt nên dùng làm vật liệu che chắn, nhưng rất độc, đặc biệt với hệ thần kinh đang phát triển.",
+  83: "Màu sắc nhiều lớp trên tinh thể bismut chủ yếu do lớp oxit mỏng làm giao thoa ánh sáng, chứ không phải do kim loại có nhiều màu.",
+  84: "Được Marie và Pierre Curie phát hiện năm 1898 khi nghiên cứu quặng urani; phóng xạ rất mạnh và rất độc.",
+  85: "Phóng xạ, phân rã nhanh và có lượng tồn tại tự nhiên cực nhỏ nên rất khó nghiên cứu trực tiếp.",
+  103: "Lawrenxi là nguyên tố cuối cùng của họ actini (nhóm nguyên tố phóng xạ siêu nặng nằm dưới đáy bảng tuần hoàn). Theo quy luật thông thường, cấu hình electron của nó phải kết thúc ở phân lớp f, nhưng electron lớp ngoài cùng của nguyên tố này lại thuộc phân lớp 7p.",
+  104: "Trong nhiều năm, Mỹ và Liên Xô tranh cãi xem nước nào phát hiện ra nguyên tố này đầu tiên và có quyền đặt tên. Mỹ là bên thắng và đặt tên là Rutherfordi.",
+  105: "Dubni được đặt tên theo thành phố Dubna của Nga để vinh danh những đóng góp của các nhà khoa học Nga trong việc tìm ra các nguyên tố hóa học.",
+  106: "Seaborgi là nguyên tố đầu tiên trong lịch sử được đặt tên theo một nhà khoa học còn sống (ông Glenn T. Seaborg).",
+  107: "Vì tồn tại quá ngắn và chỉ tạo ra được vài nguyên tử một lúc, Bohri hiện không có ứng dụng nào trong đời sống hay thương mại. Nó chỉ phục vụ nghiên cứu khoa học.",
+  108: "Nếu gom đủ lượng Hassi để đúc thành một khối kim loại ở điều kiện thường, Hassi có thể cứng ngang kim cương.",
+  109: "Nguyên tố này cực hiếm: chưa ai trên Trái Đất từng nhìn thấy hay cầm một cục kim loại Meitneri bằng mắt thường.",
+  110: "Nguyên tố này từng được đề xuất tên là Policium, theo số điện thoại khẩn cấp của cảnh sát Đức (110 trùng đúng với số hiệu nguyên tố).",
+  111: "Tên tạm thời do IUPAC quy định cho nguyên tố này là Unununium (viết tắt Uuu), nghe giống tiếng quạ kêu.",
+  112: "Là kim loại nhưng có tính chất giống khí hiếm và có thể tồn tại ở thể khí.",
+  113: "Là nguyên tố đầu tiên do các nhà khoa học châu Á (Nhật Bản) phát hiện. \"Nihon\" trong Nihoni có nghĩa là Nhật Bản.",
+  114: "Là kim loại nhưng có tính chất của khí hiếm; tổng số nguyên tử Flerovi con người tổng hợp được trên toàn thế giới chỉ dừng lại ở vài chục nguyên tử.",
+  115: "Bob Lazar, một người Mỹ từng tuyên bố đã làm việc tại Khu vực 51 và nghiên cứu đĩa bay (UFO) của người ngoài hành tinh, khẳng định đĩa bay vận hành nhờ một đồng vị bền của Moscovi.",
+  116: "Năm 1999, một nhóm nhà khoa học Mỹ tuyên bố phát hiện ra Livermori nhưng bị phát hiện đã làm giả báo cáo. Đến năm 2000, nguyên tố này mới thật sự được phát hiện.",
+  117: "Trên bảng tuần hoàn, Tennessin được xếp ở nhóm 17 (nhóm halogen), nhưng không hành xử như một halogen phi kim mà mang đặc tính của một kim loại siêu nặng.",
+  118: "Oganesson được đặt theo tên nhà vật lý hạt nhân người Nga gốc Armenia Yuri Oganessian. Tính đến nay, ông vẫn còn sống và đã 93 tuổi."
+};
+
+function veFunFact(so) {
+  var ds = document.getElementById("fun-facts-list");
+  if (!ds) return;
+  ds.replaceChildren();
+  var p = document.createElement("p");
+  p.style.margin = "0";
+  p.textContent = DU_LIEU_FUN_FACT[so] || "Chưa có thông tin cho nguyên tố này.";
+  ds.appendChild(p);
+}
+
 // ===== POPUP THÔNG TIN NGUYÊN TỐ =====
 function hienThongTin(nguyenTo, loai, o) {
   var modal = document.getElementById("detail-modal");
@@ -888,18 +1109,42 @@ function hienThongTin(nguyenTo, loai, o) {
     nguyenTo.ten + " (" + nguyenTo.kyHieu + ")";
 
 
-  document.getElementById("modal-desc").innerHTML =
-    "<strong>Số hiệu nguyên tử:</strong> " + nguyenTo.so + "<br>" +
-    "<strong>Ký hiệu:</strong> " + nguyenTo.kyHieu + "<br>" +
-    "<strong>Khối lượng nguyên tử chuẩn:</strong> " + nguyenTo.khoiLuong + " u<br>" +
-    "<strong>Số proton:</strong> " + nguyenTo.so + "<br>" +
-    "<strong>Số electron (nguyên tử trung hòa):</strong> " + nguyenTo.so + "<br>" +
-    "<strong>Chu kỳ:</strong> " + layChuKi(nguyenTo.so) + "<br>" +
-    "<strong>Nhóm:</strong> " + layNhom(nguyenTo.so) + "<br>" +
-    "<strong>Phân loại:</strong> " + tenLoai[loai] + "<br>" +
-    "<strong>Trạng thái ở điều kiện thường:</strong> " +
-    layTrangThai(nguyenTo.kyHieu) +
-    taoTheNguoiPhatHien(nguyenTo.so);
+  // Thông tin cơ bản: lưới các ô nhỏ (nhãn + giá trị) thay cho đoạn chữ xuống dòng
+  var hangThongTin = [
+    ["Số hiệu nguyên tử", nguyenTo.so],
+    ["Ký hiệu", nguyenTo.kyHieu],
+    ["Khối lượng nguyên tử chuẩn", nguyenTo.khoiLuong + " u"],
+    ["Số proton", nguyenTo.so],
+    ["Số electron (nguyên tử trung hòa)", nguyenTo.so],
+    ["Chu kỳ", layChuKi(nguyenTo.so)],
+    ["Nhóm", layNhom(nguyenTo.so)],
+    ["Trạng thái ở điều kiện thường", layTrangThai(nguyenTo.kyHieu)],
+    ["Phân loại", tenLoai[loai], true]
+  ];
+  var moTaEl = document.getElementById("modal-desc");
+  moTaEl.replaceChildren();
+  var luoiThongTin = document.createElement("div");
+  luoiThongTin.className = "info-grid";
+  hangThongTin.forEach(function (h) {
+    var oTin = document.createElement("div");
+    oTin.className = "info-item" + (h[2] ? " info-wide" : "");
+    var nhanTin = document.createElement("span");
+    nhanTin.className = "info-key";
+    nhanTin.textContent = h[0];
+    var giaTriTin = document.createElement("strong");
+    giaTriTin.className = "info-val";
+    giaTriTin.textContent = String(h[1]);
+    oTin.appendChild(nhanTin);
+    oTin.appendChild(giaTriTin);
+    luoiThongTin.appendChild(oTin);
+  });
+  moTaEl.appendChild(luoiThongTin);
+  moTaEl.insertAdjacentHTML("beforeend", taoTheNguoiPhatHien(nguyenTo.so));
+
+  // Số hiệu và khối lượng hiện ở hai góc của ô nguyên tố lớn (đọc bằng CSS attr())
+  var oKyHieu = document.getElementById("modal-symbol");
+  oKyHieu.dataset.so = nguyenTo.so;
+  oKyHieu.dataset.kl = nguyenTo.khoiLuong;
 
   var isotopePanel = document.getElementById("nist-isotope-source");
   if (!isotopePanel) {
@@ -910,9 +1155,17 @@ function hienThongTin(nguyenTo, loai, o) {
     modal.insertBefore(isotopePanel, closeButton);
   }
   veBieuDoDongVi(nguyenTo.kyHieu, nguyenTo.khoiLuong);
+  // Khi dữ liệu NIST tải xong thì vẽ lại bảng đồng vị (nếu popup vẫn đang mở đúng nguyên tố đó)
+  taiDongViTuNIST().then(function (daTai) {
+    if (daTai && modal.style.display !== "none" &&
+        document.getElementById("modal-symbol").textContent === nguyenTo.kyHieu) {
+      veBieuDoDongVi(nguyenTo.kyHieu, nguyenTo.khoiLuong);
+    }
+  });
 
   // Cập nhật mô hình cho đúng nguyên tố đang mở.
   veMoHinhNguyenTu(nguyenTo.so);
+  veFunFact(nguyenTo.so);
 
   if (window.nguoiHienTai) {
     if (window.ghiNhanHuyHieu) window.ghiNhanHuyHieu("khamPha", nguyenTo.so);
@@ -2019,7 +2272,7 @@ if (nutMoQuiz && khuVucQuiz) {
 
 
   // Huy hiệu và điểm được lưu RIÊNG cho từng tài khoản (khóa có kèm email).
-  var KHOA_LUU_GOC = "bangTuanHoan3D_huyHieu_v2:";
+  var KHOA_LUU_GOC = "bangTuanHoan3D_huyHieu_v3:";
   var nguoi = null;                                   // { uid, email, ten } hoặc null nếu chưa đăng nhập
 
   // Người đăng nhập do auth-store.js (Firebase) đặt vào window.nguoiHienTai
@@ -2202,16 +2455,51 @@ if (nutMoQuiz && khuVucQuiz) {
     guiLenMayChu();
   }
 
+  // Báo lỗi lưu lên máy chủ để biết vì sao bảng xếp hạng không đổi (vd: permission-denied = luật Firestore chặn ghi)
+  function baoLoiLuu(e) {
+    var khung = document.getElementById("badge-toast-wrap");
+    if (!khung) {
+      khung = document.createElement("div");
+      khung.id = "badge-toast-wrap";
+      khung.setAttribute("aria-live", "polite");
+      document.body.appendChild(khung);
+    }
+    var tb = document.createElement("div");
+    tb.className = "badge-toast";
+    var bt = document.createElement("span");
+    bt.className = "badge-toast-icon";
+    bt.textContent = "⚠️";
+    var chu = document.createElement("span");
+    chu.className = "badge-toast-text";
+    var nho = document.createElement("small");
+    nho.textContent = "KHÔNG LƯU ĐƯỢC LÊN BẢNG XẾP HẠNG";
+    var nd = document.createElement("strong");
+    nd.textContent = (e && (e.code || e.message)) ? String(e.code || e.message) : "Lỗi không rõ";
+    chu.appendChild(nho);
+    chu.appendChild(nd);
+    tb.appendChild(bt);
+    tb.appendChild(chu);
+    khung.appendChild(tb);
+    setTimeout(function () {
+      tb.classList.add("badge-toast-hide");
+      setTimeout(function () { tb.remove(); }, 500);
+    }, 7000);
+  }
+
   var henGio = null;
+  var guiNgay = false;   // true khi vừa hoàn thành đố vui: đẩy điểm lên bảng xếp hạng ngay, không chờ
   function guiLenMayChu() {
     if (!nguoi || !window.mayChu) return;
     clearTimeout(henGio);
+    var doTre = guiNgay ? 0 : 600;
+    guiNgay = false;
     henGio = setTimeout(function () {
       if (!nguoi) return;
       window.mayChu.luuTienTrinh(trangThai).catch(function (e) {
         console.warn("Không lưu được lên máy chủ:", e);
+        baoLoiLuu(e);
       });
-    }, 600);
+    }, doTre);
   }
 
   // Gộp tiến trình trên máy và trên máy chủ: không bao giờ làm mất tiến trình của bên nào.
@@ -2418,6 +2706,7 @@ if (nutMoQuiz && khuVucQuiz) {
         trangThai.khamPha.push(so);
       }
     } else if (loai === "hoanThanh") {
+      guiNgay = true;
       var d = Math.floor(Number(giaTri));
       if (Number.isFinite(d) && d >= 0) {
         trangThai.luot++;
@@ -2542,23 +2831,40 @@ if (nutMoQuiz && khuVucQuiz) {
 
       var tg = document.createElement("span");
       tg.className = "rank-time";
-      tg.textContent = h.thoiGian > 0 && window.dinhDangThoiGian
-        ? "⏱ " + window.dinhDangThoiGian(h.thoiGian) : "";
+      tg.textContent = "⏱ " + (h.thoiGian > 0 && window.dinhDangThoiGian
+        ? window.dinhDangThoiGian(h.thoiGian) : "—");
+      tg.title = h.thoiGian > 0 ? "Thời gian hoàn thành lượt tốt nhất" : "Chưa có thời gian (lượt chơi cũ) — chơi lại để cập nhật";
 
       li.appendChild(thuTu);
       li.appendChild(ten);
       li.appendChild(tg);
       li.appendChild(diem);
+
       ds.appendChild(li);
     });
 
-    var coToi = top.some(function (h) { return h.uid === toi; });
-    if (!toi) {
-      ghiChu.textContent = "Đăng nhập và chơi đố vui để có tên trên bảng.";
-    } else if (coToi) {
-      ghiChu.textContent = "Bằng điểm thì ai hoàn thành nhanh hơn xếp trên.";
-    } else {
-      ghiChu.textContent = "Hoàn thành đố vui với điểm đủ cao để vào top 10. Bằng điểm thì ai hoàn thành nhanh hơn xếp trên.";
+    ghiChu.textContent = "";
+  }
+
+  var huyTheoDoi = null;   // hàm hủy theo dõi thời gian thực khi đóng bảng
+  var topMoiNhat = null;
+
+  function theoDoiThoiGianThuc() {
+    if (huyTheoDoi) { huyTheoDoi(); huyTheoDoi = null; }
+    if (!window.mayChu || !window.mayChu.dangKyXepHang) { taiVaVe(); return; }
+    thongBaoDong("Đang tải bảng xếp hạng...");
+    ghiChu.textContent = "";
+    try {
+      huyTheoDoi = window.mayChu.dangKyXepHang(function (top) {
+        topMoiNhat = top;
+        ve(top, window.nguoiHienTai ? window.nguoiHienTai.uid : null);
+      }, function (e) {
+        console.warn("Không theo dõi được bảng xếp hạng:", e);
+        taiVaVe();
+      });
+    } catch (e) {
+      console.warn(e);
+      taiVaVe();
     }
   }
 
@@ -2582,8 +2888,11 @@ if (nutMoQuiz && khuVucQuiz) {
     });
   }
 
-  function mo() { nen.classList.add("rank-visible"); taiVaVe(); }
-  function dong() { nen.classList.remove("rank-visible"); }
+  function mo() { nen.classList.add("rank-visible"); theoDoiThoiGianThuc(); }
+  function dong() {
+    nen.classList.remove("rank-visible");
+    if (huyTheoDoi) { huyTheoDoi(); huyTheoDoi = null; }
+  }
 
   nut.addEventListener("click", mo);
   nutDong.addEventListener("click", dong);
@@ -2594,6 +2903,238 @@ if (nutMoQuiz && khuVucQuiz) {
 
   // Đang mở bảng mà đổi tài khoản thì tải lại để đánh dấu "(bạn)" đúng người
   window.addEventListener("tai-khoan-doi", function () {
-    if (nen.classList.contains("rank-visible")) taiVaVe();
+    if (nen.classList.contains("rank-visible")) {
+      if (topMoiNhat) ve(topMoiNhat, window.nguoiHienTai ? window.nguoiHienTai.uid : null);
+      else theoDoiThoiGianThuc();
+    }
+  });
+})();
+
+// ===== TÍNH KHỐI LƯỢNG PHÂN TỬ (amu) + KIỂM TRA CÔNG THỨC =====
+(function khoiLuongPhanTu() {
+  const form = document.getElementById('amu-form');
+  if (!form) return;
+  const panel = document.getElementById('amu-calculator');
+  const openButton = document.getElementById('amu-open-button');
+  const closeButton = document.getElementById('amu-close-button');
+  function setPanelOpen(open) {
+    panel.classList.toggle('amu-open', open);
+    panel.setAttribute('aria-hidden', String(!open));
+    openButton.setAttribute('aria-expanded', String(open));
+    if (open) document.getElementById('amu-formula').focus({ preventScroll: true });
+    else openButton.focus({ preventScroll: true });
+  }
+  openButton.addEventListener('click', () => setPanelOpen(!panel.classList.contains('amu-open')));
+  closeButton.addEventListener('click', () => setPanelOpen(false));
+  document.addEventListener('keydown', event => { if (event.key === 'Escape' && panel.classList.contains('amu-open')) setPanelOpen(false); });
+  const input = document.getElementById('amu-formula');
+  const error = document.getElementById('amu-error');
+  const result = document.getElementById('amu-result');
+  const totalValue = document.getElementById('amu-total-value');
+  const breakdown = document.getElementById('amu-breakdown');
+
+  // Lấy ký hiệu và khối lượng nguyên tử từ dữ liệu bảng tuần hoàn hiện có.
+  const atomicMass = new Map();
+  if (Array.isArray(duLieu)) {
+    duLieu.forEach(item => {
+      const parts = item.split('|');
+      if (parts.length >= 3) atomicMass.set(parts[0], Number(parts[2]));
+    });
+  }
+
+  function parseFormula(raw) {
+    const formula = raw.replace(/\s+/g, '').replace(/[∙⋅]/g, '·');
+    if (!formula) throw new Error('Bạn chưa nhập công thức. Ví dụ: H2O hoặc Ca(OH)2.');
+    if (formula.length > 120) throw new Error('Công thức quá dài. Vui lòng kiểm tra lại dữ liệu nhập.');
+    if (/[^A-Za-z0-9()[\]{}·.]/.test(formula)) throw new Error('Có ký tự không hợp lệ. Chỉ dùng ký hiệu nguyên tố, chữ số, ngoặc và dấu chấm phân tử ngậm nước (·).');
+    if (formula.startsWith('·') || formula.endsWith('·') || formula.includes('··') || formula.includes('..')) throw new Error('Vị trí dấu chấm phân tử không hợp lệ.');
+    const segments = formula.split(/[·.]/);
+    const all = new Map();
+
+    function parseSegment(segment) {
+      if (!segment) throw new Error('Có một phần công thức đang bị trống.');
+      let pos = 0;
+      let multiplier = 1;
+      const lead = segment.match(/^(\d+)/);
+      if (lead) {
+        multiplier = Number(lead[1]);
+        if (multiplier < 1 || lead[1].length > 1 && lead[1][0] === '0') throw new Error('Hệ số đầu công thức phải là số nguyên dương hợp lệ.');
+        pos = lead[1].length;
+        if (pos === segment.length) throw new Error('Hệ số không được đứng một mình.');
+      }
+      const counts = parseGroup(null).counts;
+      if (pos !== segment.length) throw new Error('Không thể đọc phần công thức gần “' + segment.slice(pos, pos + 8) + '”.');
+      counts.forEach((count, symbol) => all.set(symbol, (all.get(symbol) || 0) + count * multiplier));
+
+      function parseGroup(expectedClose) {
+        const counts = new Map();
+        let hasContent = false;
+        while (pos < segment.length) {
+          const ch = segment[pos];
+          if (ch === ')' || ch === ']' || ch === '}') {
+            if (!expectedClose) throw new Error('Có ngoặc đóng “' + ch + '” nhưng không có ngoặc mở tương ứng.');
+            if (ch !== expectedClose) throw new Error('Các loại ngoặc chưa khớp nhau.');
+            pos++;
+            return { counts, hasContent };
+          }
+          if (ch === '(' || ch === '[' || ch === '{') {
+            pos++;
+            const close = ch === '(' ? ')' : ch === '[' ? ']' : '}';
+            const nested = parseGroup(close);
+            if (!nested.hasContent) throw new Error('Ngoặc rỗng không phải công thức hóa học hợp lệ.');
+            const num = readCount();
+            nested.counts.forEach((count, symbol) => counts.set(symbol, (counts.get(symbol) || 0) + count * num));
+            hasContent = true;
+            continue;
+          }
+          if (/[A-Z]/.test(ch)) {
+            const match = segment.slice(pos).match(/^[A-Z][a-z]?/)[0];
+            if (!atomicMass.has(match)) throw new Error('Không nhận diện được nguyên tố “' + match + '”. Hãy kiểm tra ký hiệu nguyên tố (ví dụ Co là coban, CO là cacbon và oxi).');
+            pos += match.length;
+            counts.set(match, (counts.get(match) || 0) + readCount());
+            hasContent = true;
+            continue;
+          }
+          if (/[a-z]/.test(ch)) throw new Error('Ký hiệu nguyên tố phải bắt đầu bằng chữ hoa tại vị trí “' + ch + '”. Ví dụ viết Na, không phải na.');
+          if (/\d/.test(ch)) throw new Error('Số lượng nguyên tử cần đặt ngay sau ký hiệu nguyên tố hoặc ngoặc.');
+          throw new Error('Công thức có cú pháp không hợp lệ gần “' + segment.slice(pos, pos + 8) + '”.');
+        }
+        if (expectedClose) throw new Error('Thiếu ngoặc đóng “' + expectedClose + '”.');
+        return { counts, hasContent };
+      }
+
+      function readCount() {
+        const match = segment.slice(pos).match(/^\d+/);
+        if (!match) return 1;
+        if (match[0][0] === '0' || Number(match[0]) < 1) throw new Error('Chỉ số nguyên tử phải là số nguyên dương, không bắt đầu bằng 0.');
+        const n = Number(match[0]);
+        if (!Number.isSafeInteger(n) || n > 100000) throw new Error('Chỉ số nguyên tử quá lớn.');
+        pos += match[0].length;
+        return n;
+      }
+      if (!counts.size) throw new Error('Không tìm thấy nguyên tố trong công thức.');
+    }
+
+    segments.forEach(parseSegment);
+    if (!all.size) throw new Error('Không tìm thấy nguyên tố trong công thức.');
+
+    // Kiểm tra thêm một số dạng đơn chất phổ biến để tránh coi mọi chuỗi
+    // đúng cú pháp là một chất có thật. Oxy thông thường tồn tại dạng O2,
+    // ozone là O3; không xem O12 là công thức phân tử đã được xác nhận.
+    if (all.size === 1) {
+      const [[symbol, count]] = Array.from(all.entries());
+      if (symbol === 'O' && count > 3) {
+        throw new Error('O' + count + ' không phải dạng phân tử oxy thông thường đã được xác nhận. Oxy thường gặp là O₂ (oxi) hoặc O₃ (ozon). Công cụ không tính khối lượng cho công thức này.');
+      }
+      const diatomicElements = new Set(['H', 'N', 'F', 'Cl', 'Br', 'I']);
+      if (diatomicElements.has(symbol) && count !== 2) {
+        throw new Error('Đơn chất ' + symbol + ' thường tồn tại dạng phân tử ' + symbol + '₂, không phải ' + symbol + (count === 1 ? '' : count) + '. Hãy kiểm tra lại công thức trước khi tính.');
+      }
+    }
+    return all;
+  }
+
+  function showError(message) {
+    error.textContent = '⚠️ ' + message;
+    error.hidden = false;
+    error.style.color = 'var(--danger, #ff6b6b)';
+    result.hidden = true;
+    input.setAttribute('aria-invalid', 'true');
+  }
+
+  // Chuẩn hóa thành công thức tổng theo thứ tự Hill để tra cứu PubChem.
+  // Lưu ý: PubChem xác nhận có bản ghi hợp chất mang cùng thành phần nguyên tố,
+  // không khẳng định cấu trúc cụ thể của công thức người dùng nhập.
+  function toHillFormula(counts) {
+    const symbols = Array.from(counts.keys());
+    const ordered = symbols.includes('C')
+      ? ['C', ...(symbols.includes('H') ? ['H'] : []), ...symbols.filter(x => x !== 'C' && x !== 'H').sort()]
+      : symbols.sort();
+    return ordered.map(symbol => symbol + (counts.get(symbol) === 1 ? '' : counts.get(symbol))).join('');
+  }
+
+  let requestNumber = 0;
+  async function verifyWithPubChem(counts) {
+    const formula = toHillFormula(counts);
+    const url = 'https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/fastformula/' + encodeURIComponent(formula) + '/cids/JSON?MaxRecords=1';
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 12000);
+    try {
+      const response = await fetch(url, { signal: controller.signal, headers: { 'Accept': 'application/json' } });
+      if (!response.ok) {
+        if (response.status === 404) return { found: false, formula };
+        throw new Error('Cơ sở dữ liệu PubChem đang trả lỗi (' + response.status + ').');
+      }
+      const data = await response.json();
+      const cids = data && data.IdentifierList && data.IdentifierList.CID;
+      return { found: Array.isArray(cids) && cids.length > 0, formula, cid: cids && cids[0] };
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  async function calculate(raw) {
+    const currentRequest = ++requestNumber;
+    error.hidden = true;
+    input.removeAttribute('aria-invalid');
+    result.hidden = true;
+    try {
+      const counts = parseFormula(raw);
+      error.textContent = 'Đang đối chiếu công thức với cơ sở dữ liệu PubChem…';
+      error.hidden = false;
+      error.style.color = 'var(--text-secondary, #aab7c4)';
+      input.setAttribute('aria-busy', 'true');
+      const check = await verifyWithPubChem(counts);
+      if (currentRequest !== requestNumber) return;
+      if (!check.found) {
+        showError('Không tìm thấy bản ghi hợp chất có công thức tổng ' + check.formula + ' trong PubChem. Vì chưa xác minh được công thức này, công cụ không tính amu. Hãy kiểm tra lại công thức.');
+        return;
+      }
+      let total = 0;
+      breakdown.replaceChildren();
+      Array.from(counts.entries()).forEach(([symbol, count]) => {
+        const mass = atomicMass.get(symbol);
+        const subtotal = mass * count;
+        total += subtotal;
+        const row = document.createElement('div');
+        row.className = 'amu-breakdown-row';
+        const left = document.createElement('span');
+        left.textContent = symbol + ' × ' + count + '  (Ar = ' + mass + ')';
+        const right = document.createElement('strong');
+        right.textContent = subtotal.toFixed(4) + ' amu';
+        row.append(left, right);
+        breakdown.append(row);
+      });
+      totalValue.textContent = total.toFixed(4) + ' amu';
+      error.hidden = true;
+      input.removeAttribute('aria-invalid');
+      result.hidden = false;
+      result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    } catch (e) {
+      if (currentRequest !== requestNumber) return;
+      if (e && e.name === 'AbortError') {
+        showError('PubChem phản hồi quá lâu. Hãy thử lại khi kết nối mạng ổn định hơn; công cụ không tính khi chưa xác minh được.');
+      } else if (e instanceof TypeError) {
+        showError('Không kết nối được PubChem. Hãy kiểm tra Internet hoặc mở website qua máy chủ web rồi thử lại. Công cụ không tính khi chưa xác minh được.');
+      } else {
+        showError(e instanceof Error ? e.message : 'Không xác minh được công thức với PubChem. Vui lòng thử lại.');
+      }
+    } finally {
+      if (currentRequest === requestNumber) input.removeAttribute('aria-busy');
+    }
+  }
+  form.addEventListener('submit', event => {
+    event.preventDefault();
+    calculate(input.value);
+  });
+  document.querySelectorAll('[data-amu-example]').forEach(button => {
+    button.addEventListener('click', () => {
+      input.value = button.getAttribute('data-amu-example');
+      calculate(input.value);
+    });
+  });
+  input.addEventListener('input', () => {
+    error.hidden = true;
+    input.removeAttribute('aria-invalid');
   });
 })();

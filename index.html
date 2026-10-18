@@ -71,6 +71,36 @@
     </p>
   </section>
 
+  <!-- CÔNG CỤ TÍNH KHỐI LƯỢNG PHÂN TỬ -->
+  <section id="amu-calculator" class="amu-calculator" aria-labelledby="amu-title" aria-hidden="true">
+    <button id="amu-close-button" class="amu-close-button" type="button" aria-label="Đóng công cụ tính khối lượng" title="Đóng">×</button>
+    <div class="amu-heading">
+      <span class="amu-eyebrow">CHEMISTRY TOOL </span>
+      <h2 id="amu-title">🧪 Tính khối lượng phân tử</h2>
+      <p>Nhập công thức hóa học để tính phân tử khối (amu) và xem cách tính từng nguyên tố.</p>
+    </div>
+    <form id="amu-form" novalidate>
+      <label for="amu-formula">Công thức hóa học</label>
+      <div class="amu-input-row">
+        <input id="amu-formula" name="formula" type="text" placeholder="Ví dụ: H2O, Ca(OH)2, CuSO4·5H2O" autocomplete="off" spellcheck="false" aria-describedby="amu-error">
+        <button type="submit">Tính khối lượng</button>
+      </div>
+      <p id="amu-error" class="amu-error" role="alert" hidden></p>
+    </form>
+    <div id="amu-result" class="amu-result" aria-live="polite" hidden>
+      <div class="amu-total"><span>Khối lượng phân tử</span><strong id="amu-total-value"></strong></div>
+      <div id="amu-breakdown" class="amu-breakdown"></div>
+      <p class="amu-note">Giá trị dùng khối lượng nguyên tử tương đối trong bảng tuần hoàn của trang; kết quả được làm tròn đến 4 chữ số thập phân. PubChem xác nhận công thức tổng có bản ghi, không xác nhận mọi cấu trúc riêng biệt.</p>
+    </div>
+    <div class="amu-examples"><span>Thử nhanh:</span>
+      <button type="button" data-amu-example="H2O">H₂O</button>
+      <button type="button" data-amu-example="CO2">CO₂</button>
+      <button type="button" data-amu-example="Ca(OH)2">Ca(OH)₂</button>
+      <button type="button" data-amu-example="C6H12O6">C₆H₁₂O₆</button>
+    </div>
+  </section>
+  <button id="amu-open-button" type="button" aria-controls="amu-calculator" aria-expanded="false" title="Mở công cụ tính phân tử khối">🧪 <span>Tính amu</span></button>
+
   <div class="khung-bang">
     <div id="bang"></div>
   </div>

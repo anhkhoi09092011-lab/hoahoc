@@ -1,0 +1,627 @@
+/* =====================================================================
+   CHẾ ĐỘ SÁNG — chỉ có hiệu lực khi <html data-theme="light">
+   Tải SAU index.css và auth.css để ghi đè (chế độ tối giữ nguyên như cũ).
+   Màu chữ của ô nguyên tố được pha đậm hơn từ --rgb để dễ đọc trên nền sáng.
+   ===================================================================== */
+
+/* ----- Nút chuyển chế độ (luôn hiện, cả hai chế độ) ----- */
+#theme-toggle {
+  position: fixed;
+  top: 14px;
+  left: 14px;
+  z-index: 950;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  font-size: 19px;
+  line-height: 1;
+  cursor: pointer;
+  border-radius: 50%;
+  color: #eaffe4;
+  background: rgba(110, 220, 60, 0.14);
+  border: 1px solid rgba(141, 245, 107, 0.6);
+  box-shadow: 0 0 12px rgba(110, 220, 60, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+#theme-toggle:hover { transform: rotate(18deg) scale(1.08); box-shadow: 0 0 18px rgba(110, 220, 60, 0.6); }
+#theme-toggle:focus-visible { outline: 2px solid #d9ffc9; outline-offset: 3px; }
+body.popup-mo #theme-toggle { display: none; }
+@media (max-width: 600px) { #theme-toggle { top: 10px; left: 10px; width: 38px; height: 38px; font-size: 17px; } }
+@media (prefers-reduced-motion: reduce) { #theme-toggle { transition: none; } }
+
+/* ===================== CHẾ ĐỘ SÁNG ===================== */
+html[data-theme="light"] { color-scheme: light; }
+html[data-theme="light"] body { background: #eef4ea; color: #1f2a22; }
+
+html[data-theme="light"] #theme-toggle {
+  color: #14532d;
+  background: #ffffff;
+  border-color: #3aa626;
+  box-shadow: 0 2px 10px rgba(30, 80, 30, 0.25);
+}
+
+/* ----- Phần đầu trang ----- */
+html[data-theme="light"] h1 {
+  background: linear-gradient(90deg, #14532d 0%, #2e8b1f 50%, #0f766e 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: #14532d;
+  filter: none;
+}
+html[data-theme="light"] .goi-y { color: #5b6b60; }
+html[data-theme="light"] #timKiem {
+  color: #1f2a22;
+  background-color: #ffffff;
+  border-color: rgba(46, 139, 31, 0.45);
+  box-shadow: 0 1px 6px rgba(30, 80, 30, 0.12);
+}
+html[data-theme="light"] #timKiem::placeholder { color: #8a9a8e; }
+html[data-theme="light"] #timKiem:focus { border-color: #2e8b1f; box-shadow: 0 0 0 3px rgba(46, 139, 31, 0.2); }
+
+html[data-theme="light"] #nut { border-color: rgba(46, 139, 31, 0.35); background: rgba(255, 255, 255, 0.7); }
+html[data-theme="light"] #nut button { color: #3b5a43; }
+html[data-theme="light"] #nut button:hover { color: #14532d; background: rgba(46, 139, 31, 0.14); }
+html[data-theme="light"] #nut button.dang-chon {
+  color: #fff;
+  background: linear-gradient(135deg, #3aa626, #2e8b1f);
+  border-color: #2e8b1f;
+  box-shadow: 0 2px 10px rgba(46, 139, 31, 0.4);
+}
+
+/* ----- Ô nguyên tố, chú thích, ô giữ chỗ ----- */
+html[data-theme="light"] .o .mat,
+html[data-theme="light"] .chu-thich-o,
+html[data-theme="light"] .giu-cho {
+  background: rgba(var(--rgb), 0.24);
+  border-color: rgba(var(--rgb), 0.9);
+  color: color-mix(in srgb, rgb(var(--rgb)) 40%, #000);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+}
+html[data-theme="light"] .o .kh,
+html[data-theme="light"] .giu-cho { text-shadow: none; }
+html[data-theme="light"] .o:hover .mat {
+  filter: brightness(1.05) saturate(1.3);
+  box-shadow: 0 0 14px rgba(var(--rgb), 0.9), 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+html[data-theme="light"] .chu-thich-o:hover { filter: brightness(1.08) saturate(1.2); }
+html[data-theme="light"] .chu-thich-o.dang-loc { box-shadow: 0 0 14px rgba(var(--rgb), 0.9); }
+html[data-theme="light"] .o.hien-ra.loai-sang .mat { filter: brightness(1.05) saturate(1.3); box-shadow: 0 0 16px rgba(var(--rgb), 0.95); }
+html[data-theme="light"] .nhan { color: #5b6b60; }
+html[data-theme="light"] .nhan b,
+html[data-theme="light"] .nhan.chu-ki { color: #14532d; }
+
+/* ----- Popup nguyên tố ----- */
+html[data-theme="light"] #modal-backdrop { background: rgba(20, 35, 22, 0.5) !important; }
+html[data-theme="light"] #detail-modal {
+  background:
+    radial-gradient(ellipse 70% 38% at 50% -4%, rgba(var(--rgb, 110, 220, 60), 0.2), transparent 70%),
+    linear-gradient(160deg, #fbfff8 0%, #eaf3e4 100%) !important;
+  box-shadow: 0 0 40px rgba(var(--rgb, 110, 220, 60), 0.25), 0 24px 60px rgba(0, 0, 0, 0.3) !important;
+  color: #1f2a22;
+}
+html[data-theme="light"] #detail-modal #modal-symbol {
+  color: color-mix(in srgb, rgb(var(--rgb, 110, 220, 60)) 35%, #000) !important;
+  background: radial-gradient(circle at 30% 18%, rgba(var(--rgb, 110, 220, 60), 0.4), rgba(var(--rgb, 110, 220, 60), 0.1) 70%), #ffffff;
+  text-shadow: none;
+  box-shadow: 0 0 20px rgba(var(--rgb, 110, 220, 60), 0.4), inset 0 0 16px rgba(var(--rgb, 110, 220, 60), 0.15);
+}
+html[data-theme="light"] #detail-modal #modal-symbol::before,
+html[data-theme="light"] #detail-modal #modal-symbol::after { color: rgba(20, 40, 25, 0.75); }
+html[data-theme="light"] #detail-modal #modal-title { color: #14532d !important; text-shadow: none; }
+html[data-theme="light"] #detail-modal h2 { color: #14532d; }
+
+html[data-theme="light"] #detail-modal #atom-model,
+html[data-theme="light"] #detail-modal #modal-desc,
+html[data-theme="light"] #detail-modal #electron-details,
+html[data-theme="light"] #detail-modal #nist-isotope-source {
+  background: linear-gradient(160deg, rgba(var(--rgb, 110, 220, 60), 0.1), #ffffff 60%) !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06) !important;
+  color: #1f2a22;
+}
+html[data-theme="light"] #detail-modal #atom-model {
+  background: radial-gradient(circle at 50% 52%, rgba(var(--rgb, 110, 220, 60), 0.16), #ffffff 65%) !important;
+}
+html[data-theme="light"] #modal-desc { color: #1f2a22; }
+html[data-theme="light"] .info-key { color: #5b6b60; }
+html[data-theme="light"] .info-val { color: #14231a; }
+html[data-theme="light"] .info-item { background: rgba(var(--rgb, 110, 220, 60), 0.12); }
+
+html[data-theme="light"] #atom-model { background: #ffffff; color: #1f2a22; }
+html[data-theme="light"] #atom-model h3 { color: #166534; }
+html[data-theme="light"] .atom-legend { color: #3b4a40; }
+html[data-theme="light"] .atom-legend span { border-color: rgba(0, 0, 0, 0.1); background: rgba(0, 0, 0, 0.03); }
+html[data-theme="light"] .atom-note { color: #5b6b60; }
+html[data-theme="light"] #detail-modal .atom-note { border-top-color: rgba(46, 139, 31, 0.3); }
+html[data-theme="light"] #atom-summary,
+html[data-theme="light"] #detail-modal #atom-summary { color: #1f2a22; }
+html[data-theme="light"] .atom-shell-item { color: #1f2a22; background: rgba(46, 139, 31, 0.08); }
+html[data-theme="light"] .atom-shell-item strong { color: #166534; }
+html[data-theme="light"] #electron-details { color: #1f2a22; }
+html[data-theme="light"] #electron-details h3 { color: #166534; }
+html[data-theme="light"] #electron-configuration,
+html[data-theme="light"] #detail-modal #electron-configuration { color: #14532d; background: rgba(46, 139, 31, 0.06); }
+html[data-theme="light"] #electron-configuration strong { color: #166534; }
+
+html[data-theme="light"] #nist-isotope-source { color: #1f2a22; }
+html[data-theme="light"] #nist-isotope-source a,
+html[data-theme="light"] #detail-modal #nist-isotope-source a { color: #166534; border-bottom-color: rgba(22, 101, 52, 0.5); }
+html[data-theme="light"] .isotope-chart line[stroke="#8ee66b"] { stroke: #3aa626; }
+html[data-theme="light"] .isotope-chart circle { fill: #2e8b1f; }
+html[data-theme="light"] #detail-modal .isotope-row { background: rgba(0, 0, 0, 0.03); }
+html[data-theme="light"] #detail-modal .isotope-row:nth-child(even) { background: rgba(0, 0, 0, 0.055); }
+html[data-theme="light"] #detail-modal .isotope-head { color: #14532d; background: rgba(46, 139, 31, 0.16) !important; }
+html[data-theme="light"] .isotope-note { color: #5b6b60; }
+
+html[data-theme="light"] #detail-modal #fun-facts {
+  background: radial-gradient(ellipse at top left, rgba(255, 214, 102, 0.28), transparent 65%), #ffffff !important;
+  border-color: rgba(202, 138, 4, 0.5) !important;
+  color: #1f2a22;
+}
+html[data-theme="light"] #detail-modal #fun-facts h3 { color: #a16207 !important; }
+html[data-theme="light"] #fun-facts-list { color: #1f2a22; }
+html[data-theme="light"] #detail-modal #fun-facts-list p { color: #3a2f08; background: rgba(250, 204, 21, 0.18); border-left-color: #ca8a04; }
+
+html[data-theme="light"] .nguoi-phat-hien { background: radial-gradient(ellipse at top left, rgba(var(--rgb, 110, 220, 60), 0.18), transparent 70%), #ffffff; }
+html[data-theme="light"] .npd-ten { color: #14231a; }
+html[data-theme="light"] .npd-nam small { color: #5b6b60; }
+html[data-theme="light"] .npd-nam strong,
+html[data-theme="light"] .npd-nhan { color: color-mix(in srgb, rgb(var(--rgb, 110, 220, 60)) 45%, #000); text-shadow: none; }
+
+html[data-theme="light"] #detail-modal #close-button { color: #14532d !important; background: rgba(46, 139, 31, 0.12) !important; border-color: #2e8b1f !important; }
+html[data-theme="light"] #detail-modal #close-button:hover { background: rgba(46, 139, 31, 0.28) !important; }
+html[data-theme="light"] #detail-modal #modal-x { color: #14532d !important; background: #ffffff !important; }
+
+/* ----- Đố vui ----- */
+html[data-theme="light"] #khu-do-vui { color: #1f2a22; --quiz-border: rgba(46, 139, 31, 0.4); }
+html[data-theme="light"] .quiz-tag { color: #166534; }
+html[data-theme="light"] .quiz-header h2 { color: #14532d; text-shadow: none; }
+html[data-theme="light"] .quiz-header p,
+html[data-theme="light"] .quiz-footnote { color: #5b6b60; }
+html[data-theme="light"] .quiz-stat { background: #ffffff; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06); }
+html[data-theme="light"] .quiz-stat span { color: #5b6b60; }
+html[data-theme="light"] .quiz-stat strong { color: #2e8b1f; }
+html[data-theme="light"] #quiz-time { color: #0369a1; }
+html[data-theme="light"] .quiz-progress-track,
+html[data-theme="light"] .quiz-time-track { background: #d9e5d3; }
+html[data-theme="light"] .quiz-card { background: radial-gradient(ellipse at top right, rgba(46, 139, 31, 0.1), transparent 55%), #ffffff; box-shadow: 0 8px 28px rgba(0, 0, 0, 0.1); }
+html[data-theme="light"] .quiz-category { color: #166534; }
+html[data-theme="light"] #quiz-symbol { color: #166534; background: rgba(46, 139, 31, 0.1); border-color: rgba(46, 139, 31, 0.6); box-shadow: none; }
+html[data-theme="light"] #quiz-element-name { color: #5b6b60; }
+html[data-theme="light"] #quiz-question { color: #14231a; }
+html[data-theme="light"] .quiz-answer { color: #1f2a22; background: #f4f9f1; border-color: #c9dcc1; }
+html[data-theme="light"] .quiz-answer:hover:not(:disabled) { background: #e6f3df; border-color: #2e8b1f; }
+html[data-theme="light"] .quiz-answer .answer-letter { color: #166534; border-color: #a9c6a0; }
+html[data-theme="light"] .quiz-answer.dung { color: #14532d; background: rgba(34, 197, 94, 0.16); border-color: #16a34a; }
+html[data-theme="light"] .quiz-answer.sai { color: #991b1b; background: rgba(248, 113, 113, 0.15); border-color: #dc2626; }
+html[data-theme="light"] .quiz-feedback { color: #4b5a50; background: rgba(0, 0, 0, 0.035); }
+html[data-theme="light"] .quiz-feedback.dung { color: #166534; border-left-color: #16a34a; }
+html[data-theme="light"] .quiz-feedback.sai { color: #b91c1c; border-left-color: #dc2626; }
+html[data-theme="light"] #quiz-restart { color: #166534; }
+html[data-theme="light"] .quiz-result-time { background: radial-gradient(ellipse at top, rgba(56, 189, 248, 0.16), #ffffff 70%); }
+html[data-theme="light"] .quiz-result-time span { color: #5b6b60; }
+html[data-theme="light"] .quiz-result-time strong { color: #0369a1; text-shadow: none; }
+
+/* ----- Hai nút góc trái (Đố vui / Tính amu) ----- */
+html[data-theme="light"] #quiz-open-button,
+html[data-theme="light"] #amu-open-button {
+  color: #14532d !important;
+  text-shadow: none !important;
+  background: linear-gradient(135deg, #ffffff, #e6f3df) !important;
+  border: 2px solid #3aa626 !important;
+  box-shadow: 0 3px 12px rgba(30, 80, 30, 0.25) !important;
+  animation: none !important;
+}
+html[data-theme="light"] #quiz-open-button:hover,
+html[data-theme="light"] #amu-open-button:hover {
+  color: #0f3d20 !important;
+  background: linear-gradient(135deg, #f3fbef, #d3ecc8) !important;
+  border-color: #2e8b1f !important;
+  box-shadow: 0 6px 18px rgba(30, 80, 30, 0.35) !important;
+}
+
+/* ----- Công cụ amu ----- */
+html[data-theme="light"] .amu-calculator {
+  --ui-text: #1f2a22; --ui-muted: #5b6b60; --ui-accent: #2e8b1f; --ui-accent-light: #166534; --ui-border: rgba(46, 139, 31, 0.4);
+  background: linear-gradient(145deg, #ffffff, #eef6ea);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+html[data-theme="light"] .amu-heading h2 { color: #14532d; }
+html[data-theme="light"] .amu-close-button { color: #1f2a22; background: rgba(0, 0, 0, 0.05); border-color: rgba(0, 0, 0, 0.2); }
+html[data-theme="light"] .amu-input-row input { color: #1f2a22; background: #ffffff; border-color: rgba(46, 139, 31, 0.45); }
+html[data-theme="light"] .amu-input-row button { color: #fff; background: #2e8b1f; }
+html[data-theme="light"] .amu-input-row button:hover { background: #3aa626; }
+html[data-theme="light"] .amu-error { color: #9f1239; background: rgba(251, 113, 133, 0.15); }
+html[data-theme="light"] .amu-result { background: rgba(46, 139, 31, 0.08); }
+html[data-theme="light"] .amu-breakdown-row { color: #1f2a22; }
+html[data-theme="light"] .amu-examples button { color: #166534; background: rgba(46, 139, 31, 0.08); border-color: rgba(46, 139, 31, 0.4); }
+
+/* ----- Huy hiệu & xếp hạng ----- */
+html[data-theme="light"] #badge-avatar { color: #14532d; background: radial-gradient(circle at 30% 20%, #ffffff, #d9efd0 72%); border-color: #3aa626; box-shadow: 0 3px 12px rgba(30, 80, 30, 0.3); }
+html[data-theme="light"] #badge-count { color: #166534; }
+html[data-theme="light"] #rank-avatar { color: #713f12; background: radial-gradient(circle at 30% 20%, #fffbe6, #fde68a 72%); box-shadow: 0 3px 12px rgba(161, 98, 7, 0.3); }
+html[data-theme="light"] #rank-avatar > span:last-child { color: #a16207; }
+html[data-theme="light"] #badge-backdrop,
+html[data-theme="light"] #rank-backdrop { background: rgba(20, 35, 22, 0.55); }
+html[data-theme="light"] #badge-panel { color: #1f2a22; background: radial-gradient(ellipse at top, #eaf6e4, #ffffff 65%); border-color: rgba(46, 139, 31, 0.5); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25); }
+html[data-theme="light"] #rank-panel { color: #1f2a22; background: radial-gradient(ellipse at top, #fff6d6, #ffffff 65%); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25); }
+html[data-theme="light"] #badge-close,
+html[data-theme="light"] #rank-close { color: #1f2a22; background: #ffffff; border-color: #b8c9b2; }
+html[data-theme="light"] #badge-title { color: #14532d; }
+html[data-theme="light"] #rank-title { color: #92400e; }
+html[data-theme="light"] .badge-subtitle,
+html[data-theme="light"] .rank-subtitle,
+html[data-theme="light"] #badge-hint,
+html[data-theme="light"] #rank-note,
+html[data-theme="light"] .badge-total > span { color: #5b6b60; }
+html[data-theme="light"] .badge-total { background: #ffffff; border-color: #c9dcc1; }
+html[data-theme="light"] .badge-total strong { color: #166534; }
+html[data-theme="light"] .badge-track { background: #d9e5d3; }
+html[data-theme="light"] .badge-item { background: #f6faf3; border-color: #c9dcc1; }
+html[data-theme="light"] .badge-item.unlocked { background: radial-gradient(circle at top, #dff3d6, #ffffff 80%); border-color: #3aa626; }
+html[data-theme="light"] .badge-name { color: #166534; }
+html[data-theme="light"] .badge-item:not(.unlocked) .badge-name { color: #7a8a7e; }
+html[data-theme="light"] .badge-description { color: #5b6b60; }
+html[data-theme="light"] .badge-status { color: #6b7a70; border-color: #c4d3bf; }
+html[data-theme="light"] .badge-item.unlocked .badge-status { color: #166534; border-color: #3aa626; }
+html[data-theme="light"] #badge-account { background: rgba(46, 139, 31, 0.08); }
+html[data-theme="light"] .badge-account-name { color: #166534; }
+html[data-theme="light"] .badge-account-stats { color: #3b4a40; }
+html[data-theme="light"] .rank-row { background: #f6faf3; border-color: #c9dcc1; }
+html[data-theme="light"] .rank-top1 { background: linear-gradient(90deg, rgba(245, 197, 66, 0.3), #ffffff); border-color: #d99a06; }
+html[data-theme="light"] .rank-top2 { background: linear-gradient(90deg, rgba(160, 170, 180, 0.28), #ffffff); border-color: #94a3b8; }
+html[data-theme="light"] .rank-top3 { background: linear-gradient(90deg, rgba(205, 138, 75, 0.25), #ffffff); border-color: #b9722f; }
+html[data-theme="light"] .rank-name { color: #1f2a22; }
+html[data-theme="light"] .rank-me .rank-name { color: #166534; }
+html[data-theme="light"] .rank-score { color: #166534; }
+html[data-theme="light"] .rank-time { color: #0369a1; }
+html[data-theme="light"] .rank-empty { color: #5b6b60; }
+
+/* ----- Cần xoay bảng ----- */
+html[data-theme="light"] #xoay-nen { border-color: rgba(46, 139, 31, 0.7); background: rgba(255, 255, 255, 0.6); box-shadow: 0 2px 10px rgba(30, 80, 30, 0.25), inset 0 0 12px rgba(46, 139, 31, 0.1); }
+html[data-theme="light"] #xoay-nen::before {
+  background:
+    linear-gradient(rgba(46, 139, 31, 0.45), rgba(46, 139, 31, 0.45)) center / 1px 56% no-repeat,
+    linear-gradient(rgba(46, 139, 31, 0.45), rgba(46, 139, 31, 0.45)) center / 56% 1px no-repeat;
+}
+html[data-theme="light"] #xoay-nut { background: radial-gradient(circle at 35% 30%, #ffffff, #8be866 55%, #2e8b1f); box-shadow: 0 0 8px rgba(46, 139, 31, 0.6), 0 2px 6px rgba(0, 0, 0, 0.3); }
+
+/* ----- Thanh tài khoản & hộp thoại yêu cầu đăng nhập (auth.css) ----- */
+html[data-theme="light"] #thanh-tai-khoan { color: #3b5a43; }
+html[data-theme="light"] #thanh-tai-khoan a,
+html[data-theme="light"] #thanh-tai-khoan button {
+  color: color-mix(in srgb, rgb(var(--rgb)) 40%, #000);
+  text-shadow: none;
+  background: rgba(var(--rgb), 0.2);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+}
+html[data-theme="light"] #thanh-tai-khoan .ten-nguoi-dung { color: #166534; }
+html[data-theme="light"] #thanh-tai-khoan .tk-chip { background: #ffffff; border-color: rgba(46, 139, 31, 0.5); box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1); }
+html[data-theme="light"] #thanh-tai-khoan .tk-dang-xuat { color: #b91c1c; background: #fff1f1; border-color: rgba(220, 38, 38, 0.6); }
+html[data-theme="light"] #yc-backdrop { background: rgba(20, 35, 22, 0.55); }
+html[data-theme="light"] #yc-backdrop .yc-hop { background: linear-gradient(145deg, #ffffff, #eef6ea); border-color: #3aa626; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3); }
+html[data-theme="light"] #yc-backdrop h3 { color: #14532d; text-shadow: none; }
+html[data-theme="light"] #yc-backdrop p { color: #5b6b60; }
+html[data-theme="light"] #yc-backdrop .yc-dang-nhap { color: #14532d; background: rgba(46, 139, 31, 0.14); border-color: #3aa626; }
+html[data-theme="light"] #yc-backdrop .yc-dong { color: #5b6b60; }
+html[data-theme="light"] #yc-backdrop .yc-dong:hover { color: #14532d; }
+
+/* ----- Trang đăng nhập / đăng ký ----- */
+html[data-theme="light"] body.trang-auth {
+  background:
+    radial-gradient(ellipse at 20% 0%, rgba(110, 220, 60, 0.22), transparent 55%),
+    radial-gradient(ellipse at 90% 100%, rgba(45, 200, 190, 0.15), transparent 55%),
+    #eef4ea;
+}
+html[data-theme="light"] .auth-card { background: linear-gradient(145deg, #ffffff, #eef6ea); border-color: #3aa626; box-shadow: 0 10px 40px rgba(30, 80, 30, 0.25); }
+html[data-theme="light"] .auth-tag { color: #166534; border-color: rgba(46, 139, 31, 0.4); }
+html[data-theme="light"] .auth-card h1 { color: #14532d; text-shadow: none; background: none; -webkit-text-fill-color: #14532d; filter: none; }
+html[data-theme="light"] .auth-sub,
+html[data-theme="light"] .auth-switch { color: #5b6b60; }
+html[data-theme="light"] .auth-field label { color: #166534; }
+html[data-theme="light"] .auth-field input { color: #1f2a22; background: #ffffff; border-color: #b8c9b2; }
+html[data-theme="light"] .auth-field input:focus { border-color: #2e8b1f; box-shadow: 0 0 0 3px rgba(46, 139, 31, 0.2); }
+html[data-theme="light"] .auth-field input::placeholder { color: #8a9a8e; }
+html[data-theme="light"] .auth-toggle { color: #2e8b1f; }
+html[data-theme="light"] .auth-msg.loi { color: #b91c1c; background: rgba(248, 113, 113, 0.14); }
+html[data-theme="light"] .auth-msg.ok { color: #166534; background: rgba(34, 197, 94, 0.14); }
+html[data-theme="light"] .auth-submit { color: #fff; background: #2e8b1f; border-color: #2e8b1f; }
+html[data-theme="light"] .auth-submit:hover:not(:disabled) { background: #3aa626; }
+html[data-theme="light"] .auth-switch a { color: #166534; }
+html[data-theme="light"] .auth-back { color: #5b6b60; }
+html[data-theme="light"] .auth-back:hover { color: #14532d; }
+
+/* =====================================================================
+   CHẾ ĐỘ SÁNG — BẢN NỔI BẬT: nền có màu hơn, viền đậm, bóng đổ rõ,
+   màu ô nguyên tố đậm và chữ tương phản mạnh (đặt cuối để ghi đè phần trên)
+   ===================================================================== */
+html[data-theme="light"] body {
+  background:
+    radial-gradient(ellipse at 15% 0%, rgba(110, 220, 60, 0.28), transparent 55%),
+    radial-gradient(ellipse at 90% 100%, rgba(45, 200, 190, 0.22), transparent 55%),
+    #dbe9d3;
+  color: #14231a;
+}
+
+/* Tiêu đề */
+html[data-theme="light"] h1 {
+  background: linear-gradient(90deg, #0b3d1e 0%, #1f7a1a 50%, #0b6b62 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 800;
+  filter: drop-shadow(0 2px 2px rgba(20, 83, 45, 0.3));
+}
+html[data-theme="light"] .goi-y { color: #3b5a43; font-weight: 600; }
+
+/* Ô tìm kiếm */
+html[data-theme="light"] #timKiem {
+  border: 2px solid #2e8b1f;
+  background-color: #ffffff;
+  box-shadow: 0 3px 10px rgba(30, 80, 30, 0.25);
+}
+html[data-theme="light"] #timKiem:focus { box-shadow: 0 0 0 4px rgba(46, 139, 31, 0.28), 0 3px 12px rgba(30, 80, 30, 0.3); }
+
+/* 3 nút Table / Sphere / Helix */
+html[data-theme="light"] #nut {
+  background: #ffffff;
+  border: 2px solid #2e8b1f;
+  box-shadow: 0 3px 10px rgba(30, 80, 30, 0.22);
+}
+html[data-theme="light"] #nut button { color: #1f4a2a; font-weight: 700; }
+html[data-theme="light"] #nut button.dang-chon {
+  background: linear-gradient(135deg, #3aa626, #1f7a1a);
+  border-color: #14532d;
+  box-shadow: 0 3px 10px rgba(20, 83, 45, 0.5);
+}
+
+/* Ô nguyên tố + chú thích + ô giữ chỗ: màu đậm hơn, viền dày, có bóng */
+html[data-theme="light"] .o .mat,
+html[data-theme="light"] .chu-thich-o,
+html[data-theme="light"] .giu-cho {
+  background: linear-gradient(160deg, rgba(var(--rgb), 0.5), rgba(var(--rgb), 0.3));
+  border: 2px solid color-mix(in srgb, rgb(var(--rgb)) 75%, #000);
+  color: color-mix(in srgb, rgb(var(--rgb)) 22%, #000);
+  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+html[data-theme="light"] .o .kh { font-weight: 800; }
+html[data-theme="light"] .o .so,
+html[data-theme="light"] .o .kl { opacity: 1; font-weight: 700; }
+html[data-theme="light"] .o:hover .mat {
+  filter: brightness(1.06) saturate(1.5);
+  box-shadow: 0 0 18px rgba(var(--rgb), 1), 0 4px 10px rgba(0, 0, 0, 0.35);
+}
+html[data-theme="light"] .chu-thich-o { font-weight: 700; }
+html[data-theme="light"] .chu-thich-o.dang-loc { box-shadow: 0 0 16px rgba(var(--rgb), 1), 0 3px 8px rgba(0, 0, 0, 0.3); }
+html[data-theme="light"] .nhan { color: #3b5a43; font-weight: 600; }
+html[data-theme="light"] .nhan b,
+html[data-theme="light"] .nhan.chu-ki { color: #0b3d1e; }
+
+/* Popup nguyên tố */
+html[data-theme="light"] #detail-modal {
+  border: 3px solid color-mix(in srgb, rgb(var(--rgb, 110, 220, 60)) 70%, #000) !important;
+  box-shadow: 0 0 0 4px rgba(var(--rgb, 110, 220, 60), 0.25), 0 0 40px rgba(var(--rgb, 110, 220, 60), 0.45), 0 28px 70px rgba(0, 0, 0, 0.45) !important;
+}
+html[data-theme="light"] #detail-modal #modal-symbol {
+  border: 3px solid color-mix(in srgb, rgb(var(--rgb, 110, 220, 60)) 75%, #000);
+  background: linear-gradient(160deg, rgba(var(--rgb, 110, 220, 60), 0.6), rgba(var(--rgb, 110, 220, 60), 0.25)), #ffffff;
+  color: color-mix(in srgb, rgb(var(--rgb, 110, 220, 60)) 20%, #000) !important;
+  box-shadow: 0 6px 18px rgba(var(--rgb, 110, 220, 60), 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+html[data-theme="light"] #detail-modal #modal-title { color: #0b3d1e !important; border-bottom: 2px solid rgba(var(--rgb, 110, 220, 60), 0.6) !important; }
+html[data-theme="light"] #detail-modal #atom-model,
+html[data-theme="light"] #detail-modal #modal-desc,
+html[data-theme="light"] #detail-modal #electron-details,
+html[data-theme="light"] #detail-modal #nist-isotope-source {
+  border: 2px solid color-mix(in srgb, rgb(var(--rgb, 110, 220, 60)) 65%, #000) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18) !important;
+}
+html[data-theme="light"] #detail-modal #atom-model h3,
+html[data-theme="light"] #detail-modal #electron-details h3,
+html[data-theme="light"] #detail-modal #nist-isotope-source h3 { color: #0b3d1e !important; }
+html[data-theme="light"] .info-item {
+  background: rgba(var(--rgb, 110, 220, 60), 0.22);
+  border: 1.5px solid rgba(var(--rgb, 110, 220, 60), 0.75);
+}
+html[data-theme="light"] .info-key { color: #2f4a37; font-weight: 600; }
+html[data-theme="light"] .info-val { color: #0b1a10; font-weight: 800; }
+html[data-theme="light"] .atom-shell-item { border: 1.5px solid rgba(46, 139, 31, 0.6); background: rgba(46, 139, 31, 0.14); font-weight: 600; }
+html[data-theme="light"] #detail-modal #fun-facts {
+  border: 2px solid #ca8a04 !important;
+  box-shadow: 0 4px 12px rgba(161, 98, 7, 0.25) !important;
+}
+html[data-theme="light"] #detail-modal #fun-facts-list p { background: rgba(250, 204, 21, 0.3); border-left-width: 4px; color: #2e2406; font-weight: 500; }
+html[data-theme="light"] .nguoi-phat-hien { border: 2px solid rgba(var(--rgb, 110, 220, 60), 0.9); box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15); }
+html[data-theme="light"] #detail-modal #close-button {
+  color: #fff !important;
+  background: linear-gradient(135deg, #3aa626, #1f7a1a) !important;
+  border: 2px solid #14532d !important;
+  box-shadow: 0 3px 10px rgba(20, 83, 45, 0.45);
+}
+html[data-theme="light"] #detail-modal #close-button:hover { background: linear-gradient(135deg, #46c030, #2e8b1f) !important; }
+html[data-theme="light"] #detail-modal #modal-x { border: 2px solid #14532d !important; box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3); }
+
+/* Đố vui */
+html[data-theme="light"] .quiz-header h2 { color: #0b3d1e; font-weight: 800; }
+html[data-theme="light"] .quiz-tag { border: 1.5px solid #2e8b1f; background: #ffffff; font-weight: 700; }
+html[data-theme="light"] .quiz-stat,
+html[data-theme="light"] .quiz-card {
+  border: 2px solid #2e8b1f;
+  box-shadow: 0 5px 16px rgba(30, 80, 30, 0.22);
+}
+html[data-theme="light"] .quiz-stat strong { color: #1f7a1a; font-weight: 800; }
+html[data-theme="light"] .quiz-answer {
+  background: #ffffff;
+  border: 2px solid #9fc193;
+  color: #14231a;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+html[data-theme="light"] .quiz-answer:hover:not(:disabled) { background: #e3f4da; border-color: #2e8b1f; box-shadow: 0 4px 12px rgba(46, 139, 31, 0.35); }
+html[data-theme="light"] .quiz-answer .answer-letter { background: #e3f4da; border: 1.5px solid #2e8b1f; color: #14532d; }
+html[data-theme="light"] .quiz-answer.dung { background: #c9f0d2; border-color: #16a34a; color: #0b3d1e; }
+html[data-theme="light"] .quiz-answer.sai { background: #fcd5d5; border-color: #dc2626; color: #7f1414; }
+html[data-theme="light"] #quiz-next { color: #fff; background: linear-gradient(135deg, #3aa626, #1f7a1a); border-color: #14532d; }
+html[data-theme="light"] #quiz-next:hover:not(:disabled) { background: linear-gradient(135deg, #46c030, #2e8b1f); }
+html[data-theme="light"] #quiz-restart { border: 2px solid #2e8b1f; color: #14532d; font-weight: 700; background: #ffffff; }
+html[data-theme="light"] #quiz-question { color: #0b1a10; font-weight: 700; }
+html[data-theme="light"] .quiz-feedback { border: 1.5px solid #c9dcc1; background: #f3f9ef; color: #2f4a37; }
+
+/* Hai nút góc trái + nút đổi chế độ: xanh đặc, chữ trắng */
+html[data-theme="light"] #quiz-open-button,
+html[data-theme="light"] #amu-open-button {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #3aa626, #1f7a1a) !important;
+  border: 2px solid #14532d !important;
+  box-shadow: 0 5px 16px rgba(20, 83, 45, 0.5) !important;
+}
+html[data-theme="light"] #quiz-open-button:hover,
+html[data-theme="light"] #amu-open-button:hover {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #46c030, #2e8b1f) !important;
+  box-shadow: 0 8px 22px rgba(20, 83, 45, 0.6) !important;
+}
+html[data-theme="light"] #theme-toggle { border: 2px solid #2e8b1f; box-shadow: 0 3px 12px rgba(30, 80, 30, 0.4); }
+
+/* Công cụ amu */
+html[data-theme="light"] .amu-calculator { border: 3px solid #2e8b1f; box-shadow: 0 0 0 4px rgba(46, 139, 31, 0.2), 0 24px 70px rgba(0, 0, 0, 0.4); }
+html[data-theme="light"] .amu-heading h2 { color: #0b3d1e; font-weight: 800; }
+html[data-theme="light"] .amu-input-row input { border: 2px solid #2e8b1f; color: #0b1a10; font-weight: 600; }
+html[data-theme="light"] .amu-input-row button { background: linear-gradient(135deg, #3aa626, #1f7a1a); border: 2px solid #14532d; }
+html[data-theme="light"] .amu-result { border: 2px solid #2e8b1f; background: #eaf6e4; }
+html[data-theme="light"] .amu-total strong { color: #14532d; }
+html[data-theme="light"] .amu-examples button { border: 1.5px solid #2e8b1f; font-weight: 700; background: #ffffff; }
+
+/* Huy hiệu & xếp hạng */
+html[data-theme="light"] #badge-avatar { border: 3px solid #2e8b1f; box-shadow: 0 5px 16px rgba(20, 83, 45, 0.45); }
+html[data-theme="light"] #rank-avatar { border: 3px solid #d99a06; box-shadow: 0 5px 16px rgba(161, 98, 7, 0.45); }
+html[data-theme="light"] #badge-panel { border: 3px solid #2e8b1f; box-shadow: 0 0 0 4px rgba(46, 139, 31, 0.2), 0 24px 70px rgba(0, 0, 0, 0.4); }
+html[data-theme="light"] #rank-panel { border: 3px solid #d99a06; box-shadow: 0 0 0 4px rgba(217, 154, 6, 0.2), 0 24px 70px rgba(0, 0, 0, 0.4); }
+html[data-theme="light"] .badge-total,
+html[data-theme="light"] .badge-item,
+html[data-theme="light"] .rank-row { border: 2px solid #9fc193; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); }
+html[data-theme="light"] .badge-item.unlocked { border-color: #2e8b1f; background: radial-gradient(circle at top, #c9f0d2, #ffffff 85%); box-shadow: 0 4px 12px rgba(46, 139, 31, 0.35); }
+html[data-theme="light"] .badge-name { font-weight: 800; }
+html[data-theme="light"] .rank-name { font-weight: 700; }
+html[data-theme="light"] .rank-score { font-weight: 800; color: #14532d; }
+html[data-theme="light"] .rank-me { box-shadow: 0 0 0 3px #2e8b1f inset; }
+
+/* Cần xoay + thanh tài khoản + trang đăng nhập */
+html[data-theme="light"] #xoay-nen { border: 3px solid #2e8b1f; background: #ffffff; box-shadow: 0 4px 14px rgba(20, 83, 45, 0.4); }
+html[data-theme="light"] #thanh-tai-khoan a,
+html[data-theme="light"] #thanh-tai-khoan button {
+  background: linear-gradient(160deg, rgba(var(--rgb), 0.5), rgba(var(--rgb), 0.3));
+  border: 2px solid color-mix(in srgb, rgb(var(--rgb)) 75%, #000);
+  color: color-mix(in srgb, rgb(var(--rgb)) 22%, #000);
+  font-weight: 800;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+}
+html[data-theme="light"] #thanh-tai-khoan .tk-chip { border: 2px solid #2e8b1f; box-shadow: 0 3px 10px rgba(30, 80, 30, 0.3); }
+html[data-theme="light"] #thanh-tai-khoan .tk-dang-xuat { border: 2px solid #dc2626; color: #991b1b; }
+html[data-theme="light"] #yc-backdrop .yc-hop,
+html[data-theme="light"] .auth-card { border: 3px solid #2e8b1f; box-shadow: 0 0 0 4px rgba(46, 139, 31, 0.2), 0 20px 60px rgba(30, 80, 30, 0.4); }
+html[data-theme="light"] .auth-field input { border: 2px solid #9fc193; }
+html[data-theme="light"] .auth-field input:focus { border-color: #2e8b1f; }
+html[data-theme="light"] .auth-submit { background: linear-gradient(135deg, #3aa626, #1f7a1a); border: 2px solid #14532d; }
+html[data-theme="light"] #yc-backdrop .yc-dang-nhap { color: #fff; background: linear-gradient(135deg, #3aa626, #1f7a1a); border: 2px solid #14532d; }
+
+/* =====================================================================
+   CHẾ ĐỘ SÁNG — Ô NGUYÊN TỐ KIỂU NEON
+   Nền ô tối + viền, chữ và quầng sáng neon theo màu từng loại nguyên tố,
+   nên nổi hẳn lên trên nền trang sáng. (đặt cuối để ghi đè các luật trước)
+   ===================================================================== */
+html[data-theme="light"] .o .mat,
+html[data-theme="light"] .chu-thich-o,
+html[data-theme="light"] .giu-cho {
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(var(--rgb), 0.38), transparent 70%),
+    linear-gradient(160deg, #0f2016, #050d08);
+  border: 2px solid rgb(var(--rgb));
+  color: color-mix(in srgb, rgb(var(--rgb)) 80%, #fff);
+  text-shadow: 0 0 6px rgba(var(--rgb), 0.95), 0 0 14px rgba(var(--rgb), 0.6);
+  box-shadow:
+    0 0 8px rgba(var(--rgb), 0.9),
+    0 0 20px rgba(var(--rgb), 0.5),
+    0 4px 10px rgba(0, 0, 0, 0.35),
+    inset 0 0 12px rgba(var(--rgb), 0.4);
+}
+html[data-theme="light"] .o .kh { text-shadow: 0 0 8px rgba(var(--rgb), 1), 0 0 18px rgba(var(--rgb), 0.7); }
+html[data-theme="light"] .o:hover .mat {
+  filter: brightness(1.35) saturate(1.2);
+  box-shadow:
+    0 0 14px rgba(var(--rgb), 1),
+    0 0 34px rgba(var(--rgb), 0.8),
+    0 6px 14px rgba(0, 0, 0, 0.4),
+    inset 0 0 16px rgba(var(--rgb), 0.6);
+}
+html[data-theme="light"] .chu-thich-o:hover { filter: brightness(1.3); }
+html[data-theme="light"] .chu-thich-o.dang-loc {
+  filter: brightness(1.4);
+  box-shadow: 0 0 16px rgba(var(--rgb), 1), 0 0 36px rgba(var(--rgb), 0.8), inset 0 0 12px rgba(var(--rgb), 0.5);
+}
+html[data-theme="light"] .o.hien-ra.loai-sang .mat {
+  filter: brightness(1.35);
+  box-shadow: 0 0 16px rgba(var(--rgb), 1), 0 0 38px rgba(var(--rgb), 0.85), inset 0 0 14px rgba(var(--rgb), 0.6);
+}
+
+/* =====================================================================
+   CHẾ ĐỘ SÁNG — NEON GIỐNG HỆT CHẾ ĐỘ TỐI
+   Ô có nền đen như trang tối, màu/viền/chữ/quầng sáng lấy y nguyên công thức
+   của index.css. (đặt cuối cùng để ghi đè mọi luật ô nguyên tố ở trên)
+   ===================================================================== */
+html[data-theme="light"] .o .mat,
+html[data-theme="light"] .chu-thich-o,
+html[data-theme="light"] .giu-cho,
+html[data-theme="light"] #thanh-tai-khoan a,
+html[data-theme="light"] #thanh-tai-khoan button:not(.tk-dang-xuat) {
+  background: linear-gradient(rgba(var(--rgb), 0.16), rgba(var(--rgb), 0.16)), #020403;
+  border: 1px solid rgba(var(--rgb), 0.65);
+  color: rgb(var(--rgb));
+  text-shadow: none;
+  box-shadow:
+    inset 0 0 8px rgba(var(--rgb), 0.25),
+    0 0 4px rgba(var(--rgb), 0.2);
+}
+html[data-theme="light"] .o .kh {
+  text-shadow: 0 0 6px rgba(var(--rgb), 0.6);
+  font-weight: bold;
+}
+html[data-theme="light"] .o .so { opacity: 0.85; font-weight: normal; }
+html[data-theme="light"] .o .kl { opacity: 1; font-weight: bold; }
+html[data-theme="light"] .giu-cho { text-shadow: 0 0 6px rgba(var(--rgb), 0.6); }
+html[data-theme="light"] .chu-thich-o { font-weight: normal; }
+
+/* Hover: sáng lên giống chế độ tối */
+html[data-theme="light"] .o:hover .mat,
+html[data-theme="light"] #thanh-tai-khoan a:hover,
+html[data-theme="light"] #thanh-tai-khoan button:not(.tk-dang-xuat):hover {
+  filter: brightness(1.5);
+  box-shadow:
+    inset 0 0 10px rgba(var(--rgb), 0.5),
+    0 0 16px rgba(var(--rgb), 0.8);
+}
+html[data-theme="light"] .chu-thich-o:hover { filter: brightness(1.4); }
+html[data-theme="light"] .chu-thich-o.dang-loc {
+  filter: brightness(1.5);
+  box-shadow:
+    inset 0 0 10px rgba(var(--rgb), 0.5),
+    0 0 16px rgba(var(--rgb), 0.9);
+}
+html[data-theme="light"] .o.hien-ra.loai-sang .mat {
+  filter: brightness(1.35);
+  box-shadow:
+    inset 0 0 12px rgba(var(--rgb), 0.55),
+    0 0 18px rgba(var(--rgb), 0.85);
+}
+
+/* =====================================================================
+   CHẾ ĐỘ SÁNG — NỀN TRẮNG (đặt cuối cùng để ghi đè các nền màu phía trên)
+   ===================================================================== */
+html[data-theme="light"],
+html[data-theme="light"] body,
+html[data-theme="light"] body.trang-auth {
+  background: #ffffff;
+}

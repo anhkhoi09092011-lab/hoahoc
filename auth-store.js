@@ -138,7 +138,7 @@ async function luuTienTrinh(t) {
       dung: t.dung, khamPha: t.khamPha, timKiem: t.timKiem.slice(0, 200),
       diemCao: t.diemCao, diemCaoLuc: t.diemCaoLuc, thoiGian: t.thoiGian || 0,
       luot: t.luot, daMo: t.daMo
-    });
+    }, { merge: true });   // merge: không xóa trường "yeuThich" nằm cùng tài liệu
   } catch (e) { loiDau = loiDau || e; }
 
   // 2) Bảng xếp hạng công khai: luôn giữ kết quả TỐT NHẤT trong nhiều lần chơi.
@@ -194,7 +194,24 @@ function dangKyXepHang(cb, cbLoi) {
   }, function (e) { if (cbLoi) cbLoi(e); });
 }
 
+// Nguyên tố yêu thích ⭐: lưu trong tienTrinh/{uid}, trường "yeuThich" (mảng số hiệu nguyên tử)
+async function docYeuThich() {
+  var uid = uidHienTai();
+  if (!uid) return null;
+  var s = await getDoc(doc(db, "tienTrinh", uid));
+  var d = s.exists() ? s.data() : null;
+  return d && Array.isArray(d.yeuThich) ? d.yeuThich : null;
+}
+
+async function luuYeuThich(danhSach) {
+  var uid = uidHienTai();
+  if (!uid) return;
+  await setDoc(doc(db, "tienTrinh", uid), { yeuThich: danhSach }, { merge: true });
+}
+
 window.mayChu = {
+  docYeuThich: docYeuThich,
+  luuYeuThich: luuYeuThich,
   docTienTrinh: docTienTrinh,
   luuTienTrinh: luuTienTrinh,
   layXepHang: layXepHang,

@@ -1,0 +1,112 @@
+/* ===== ⭐ NGUYÊN TỐ YÊU THÍCH ===== */
+
+/* ----- Nút lọc "chỉ hiện yêu thích" (dưới Table / Sphere / Helix) ----- */
+#yt-thanh { display: flex; justify-content: center; margin: 0 auto 14px; }
+#yt-loc {
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 8px 18px;
+  color: #ffe38a;
+  background: rgba(255, 216, 102, 0.1);
+  border: 1px solid rgba(255, 216, 102, 0.55);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+#yt-loc:hover { background: rgba(255, 216, 102, 0.22); box-shadow: 0 0 14px rgba(255, 216, 102, 0.5); transform: translateY(-1px); }
+#yt-loc.dang-chon {
+  color: #fff6d0;
+  background: rgba(255, 216, 102, 0.32);
+  border-color: #ffd866;
+  box-shadow: 0 0 16px rgba(255, 216, 102, 0.65), inset 0 0 10px rgba(255, 216, 102, 0.25);
+}
+#yt-loc:focus-visible { outline: 2px solid #fff3c4; outline-offset: 3px; }
+
+/* ----- Nút sao trong popup (cạnh nút đóng) ----- */
+#detail-modal #yt-sao {
+  position: absolute;
+  top: 14px;
+  right: 74px;
+  z-index: 6;
+  box-sizing: border-box;
+  height: 38px;
+  margin: 0;
+  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  color: #ffe38a;
+  background: rgba(255, 216, 102, 0.12);
+  border: 1px solid rgba(255, 216, 102, 0.6);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+#detail-modal #yt-sao:hover { background: rgba(255, 216, 102, 0.25); box-shadow: 0 0 14px rgba(255, 216, 102, 0.5); }
+#detail-modal #yt-sao.dang-thich {
+  color: #fff6d0;
+  background: rgba(255, 216, 102, 0.32);
+  border-color: #ffd866;
+  box-shadow: 0 0 16px rgba(255, 216, 102, 0.6);
+}
+#detail-modal #yt-sao:focus-visible { outline: 2px solid #fff3c4; outline-offset: 3px; }
+#detail-modal #yt-sao.yt-no { animation: ytNay 0.35s ease; }
+@keyframes ytNay { 0% { transform: scale(1); } 40% { transform: scale(1.18); } 100% { transform: scale(1); } }
+
+/* Điện thoại / máy tính bảng: popup phủ kín màn hình, nút X cố định ở góc -> sao cố định bên cạnh */
+@media (max-width: 1099px) {
+  #detail-modal #yt-sao { position: fixed; top: 12px; right: 76px; height: 42px; }
+}
+
+/* ----- Ô được yêu thích: sao vàng ở góc ô, và mờ các ô khác khi bật lọc ----- */
+.o.yeu-thich .mat::after {
+  content: "★";
+  position: absolute;
+  top: 2px;
+  right: 4px;
+  font-size: 12px;
+  line-height: 1;
+  color: #ffd866;
+  text-shadow: 0 0 6px rgba(255, 216, 102, 0.95);
+  pointer-events: none;
+}
+.o.hien-ra.yt-mo .mat { opacity: 0.1; }
+.giu-cho:not(.an).yt-mo { opacity: 0.1; transition-delay: 0s; }
+
+@media (prefers-reduced-motion: reduce) {
+  #detail-modal #yt-sao.yt-no { animation: none; }
+  #yt-loc, #detail-modal #yt-sao { transition: none; }
+}
+
+/* ----- Chế độ sáng ----- */
+html[data-theme="light"] #yt-loc {
+  color: #7a4a00;
+  background: #fff7d6;
+  border: 2px solid #ca8a04;
+  box-shadow: 0 3px 10px rgba(161, 98, 7, 0.25);
+}
+html[data-theme="light"] #yt-loc:hover { background: #ffefb0; }
+html[data-theme="light"] #yt-loc.dang-chon {
+  color: #4a2c00;
+  background: linear-gradient(135deg, #ffe38a, #fbbf24);
+  border-color: #a16207;
+  box-shadow: 0 3px 12px rgba(161, 98, 7, 0.5);
+}
+html[data-theme="light"] #detail-modal #yt-sao {
+  color: #7a4a00;
+  background: #fff7d6;
+  border: 2px solid #ca8a04;
+  box-shadow: 0 3px 10px rgba(161, 98, 7, 0.25);
+}
+html[data-theme="light"] #detail-modal #yt-sao.dang-thich {
+  color: #4a2c00;
+  background: linear-gradient(135deg, #ffe38a, #fbbf24);
+  border-color: #a16207;
+  box-shadow: 0 3px 12px rgba(161, 98, 7, 0.5);
+}

@@ -313,6 +313,7 @@ window.addEventListener("load", function () {
 
 // ----- 4d. Xoay cả sân khấu bằng chuột (kéo để xoay) -----
 var rx = 0, ry = 0, vx = 0, vy = 0, z = 0, tiLe = 1;
+var joy = { x: 0, y: 0, giu: false };   // cần điều khiển xoay: x,y trong khoảng -1..1
 var dangKeo = false, daKeoXa = false, tongKeo = 0;
 var datLai = true;   // true: table đang ở thế nhìn thẳng (tự nghiêng theo chuột)
 var truocX = 0, truocY = 0;
@@ -345,6 +346,7 @@ window.addEventListener("mouseup", function () {
   if (!dangKeo) return;
   dangKeo = false;
   khung.classList.remove("dang-keo");
+  if (cheDo === "table") datLai = true;   // thả tay ra thì bảng tự trở về thế thẳng
   daKeoXa = tongKeo > 5;
   setTimeout(function () { daKeoXa = false; }, 0);
 });
@@ -373,6 +375,7 @@ function ketThucCham() {
   if (!dangKeo) return;
   dangKeo = false;
   khung.classList.remove("dang-keo");
+  if (cheDo === "table") datLai = true;   // thả tay ra thì bảng tự trở về thế thẳng
   daKeoXa = tongKeo > 8;
   setTimeout(function () { daKeoXa = false; }, 400);   // chặn "click" giả sinh ra sau khi vuốt
 }
@@ -412,9 +415,14 @@ function vong() {
 
   if (cheDo === "table" && datLai) {
     // dạng bảng chưa bị kéo: nghiêng nhẹ theo chuột
+    // mặc định thẳng (0,0); cần điều khiển kéo sang đâu thì bảng nghiêng sang đó
     if (!dangKeo) {
-      rx += (-chuot.y * 8 - rx) * 0.06;
-      ry += (chuot.x * 12 - ry) * 0.06;
+      var mucRy = joy.x * GIOI_HAN_TABLE_Y;
+      var mucRx = -joy.y * GIOI_HAN_TABLE_X;
+      ry += (mucRy - ry) * 0.12;
+      rx += (mucRx - rx) * 0.12;
+      if (Math.abs(rx) < 0.01 && !joy.giu) rx = 0;
+      if (Math.abs(ry) < 0.01 && !joy.giu) ry = 0;
     }
   } else if (!dangKeo) {
     // sau khi kéo (và ở sphere/helix): quán tính; table bị giới hạn góc nên không xoay ra mặt sau
@@ -427,6 +435,12 @@ function vong() {
 
 
 
+
+  // sphere / helix: giữ cần điều khiển để quay liên tục
+  if (cheDo !== "table" && joy.giu && !dangKeo) {
+    ry += joy.x * 2.2;
+    rx = Math.max(-70, Math.min(70, rx - joy.y * 1.6));
+  }
 
   z += (t.z - z) * 0.06;
   // Co sân khấu theo chiều rộng màn hình để vừa điện thoại (bảng rộng ~1250px, cầu/xoắn ốc ~900px)
@@ -3323,4 +3337,79 @@ if (nutMoQuiz && khuVucQuiz) {
     error.hidden = true;
     input.removeAttribute('aria-invalid');
   });
+})();
+
+// ===== CẦN ĐIỀU KHIỂN XOAY BẢNG (hình tròn, giữa dưới cùng) =====
+(function () {
+  var nen = document.getElementById("xoay-nen");
+  var nut = document.getElementById("xoay-nut");
+  if (!nen || !nut) return;
+
+  var idDangGiu = null;
+
+  function datNut(x, y) {            // x, y: -1..1
+    joy.x = x; joy.y = y;
+    var tamNen = nen.clientWidth / 2;
+    var tamNut = nut.offsetWidth / 2;
+    var xa = tamNen - tamNut - 2;
+    nut.style.transform = "translate(" + (x * xa) + "px," + (y * xa) + "px)";
+  }
+
+  function theoConTro(e) {
+    var r = nen.getBoundingClientRect();
+    var tx = r.left + r.width / 2, ty = r.top + r.height / 2;
+    var xa = r.width / 2 - nut.offsetWidth / 2 - 2;
+    var dx = e.clientX - tx, dy = e.clientY - ty;
+    var d = Math.hypot(dx, dy);
+    if (d > xa) { dx = dx / d * xa; dy = dy / d * xa; }
+    datNut(dx / xa, dy / xa);
+  }
+
+  function tha() {
+    idDangGiu = null;
+    joy.giu = false;
+    nut.classList.remove("dang-keo");
+    datNut(0, 0);                    // núm bật về giữa, bảng tự trở về thẳng
+  }
+
+  nen.addEventListener("pointerdown", function (e) {
+    if (e.button !== undefined && e.button > 0) return;
+    e.preventDefault();
+    idDangGiu = e.pointerId;
+    joy.giu = true;
+    datLai = true;                   // cho bảng (dạng table) nhận lệnh từ cần điều khiển
+    nut.classList.add("dang-keo");
+    try { nen.setPointerCapture(e.pointerId); } catch (err) {}
+    theoConTro(e);
+  });
+  nen.addEventListener("pointermove", function (e) {
+    if (e.pointerId !== idDangGiu) return;
+    theoConTro(e);
+  });
+  nen.addEventListener("pointerup", function (e) { if (e.pointerId === idDangGiu) tha(); });
+  nen.addEventListener("pointercancel", function (e) { if (e.pointerId === idDangGiu) tha(); });
+  nen.addEventListener("lostpointercapture", function (e) { if (e.pointerId === idDangGiu) tha(); });
+
+  // Bàn phím: bấm vào cần rồi dùng phím mũi tên
+  var phim = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] };
+  var dangPhim = {};
+  function capNhatPhim() {
+    var x = 0, y = 0;
+    Object.keys(dangPhim).forEach(function (k) { x += phim[k][0]; y += phim[k][1]; });
+    joy.giu = (x !== 0 || y !== 0);
+    if (joy.giu) datLai = true;
+    datNut(Math.max(-1, Math.min(1, x)), Math.max(-1, Math.min(1, y)));
+  }
+  nen.addEventListener("keydown", function (e) {
+    if (!phim[e.key]) return;
+    e.preventDefault();
+    dangPhim[e.key] = true;
+    capNhatPhim();
+  });
+  nen.addEventListener("keyup", function (e) {
+    if (!phim[e.key]) return;
+    delete dangPhim[e.key];
+    capNhatPhim();
+  });
+  nen.addEventListener("blur", function () { dangPhim = {}; capNhatPhim(); });
 })();

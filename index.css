@@ -2416,3 +2416,144 @@ body.popup-mo #amu-calculator { display: none !important; }
 @media (max-width: 760px) {
   #detail-modal #close-button { width: 100%; max-width: 320px; }
 }
+
+/* =====================================================================
+   CẦN ĐIỀU KHIỂN XOAY BẢNG — hình tròn ở giữa dưới cùng
+   ===================================================================== */
+#xoay-dieu-khien {
+  position: fixed;
+  left: 50%;
+  bottom: 16px;
+  transform: translateX(-50%);
+  z-index: 85;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+#xoay-nen {
+  --xoay-nen: 108px;
+  --xoay-nut: 46px;
+  position: relative;
+  width: var(--xoay-nen);
+  height: var(--xoay-nen);
+  border-radius: 50%;
+  cursor: grab;
+  outline: none;
+  border: 2px solid rgba(141, 245, 107, 0.8);
+  background:
+    radial-gradient(circle at 50% 50%, rgba(110, 220, 60, 0.18), rgba(4, 12, 7, 0.92) 68%),
+    #050b07;
+  box-shadow:
+    0 0 16px rgba(110, 220, 60, 0.45),
+    0 6px 20px rgba(0, 0, 0, 0.55),
+    inset 0 0 18px rgba(110, 220, 60, 0.18);
+  -webkit-tap-highlight-color: transparent;
+}
+#xoay-nen:focus-visible { box-shadow: 0 0 0 3px #d9ffc9, 0 0 20px rgba(110, 220, 60, 0.6); }
+#xoay-nen::before {   /* vòng tròn nhỏ đánh dấu tâm = thế thẳng */
+  content: "";
+  position: absolute;
+  inset: 50% auto auto 50%;
+  width: calc(var(--xoay-nut) + 8px);
+  height: calc(var(--xoay-nut) + 8px);
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 1px dashed rgba(141, 245, 107, 0.35);
+}
+.xoay-mui {
+  position: absolute;
+  font-size: 9px;
+  line-height: 1;
+  color: rgba(163, 241, 126, 0.65);
+  pointer-events: none;
+}
+.xoay-tren { top: 6px; left: 50%; transform: translateX(-50%); }
+.xoay-duoi { bottom: 6px; left: 50%; transform: translateX(-50%); }
+.xoay-trai { left: 7px; top: 50%; transform: translateY(-50%); }
+.xoay-phai { right: 7px; top: 50%; transform: translateY(-50%); }
+#xoay-nut {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--xoay-nut);
+  height: var(--xoay-nut);
+  margin: calc(var(--xoay-nut) / -2) 0 0 calc(var(--xoay-nut) / -2);
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 28%, #d8ffc0, #6edc3c 55%, #1f7a3a);
+  border: 1px solid #c8ffa8;
+  box-shadow: 0 0 14px rgba(130, 255, 90, 0.8), 0 3px 8px rgba(0, 0, 0, 0.6), inset 0 -4px 8px rgba(0, 60, 20, 0.45);
+  transition: transform 0.28s cubic-bezier(0.3, 1.5, 0.5, 1);
+  pointer-events: none;
+}
+#xoay-nut.dang-keo { transition: none; filter: brightness(1.15); }
+#xoay-nen:active { cursor: grabbing; }
+
+/* Ẩn khi popup hoặc mục đố vui đang mở */
+body.popup-mo #xoay-dieu-khien { display: none !important; }
+body:has(#khu-do-vui.quiz-dang-mo) #xoay-dieu-khien { display: none; }
+
+@media (max-width: 600px) {
+  #xoay-nen { --xoay-nen: 84px; --xoay-nut: 36px; }
+  #xoay-dieu-khien { bottom: 12px; }
+  .xoay-mui { font-size: 8px; }
+  /* Thu gọn hai nút góc trái để không đụng cần điều khiển ở giữa */
+  #quiz-open-button, #amu-open-button {
+    min-width: 0 !important;
+    padding: 8px 12px !important;
+    font-size: 12px !important;
+    gap: 6px !important;
+  }
+}
+@media (max-width: 380px) {
+  #xoay-nen { --xoay-nen: 76px; --xoay-nut: 32px; }
+}
+@media (prefers-reduced-motion: reduce) { #xoay-nut { transition: none; } }
+
+/* Điện thoại hẹp: cần điều khiển nhỏ hơn và hai nút góc trái gọn hơn để không chạm nhau */
+@media (max-width: 430px) {
+  #xoay-nen { --xoay-nen: 76px; --xoay-nut: 32px; }
+  #quiz-open-button, #amu-open-button { padding: 8px 10px !important; font-size: 12px !important; gap: 5px !important; }
+}
+@media (max-width: 380px) {
+  #quiz-open-button, #amu-open-button { padding: 7px 9px !important; font-size: 11px !important; gap: 4px !important; }
+  #xoay-nen { --xoay-nen: 72px; --xoay-nut: 30px; }
+}
+
+/* =====================================================================
+   CẦN XOAY — KIỂU MỚI: nhỏ gọn, kính mờ, núm chấm sáng (ghi đè kiểu cũ)
+   ===================================================================== */
+#xoay-dieu-khien { bottom: 14px; }
+#xoay-nen {
+  --xoay-nen: 68px;
+  --xoay-nut: 22px;
+  border: 1px solid rgba(190, 255, 170, 0.5);
+  background: rgba(190, 255, 170, 0.05);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 0 12px rgba(110, 220, 60, 0.3), inset 0 0 14px rgba(190, 255, 170, 0.08);
+}
+.xoay-mui { display: none; }
+#xoay-nen::before {   /* chữ thập mảnh đánh dấu tâm */
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: none;
+  border: none;
+  background:
+    linear-gradient(rgba(190, 255, 170, 0.3), rgba(190, 255, 170, 0.3)) center / 1px 56% no-repeat,
+    linear-gradient(rgba(190, 255, 170, 0.3), rgba(190, 255, 170, 0.3)) center / 56% 1px no-repeat;
+}
+#xoay-nut {
+  border: none;
+  background: radial-gradient(circle at 35% 30%, #ffffff, #bfffa8 60%, #6edc3c);
+  box-shadow: 0 0 8px #bfffa8, 0 0 18px rgba(110, 220, 60, 0.7);
+}
+#xoay-nut.dang-keo { filter: none; box-shadow: 0 0 12px #ffffff, 0 0 26px rgba(130, 255, 90, 0.95); }
+#xoay-nen:focus-visible { box-shadow: 0 0 0 2px #d9ffc9, 0 0 16px rgba(110, 220, 60, 0.6); }
+
+@media (max-width: 600px) {
+  #xoay-dieu-khien { bottom: 10px; }
+  #xoay-nen { --xoay-nen: 58px; --xoay-nut: 20px; }
+}
+@media (max-width: 430px) { #xoay-nen { --xoay-nen: 56px; --xoay-nut: 19px; } }
+@media (max-width: 380px) { #xoay-nen { --xoay-nen: 52px; --xoay-nut: 18px; } }

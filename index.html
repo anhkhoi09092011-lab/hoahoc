@@ -4,8 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bảng tuần hoàn 3D</title>
-  <link rel="stylesheet" href="index.css?v=5">
-  <link rel="stylesheet" href="auth.css?v=5"> <!-- MỚI -->
+  <link rel="stylesheet" href="index.css?v=7">
+  <link rel="stylesheet" href="auth.css?v=7"> <!-- MỚI -->
+  <link rel="stylesheet" href="theme.css?v=1"> <!-- MỚI: chế độ sáng/tối -->
+  <link rel="stylesheet" href="yeuthich.css?v=1"> <!-- MỚI: nguyên tố yêu thích -->
+  <script>try{if(localStorage.getItem("bangTuanHoan3D_theme")==="light")document.documentElement.setAttribute("data-theme","light")}catch(e){}</script>
 </head>
 <body>
   <!-- MỚI: Thanh tài khoản, JavaScript tự điền Đăng nhập / Đăng ký hoặc tên người dùng -->
@@ -192,7 +195,9 @@
     </section>
   </div>
 
-  <script src="script.js?v=5"></script>
+  <script src="script.js?v=7"></script>
+  <script src="yeuthich.js?v=1"></script> <!-- MỚI: nguyên tố yêu thích (phải nằm sau script.js) -->
   <script type="module" src="auth-status.js"></script> <!-- MỚI -->
+  <script src="theme.js"></script> <!-- MỚI: nút chế độ sáng/tối -->
 </body>
 </html>

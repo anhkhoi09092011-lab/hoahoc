@@ -2371,3 +2371,48 @@ h1 {
   #badge-grid { gap: 8px; }
   .badge-item { padding: 12px 6px; }
 }
+
+/* =====================================================================
+   SỬA LỖI POPUP TRÊN ĐIỆN THOẠI / TABLET (đặt cuối file để thắng các luật cũ)
+   - Một cột, các khối xếp theo thứ tự, không còn chồng lên nhau
+   - Ẩn các nút nổi (Đố vui, Tính amu) khi popup đang mở
+   ===================================================================== */
+body.popup-mo { overflow: hidden; }
+body.popup-mo .quiz-open-wrap,
+body.popup-mo #amu-open-button,
+body.popup-mo #amu-calculator { display: none !important; }
+
+@media (max-width: 1099px) {
+  #detail-modal {
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-rows: none !important;
+    grid-auto-rows: max-content !important;   /* tránh các khối overflow:hidden bị co lại và chồng lên nhau */
+    row-gap: 12px !important;
+  }
+  #detail-modal #modal-symbol,
+  #detail-modal #modal-title,
+  #detail-modal #modal-desc,
+  #detail-modal #atom-model,
+  #detail-modal #electron-details,
+  #detail-modal #fun-facts,
+  #detail-modal #nist-isotope-source,
+  #detail-modal #close-button {
+    grid-column: 1 !important;
+    grid-row: auto !important;
+    align-self: start !important;
+  }
+  /* Thứ tự hiển thị: ô nguyên tố → tên → thông tin → mô hình → electron → điều ít ai biết → đồng vị → nút đóng */
+  #detail-modal #modal-symbol { order: 1; }
+  #detail-modal #modal-title { order: 2; }
+  #detail-modal #modal-desc { order: 3; }
+  #detail-modal #atom-model { order: 4; }
+  #detail-modal #electron-details { order: 5; }
+  #detail-modal #fun-facts { order: 6; }
+  #detail-modal #nist-isotope-source { order: 7; }
+  #detail-modal #close-button { order: 8; justify-self: center !important; position: static !important; width: auto; height: auto; }
+  #detail-modal #close-button::before { content: none !important; }
+  #detail-modal #close-button { font-size: 14px !important; padding: 11px 32px !important; }
+}
+@media (max-width: 760px) {
+  #detail-modal #close-button { width: 100%; max-width: 320px; }
+}

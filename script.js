@@ -1359,6 +1359,7 @@ function hienThongTin(nguyenTo, loai, o) {
 
   document.getElementById("modal-backdrop").style.display = "block";
   modal.style.display = "grid";
+  document.body.classList.add("popup-mo");
 }
 
 // Khách chưa đăng nhập: lần đầu mở ô nguyên tố thì nhắc đăng nhập để mở khóa thành tựu
@@ -1409,6 +1410,7 @@ function nhacDangNhapMoKhoa() {
 function dongThongTin() {
   document.getElementById("detail-modal").style.display = "none";
   document.getElementById("modal-backdrop").style.display = "none";
+  document.body.classList.remove("popup-mo");
 }
 
 

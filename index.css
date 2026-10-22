@@ -2284,3 +2284,90 @@ h1 {
     align-self: stretch !important;
   }
 }
+/* =====================================================================
+   NÚT X ĐÓNG POPUP + RESPONSIVE ĐIỆN THOẠI / MÁY TÍNH BẢNG
+   ===================================================================== */
+#detail-modal #modal-x {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  z-index: 5;
+  width: 42px;
+  height: 42px;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: grid;
+  place-items: center;
+  font-family: Arial, sans-serif !important;
+  font-size: 18px !important;
+  line-height: 1;
+  color: #eaffe4 !important;
+  background: rgba(var(--rgb, 110, 220, 60), 0.2) !important;
+  border: 1px solid rgba(var(--rgb, 110, 220, 60), 0.75) !important;
+  border-radius: 50% !important;
+  cursor: pointer;
+  box-shadow: 0 0 14px rgba(var(--rgb, 110, 220, 60), 0.4);
+  -webkit-tap-highlight-color: transparent;
+}
+#detail-modal #modal-x:hover,
+#detail-modal #modal-x:active {
+  background: rgba(var(--rgb, 110, 220, 60), 0.4) !important;
+  box-shadow: 0 0 20px rgba(var(--rgb, 110, 220, 60), 0.7);
+}
+#detail-modal #modal-x:focus-visible { outline: 2px solid #d9ffc9; outline-offset: 3px; }
+
+/* Màn hình rộng: đã có dấu X riêng ở góc popup */
+@media (min-width: 1100px) {
+  #detail-modal #modal-x { display: none; }
+}
+
+/* Điện thoại & máy tính bảng: popup phủ kín màn hình, cuộn bên trong */
+@media (max-width: 1099px) {
+  #detail-modal {
+    left: 0 !important;
+    top: 0 !important;
+    transform: none !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    max-height: none !important;
+    border-radius: 0 !important;
+    border-width: 0 !important;
+    padding: 60px 14px 24px !important;
+    align-content: start !important;
+    animation: none !important;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+@media (max-width: 760px) {
+  body { padding: 12px 10px 130px; }
+  h1 { font-size: clamp(24px, 7vw, 32px); }
+  .goi-y { font-size: 13px; margin-bottom: 14px; }
+  #timKiem { margin-bottom: 14px; }
+  #chuThich { margin-bottom: 14px; gap: 6px; }
+  .chu-thich-o { padding: 5px 10px; font-size: 12px; }
+
+  /* Sân khấu 3D thấp lại; JS tự co theo chiều rộng; vuốt ngang để xoay, vuốt dọc để cuộn trang */
+  .khung-bang { height: min(108vw, 540px); touch-action: pan-y; }
+
+  #detail-modal #atom-visual { max-width: min(300px, 100%) !important; }
+  #detail-modal .isotope-row { font-size: 11px; padding: 5px 6px; gap: 4px; }
+  #detail-modal #fun-facts-list p { font-size: 13.5px; }
+  #detail-modal #close-button { width: 100%; max-width: 320px; }
+
+  #badge-panel, #rank-panel { max-height: 90vh; }
+  #rank-panel { padding: 24px 12px 18px; }
+  .rank-row { gap: 8px; padding: 10px; }
+  .rank-name { font-size: 14px; }
+  .rank-score { font-size: 15px; }
+  .rank-time { font-size: 12px; }
+  .quiz-answer { min-height: 54px; }
+}
+
+@media (max-width: 380px) {
+  .info-grid { grid-template-columns: minmax(0, 1fr); }
+  #badge-grid { gap: 8px; }
+  .badge-item { padding: 12px 6px; }
+}

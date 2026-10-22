@@ -312,7 +312,7 @@ window.addEventListener("load", function () {
 
 
 // ----- 4d. Xoay cả sân khấu bằng chuột (kéo để xoay) -----
-var rx = 0, ry = 0, vx = 0, vy = 0, z = 0;
+var rx = 0, ry = 0, vx = 0, vy = 0, z = 0, tiLe = 1;
 var dangKeo = false, daKeoXa = false, tongKeo = 0;
 var datLai = true;   // true: table đang ở thế nhìn thẳng (tự nghiêng theo chuột)
 var truocX = 0, truocY = 0;
@@ -348,6 +348,37 @@ window.addEventListener("mouseup", function () {
   daKeoXa = tongKeo > 5;
   setTimeout(function () { daKeoXa = false; }, 0);
 });
+// ----- Cảm ứng (điện thoại): vuốt ngang/dọc để xoay; cuộn dọc trang vẫn hoạt động -----
+khung.addEventListener("touchstart", function (e) {
+  if (e.touches.length !== 1) return;
+  var t = e.touches[0];
+  dangKeo = true; tongKeo = 0; daKeoXa = false;
+  truocX = t.clientX; truocY = t.clientY;
+  khung.classList.add("dang-keo");
+}, { passive: true });
+khung.addEventListener("touchmove", function (e) {
+  if (!dangKeo || e.touches.length !== 1) return;
+  var t = e.touches[0];
+  var dx = t.clientX - truocX, dy = t.clientY - truocY;
+  truocX = t.clientX; truocY = t.clientY;
+  tongKeo += Math.abs(dx) + Math.abs(dy);
+  if (tongKeo > 5) datLai = false;
+  ry += dx * 0.4;
+  rx -= dy * 0.4;
+  vy = dx * 0.4;
+  vx = -dy * 0.4;
+  if (cheDo === "table") gioiHanTable();
+}, { passive: true });
+function ketThucCham() {
+  if (!dangKeo) return;
+  dangKeo = false;
+  khung.classList.remove("dang-keo");
+  daKeoXa = tongKeo > 8;
+  setTimeout(function () { daKeoXa = false; }, 400);   // chặn "click" giả sinh ra sau khi vuốt
+}
+khung.addEventListener("touchend", ketThucCham);
+khung.addEventListener("touchcancel", ketThucCham);
+
 window.addEventListener("mousemove", function (e) {
   chuot.x = e.clientX / window.innerWidth * 2 - 1;
   chuot.y = e.clientY / window.innerHeight * 2 - 1;
@@ -398,8 +429,11 @@ function vong() {
 
 
   z += (t.z - z) * 0.06;
+  // Co sân khấu theo chiều rộng màn hình để vừa điện thoại (bảng rộng ~1250px, cầu/xoắn ốc ~900px)
+  var tiLeMuc = Math.min(1, window.innerWidth / (cheDo === "table" ? 1250 : 900));
+  tiLe += (tiLeMuc - tiLe) * 0.12;
   bang.style.transform =
-    "translateZ(" + z + "px) rotateX(" + rx + "deg) rotateY(" + ry + "deg)";
+    "translateZ(" + z + "px) rotateX(" + rx + "deg) rotateY(" + ry + "deg) scale(" + tiLe + ")";
 
 
 
@@ -1027,6 +1061,13 @@ var DU_LIEU_FUN_FACT = {
   42: "Chịu nhiệt rất tốt, thường được thêm vào thép để tạo hợp kim siêu bền.",
   43: "Hoàn toàn phóng xạ; tên của nó có nghĩa là \"nhân tạo\".",
   44: "Thuộc nhóm kim loại bạch kim, được dùng làm chất xúc tác trong công nghệ năng lượng.",
+  45: "Là một trong những kim loại quý hiếm và đắt nhất thế giới; thường được mạ lên trang sức bạch kim và vàng trắng để tăng độ sáng bóng.",
+  46: "Tên lấy theo tiểu hành tinh Pallas, được phát hiện chỉ vài năm trước đó; paladi còn hấp thụ lượng khí hiđro gấp hàng trăm lần thể tích của nó.",
+  47: "Dẫn điện và dẫn nhiệt tốt nhất trong tất cả các kim loại, tốt hơn cả đồng.",
+  48: "Rất độc nên bị hạn chế sử dụng, nhưng từng là thành phần quan trọng trong pin sạc niken–cadimi.",
+  49: "Khi uốn cong một thanh indi nguyên chất, bạn có thể nghe thấy tiếng kêu rắc rắc đặc trưng do các tinh thể bên trong biến dạng.",
+  50: "Ở nhiệt độ rất thấp, thiếc kim loại có thể chuyển sang dạng xám giòn rồi vỡ vụn, hiện tượng được gọi là 'bệnh dịch thiếc'.",
+  51: "Người Ai Cập cổ đại đã dùng hợp chất của antimon làm chất kẻ mắt đen (kohl).",
   52: "Tiếp xúc với telu có thể khiến hơi thở có mùi tỏi kéo dài nhiều tuần; nó thường đi cùng vàng trong quặng.",
   53: "Thăng hoa từ thể rắn màu tím sang hơi màu tím và rất cần cho tuyến giáp.",
   54: "Năm 1962, xenon trở thành khí hiếm đầu tiên được tạo thành hợp chất; nó còn dùng trong đèn pha và động cơ ion.",
@@ -1061,6 +1102,23 @@ var DU_LIEU_FUN_FACT = {
   83: "Màu sắc nhiều lớp trên tinh thể bismut chủ yếu do lớp oxit mỏng làm giao thoa ánh sáng, chứ không phải do kim loại có nhiều màu.",
   84: "Được Marie và Pierre Curie phát hiện năm 1898 khi nghiên cứu quặng urani; phóng xạ rất mạnh và rất độc.",
   85: "Phóng xạ, phân rã nhanh và có lượng tồn tại tự nhiên cực nhỏ nên rất khó nghiên cứu trực tiếp.",
+  86: "Là khí phóng xạ tự nhiên, nặng nhất trong các khí; có thể tích tụ trong tầng hầm và là một trong những nguyên nhân gây ung thư phổi hàng đầu, chỉ sau hút thuốc lá.",
+  87: "Cực kỳ hiếm: trong vỏ Trái Đất, tại cùng một thời điểm chỉ có khoảng vài chục gam franxi, vì đồng vị bền nhất của nó phân rã chỉ sau chừng 22 phút.",
+  88: "Từng được pha vào sơn dạ quang cho mặt đồng hồ; các nữ công nhân sơn đồng hồ ('Radium Girls') bị nhiễm độc phóng xạ, thúc đẩy việc cải thiện quy định an toàn lao động.",
+  89: "Phát ra ánh sáng xanh nhạt trong bóng tối vì phóng xạ của nó làm ion hóa không khí xung quanh.",
+  90: "Tên lấy theo thần sấm Thor của Bắc Âu; từng được dùng trong lưới đèn măng-sông vì phát sáng rực rỡ khi bị nung nóng.",
+  91: "Tên có nghĩa là 'đứng trước actini', vì nó phân rã tạo thành actini.",
+  92: "Tên lấy theo hành tinh Uranus, được phát hiện chỉ vài năm trước khi urani được tìm ra.",
+  93: "Là nguyên tố siêu urani đầu tiên được tổng hợp (năm 1940); tên lấy theo hành tinh Neptune, nằm sau Uranus.",
+  94: "Tên lấy theo Pluto; đồng vị Pu-238 từng được dùng làm nguồn điện cho nhiều tàu thăm dò vũ trụ, trong đó có Voyager.",
+  95: "Đồng vị Am-241 có mặt với lượng cực nhỏ trong nhiều đầu báo khói ion hóa trong gia đình.",
+  96: "Được đặt tên để vinh danh Marie và Pierre Curie; đồng vị Cm-244 từng được dùng làm nguồn hạt alpha cho thiết bị phân tích đất đá trên xe tự hành thám hiểm Sao Hỏa.",
+  97: "Tên lấy theo thành phố Berkeley (California, Mỹ), nơi nguyên tố này được tổng hợp lần đầu; bia berkeli-249 từng được dùng để tạo ra tennessin.",
+  98: "Đồng vị Cf-252 là nguồn neutron rất mạnh, được dùng để khởi động lò phản ứng hạt nhân và dò tìm khoáng sản, dầu mỏ.",
+  99: "Được phát hiện trong bụi phóng xạ sau vụ thử bom khinh khí đầu tiên của Mỹ năm 1952; tên đặt theo Albert Einstein.",
+  100: "Cũng được tìm thấy trong bụi phóng xạ của vụ thử bom khinh khí năm 1952; tên đặt theo nhà vật lý Enrico Fermi.",
+  101: "Đặt tên theo Dmitri Mendeleev, người sáng tạo ra bảng tuần hoàn; lần đầu tổng hợp chỉ thu được khoảng 17 nguyên tử.",
+  102: "Tên lấy theo Alfred Nobel, người sáng lập giải Nobel; từng có tranh cãi về việc ai phát hiện đầu tiên, nhưng tên gọi này vẫn được giữ lại.",
   103: "Lawrenxi là nguyên tố cuối cùng của họ actini (nhóm nguyên tố phóng xạ siêu nặng nằm dưới đáy bảng tuần hoàn). Theo quy luật thông thường, cấu hình electron của nó phải kết thúc ở phân lớp f, nhưng electron lớp ngoài cùng của nguyên tố này lại thuộc phân lớp 7p.",
   104: "Trong nhiều năm, Mỹ và Liên Xô tranh cãi xem nước nào phát hiện ra nguyên tố này đầu tiên và có quyền đặt tên. Mỹ là bên thắng và đặt tên là Rutherfordi.",
   105: "Dubni được đặt tên theo thành phố Dubna của Nga để vinh danh những đóng góp của các nhà khoa học Nga trong việc tìm ra các nguyên tố hóa học.",
@@ -1079,14 +1137,139 @@ var DU_LIEU_FUN_FACT = {
   118: "Oganesson được đặt theo tên nhà vật lý hạt nhân người Nga gốc Armenia Yuri Oganessian. Tính đến nay, ông vẫn còn sống và đã 93 tuổi."
 };
 
+var DU_LIEU_FUN_FACT_2 = {
+  1: "Mỗi giây, Mặt Trời biến đổi khoảng 600 triệu tấn hiđro thành heli để tạo ra ánh sáng và nhiệt.",
+  2: "Là nguyên tố duy nhất không đông đặc ở áp suất thường, dù được làm lạnh đến gần độ không tuyệt đối; heli lỏng còn có thể 'bò' lên thành cốc nhờ tính siêu chảy.",
+  3: "Muối liti được dùng làm thuốc ổn định tâm trạng trong điều trị rối loạn lưỡng cực.",
+  4: "Ngọc lục bảo và ngọc aquamarine đều là khoáng vật chứa beri; gương của kính viễn vọng James Webb làm từ beri phủ vàng.",
+  5: "Thủy tinh borosilicat chứa bo giãn nở rất ít khi nóng lên nên chịu được thay đổi nhiệt độ đột ngột, thường dùng làm dụng cụ thí nghiệm và đồ nấu nướng.",
+  6: "Đồng vị cacbon-14 phóng xạ được dùng để xác định tuổi của hóa thạch và di vật hữu cơ đến khoảng 50.000 năm.",
+  7: "Cây họ đậu sống cộng sinh với vi khuẩn ở rễ có khả năng 'cố định' nitơ từ không khí thành chất dinh dưỡng cho đất.",
+  8: "Là nguyên tố chiếm nhiều khối lượng nhất trong vỏ Trái Đất (khoảng 46%), chủ yếu nằm trong các khoáng vật silicat.",
+  9: "Tên bắt nguồn từ tiếng Latin 'fluere' (chảy), vì khoáng vật florit từng được dùng làm chất trợ chảy khi luyện kim.",
+  10: "Được tìm thấy năm 1898 khi chưng cất không khí hóa lỏng; tên của nó có nghĩa là 'mới'.",
+  11: "Natri là thành phần của muối ăn, và ngọn lửa màu vàng cam của đèn đường natri chính là màu đặc trưng của nguyên tố này.",
+  12: "Là nguyên tử trung tâm trong phân tử diệp lục, chất giúp cây xanh thực hiện quang hợp.",
+  13: "Nhôm có thể tái chế gần như vô hạn, và tái chế chỉ tốn khoảng 5% năng lượng so với sản xuất nhôm mới từ quặng.",
+  14: "Là nguyên tố phổ biến thứ hai trong vỏ Trái Đất, sau oxi; cát và thạch anh chủ yếu là silic đioxit.",
+  15: "Tên có nghĩa là 'mang ánh sáng'; photpho trắng phát sáng mờ trong bóng tối khi bị oxi hóa chậm.",
+  16: "Lưu huỳnh cháy với ngọn lửa xanh lam; ở miệng núi lửa Kawah Ijen (Indonesia), khí lưu huỳnh bốc cháy tạo nên những dòng 'lửa xanh' ban đêm.",
+  17: "Trong dạ dày của bạn có axit clohiđric (HCl) giúp tiêu hóa thức ăn.",
+  18: "Tên có nghĩa là 'lười biếng' trong tiếng Hy Lạp, vì argon gần như không tham gia phản ứng hóa học.",
+  19: "Cơ thể người chứa một lượng nhỏ đồng vị K-40 phóng xạ rất yếu, nên chuối và nhiều thực phẩm giàu kali phát ra bức xạ cực nhỏ, vô hại.",
+  20: "Vỏ trứng, san hô và đá vôi đều chủ yếu là canxi cacbonat.",
+  21: "Tồn tại của scandi đã được Mendeleev dự đoán trước (ông gọi là 'eka-bo'), và khi tìm ra, tính chất của nó khớp với dự đoán.",
+  22: "Tên lấy theo các Titan, những vị thần khổng lồ trong thần thoại Hy Lạp.",
+  23: "Henry Ford từng dùng thép vanadi cho khung xe Model T vì nhẹ mà rất bền.",
+  24: "Tên bắt nguồn từ 'chroma' (màu sắc), vì các hợp chất của crom có nhiều màu rực rỡ.",
+  25: "Mangan đioxit là thành phần trong pin kiềm và pin kẽm–cacbon thông dụng.",
+  26: "Cột sắt ở Delhi (Ấn Độ) cao hơn 7 mét, đã hơn 1.600 năm tuổi mà hầu như không bị gỉ.",
+  27: "Vitamin B12 là một hợp chất chứa coban, cần thiết cho cơ thể.",
+  28: "Tên bắt nguồn từ 'Kupfernickel' (đồng của quỷ), vì thợ mỏ xưa tưởng quặng này chứa đồng nhưng không thể luyện ra đồng.",
+  29: "Tượng Nữ thần Tự do làm bằng đồng; màu xanh lục của tượng là lớp gỉ đồng (patina) hình thành qua thời gian.",
+  30: "Đồng xu 1 cent hiện nay của Mỹ chủ yếu làm từ kẽm, chỉ phủ một lớp đồng mỏng bên ngoài.",
+  31: "Giống nước, gali giãn nở khi đông đặc.",
+  32: "Giống scandi, germani cũng đã được Mendeleev dự đoán trước (gọi là 'eka-silic') và tính chất thật khớp với dự đoán.",
+  33: "Vào thế kỷ 19, màu xanh lục Scheele, một chất tạo màu chứa asen, từng được dùng nhiều trong giấy dán tường và thuốc nhuộm.",
+  34: "Tên lấy theo Selene, nữ thần Mặt Trăng Hy Lạp, đặt cặp với telu (từ 'tellus' nghĩa là Trái Đất).",
+  35: "Tên bắt nguồn từ tiếng Hy Lạp 'bromos' nghĩa là 'mùi hôi' vì hơi brom có mùi rất nồng.",
+  36: "Từ năm 1960 đến 1983, độ dài 1 mét từng được định nghĩa dựa trên bước sóng ánh sáng phát ra từ đồng vị krypton-86.",
+  37: "Tên có nghĩa là 'đỏ sẫm', vì Bunsen và Kirchhoff nhận ra nó nhờ hai vạch đỏ trong quang phổ.",
+  38: "Tên lấy từ làng Strontian ở Scotland, nơi khoáng vật chứa stronti được tìm thấy.",
+  39: "Hợp chất YBCO chứa ytri là một trong những chất siêu dẫn nhiệt độ cao được nghiên cứu nhiều nhất.",
+  40: "Ống bọc nhiên liệu trong nhiều lò phản ứng hạt nhân làm từ hợp kim zirconi vì nó hấp thụ rất ít neutron.",
+  41: "Tên lấy theo Niobe, con gái của Tantalus, vì niobi có tính chất rất giống tantan.",
+  42: "Tên bắt nguồn từ 'molybdos' (chì) vì quặng molipden từng bị nhầm với quặng chì.",
+  43: "Đồng vị Tc-99m là chất đánh dấu phóng xạ được dùng phổ biến nhất trong chẩn đoán hình ảnh y học.",
+  44: "Tên lấy từ Ruthenia, tên Latin của nước Nga.",
+  45: "Tên bắt nguồn từ 'rhodon' (hoa hồng) vì nhiều muối của rhodi có màu hồng.",
+  46: "Paladi cùng rhodi và bạch kim là những kim loại xúc tác quan trọng trong bộ chuyển đổi khí thải ô tô.",
+  47: "Ký hiệu Ag bắt nguồn từ tiếng Latin 'argentum'; tên nước Argentina cũng có nguồn gốc từ chữ này.",
+  48: "Tên bắt nguồn từ 'cadmia', tên cổ của khoáng vật calamin, nơi nguyên tố này được tìm thấy lần đầu.",
+  49: "Tên lấy từ màu chàm (indigo), vì vạch quang phổ xanh chàm đã giúp phát hiện ra nó.",
+  50: "Thiếc có 10 đồng vị bền, nhiều nhất trong tất cả các nguyên tố.",
+  51: "Ký hiệu Sb bắt nguồn từ 'stibium', tên Latin cổ của antimon.",
+  52: "Tên lấy theo 'tellus', tiếng Latin nghĩa là Trái Đất.",
+  53: "Muối ăn bổ sung iot được dùng ở nhiều nước để phòng bệnh bướu cổ do thiếu iot.",
+  54: "Tên có nghĩa là 'kẻ lạ' trong tiếng Hy Lạp.",
+  55: "Tên bắt nguồn từ 'caesius' (xanh da trời), vì hai vạch xanh trong quang phổ đã giúp phát hiện ra nó.",
+  56: "Tên bắt nguồn từ 'barys' (nặng), vì khoáng vật chứa bari có khối lượng riêng rất lớn.",
+  57: "Lantan được thêm vào thủy tinh quang học để làm ống kính máy ảnh chất lượng cao.",
+  58: "Tên lấy theo tiểu hành tinh Ceres, được phát hiện vài năm trước đó.",
+  59: "Tên có nghĩa là 'cặp sinh đôi xanh lá hành', vì muối của nó có màu xanh lục.",
+  60: "Tên có nghĩa là 'cặp sinh đôi mới'; neodim từng bị lẫn với praseodim trong hỗn hợp gọi là 'didymium'.",
+  61: "Tên lấy theo Prometheus, vị thần trong thần thoại Hy Lạp đã đánh cắp lửa trao cho loài người.",
+  62: "Tên bắt nguồn từ khoáng vật samarskit, gián tiếp trở thành nguyên tố đầu tiên mang tên của một con người (viên đại tá Samarsky).",
+  63: "Tên lấy theo châu Âu.",
+  64: "Tên lấy theo nhà hóa học Phần Lan Johan Gadolin.",
+  65: "Hợp kim Terfenol-D chứa terbi co giãn mạnh khi đặt trong từ trường, được dùng trong cảm biến và loa đặc biệt.",
+  66: "Tên có nghĩa là 'khó tiếp cận' trong tiếng Hy Lạp, vì rất khó tách dysprosi ra khỏi hỗn hợp.",
+  67: "Tên bắt nguồn từ 'Holmia', tên Latin của Stockholm, thủ đô Thụy Điển.",
+  68: "Hợp chất của erbi tạo màu hồng trong thủy tinh và men gốm.",
+  69: "Là một trong những nguyên tố đất hiếm tự nhiên khan hiếm nhất.",
+  70: "Ytterbi là một trong bốn nguyên tố mang tên từ làng Ytterby của Thụy Điển, cùng với ytri, terbi và erbi.",
+  71: "Tên bắt nguồn từ 'Lutetia', tên Latin cổ của Paris.",
+  72: "Tên bắt nguồn từ 'Hafnia', tên Latin của Copenhagen, nơi hafni được phát hiện.",
+  73: "Tụ điện tantan có mặt trong nhiều điện thoại và máy tính nhờ kích thước nhỏ mà dung lượng lớn.",
+  74: "Ký hiệu W bắt nguồn từ 'wolfram', tên gọi khác của vonfram.",
+  75: "Reni là một trong những nguyên tố bền cuối cùng được phát hiện (năm 1925); tên lấy theo sông Rhine (Rhenus).",
+  76: "Tên bắt nguồn từ 'osme' nghĩa là 'mùi', vì osmi tetroxit có mùi hắc đặc trưng.",
+  77: "Tên lấy theo Iris, nữ thần cầu vồng Hy Lạp, vì các muối iridi có nhiều màu sắc.",
+  78: "Tên bắt nguồn từ tiếng Tây Ban Nha 'platina', nghĩa là 'bạc nhỏ'.",
+  79: "Một gam vàng có thể được dát thành tấm mỏng rộng khoảng 1 mét vuông.",
+  80: "Ký hiệu Hg bắt nguồn từ 'hydrargyrum' nghĩa là 'bạc lỏng'; tên thủy ngân trong tiếng Anh (mercury) lấy theo thần Mercury.",
+  81: "Rất độc và không mùi, từng được dùng làm thuốc diệt chuột trước khi bị cấm ở nhiều nước.",
+  82: "Ký hiệu Pb bắt nguồn từ 'plumbum', cũng là gốc của từ 'plumber' (thợ ống nước) trong tiếng Anh.",
+  83: "Một số hợp chất của bismut được dùng trong thuốc điều trị khó chịu ở dạ dày.",
+  84: "Marie Curie đặt tên theo Ba Lan, quê hương của bà.",
+  85: "Tên có nghĩa là 'không bền' trong tiếng Hy Lạp.",
+  86: "Radon là sản phẩm phân rã của radi, tên của nó cũng bắt nguồn từ chữ radi.",
+  87: "Tên lấy theo nước Pháp, quê hương của nhà khoa học Marguerite Perey, người phát hiện ra nó.",
+  88: "Marie Curie phải xử lý hàng tấn quặng urani để tách được chỉ khoảng một phần mười gam radi.",
+  89: "Đồng vị Ac-225 đang được nghiên cứu trong liệu pháp điều trị ung thư nhắm đích.",
+  90: "Thori được nghiên cứu làm nhiên liệu hạt nhân thay thế urani, vì phổ biến hơn urani trong vỏ Trái Đất.",
+  91: "Là một trong những nguyên tố tự nhiên hiếm nhất trong vỏ Trái Đất.",
+  92: "Chu kỳ bán rã của U-238 khoảng 4,5 tỉ năm, xấp xỉ tuổi của Trái Đất.",
+  93: "Dù là nguyên tố nhân tạo, neptuni vẫn tồn tại với lượng vết cực nhỏ trong quặng urani.",
+  94: "Một khối plutoni ấm khi chạm vào, vì sự phân rã phóng xạ liên tục sinh nhiệt.",
+  95: "Năm 1945, Glenn Seaborg tiết lộ sự tồn tại của americi và curi trên một chương trình đố vui truyền thanh dành cho trẻ em, trước khi báo cáo khoa học chính thức.",
+  96: "Được tổng hợp lần đầu năm 1944 bằng cách bắn hạt alpha vào plutoni.",
+  97: "Được tổng hợp lần đầu năm 1949 bằng cách bắn hạt alpha vào americi.",
+  98: "Tên lấy theo bang California và Đại học California, nơi nguyên tố này được tạo ra.",
+  99: "Vì phân rã quá nhanh nên einsteini hầu như chỉ được dùng trong nghiên cứu, và chỉ điều chế được lượng cực nhỏ.",
+  100: "Là nguyên tố nặng nhất có thể tạo ra bằng cách bắn phá neutron vào nguyên tố nhẹ hơn trong lò phản ứng.",
+  101: "Là nguyên tố đầu tiên được tổng hợp từng nguyên tử một.",
+  102: "Trong dung dịch nước, nobeli bền nhất ở trạng thái oxi hóa +2, khác với hầu hết các nguyên tố actini.",
+  103: "Tên lấy theo Ernest Lawrence, người phát minh ra máy gia tốc xyclotron.",
+  104: "Tên lấy theo Ernest Rutherford, người được coi là cha đẻ của vật lý hạt nhân.",
+  105: "Đồng vị bền nhất của dubni cũng chỉ tồn tại cỡ vài chục giờ.",
+  106: "Các đồng vị của seaborgi chỉ tồn tại từ vài giây đến vài phút.",
+  107: "Tên lấy theo Niels Bohr, người đề xuất mô hình nguyên tử mà bạn thấy ngay trong cửa sổ này.",
+  108: "Tên bắt nguồn từ 'Hassia', tên Latin của bang Hessen ở Đức, nơi nguyên tố này được tạo ra.",
+  109: "Tên lấy theo Lise Meitner, nhà vật lý người Áo, một trong những người đồng phát hiện ra sự phân hạch hạt nhân.",
+  110: "Tên lấy theo thành phố Darmstadt (Đức), nơi có trung tâm nghiên cứu GSI đã tạo ra nó.",
+  111: "Tên lấy theo Wilhelm Röntgen, người phát hiện ra tia X.",
+  112: "Tên lấy theo Nicolaus Copernicus, người đề xuất mô hình Trái Đất quay quanh Mặt Trời.",
+  113: "Được IUPAC công nhận cuối năm 2015, cùng với các nguyên tố 115, 117 và 118, hoàn thiện hàng thứ bảy của bảng tuần hoàn.",
+  114: "Tên lấy theo Georgy Flerov, người sáng lập phòng thí nghiệm hạt nhân ở Dubna (Nga).",
+  115: "Tên lấy theo tỉnh Moskva (Moscow Oblast) của Nga, nơi có thành phố Dubna.",
+  116: "Tên lấy theo Phòng thí nghiệm quốc gia Lawrence Livermore ở California (Mỹ), nơi tham gia tạo ra nó.",
+  117: "Tên lấy theo bang Tennessee (Mỹ), nơi có các cơ sở nghiên cứu đã đóng góp chất liệu để tạo ra nó.",
+  118: "Là nguyên tố nặng nhất đã được tạo ra, và mới chỉ quan sát được một vài nguyên tử của nó."
+};
+
 function veFunFact(so) {
   var ds = document.getElementById("fun-facts-list");
   if (!ds) return;
   ds.replaceChildren();
-  var p = document.createElement("p");
-  p.style.margin = "0";
-  p.textContent = DU_LIEU_FUN_FACT[so] || "Chưa có thông tin cho nguyên tố này.";
-  ds.appendChild(p);
+  var cacFact = [DU_LIEU_FUN_FACT[so], DU_LIEU_FUN_FACT_2[so]].filter(Boolean);
+  if (!cacFact.length) cacFact = ["Chưa có thông tin cho nguyên tố này."];
+  cacFact.forEach(function (noiDung, i) {
+    var p = document.createElement("p");
+    p.style.margin = i === 0 ? "0" : "10px 0 0";
+    p.textContent = noiDung;
+    ds.appendChild(p);
+  });
 }
 
 // ===== POPUP THÔNG TIN NGUYÊN TỐ =====
@@ -1232,6 +1415,7 @@ function dongThongTin() {
 
 
 document.getElementById("close-button").addEventListener("click", dongThongTin);
+document.getElementById("modal-x").addEventListener("click", dongThongTin);
 document.getElementById("modal-backdrop").addEventListener("click", dongThongTin);
 document.addEventListener("keydown", function (e) {
   if (e.key === "Escape") dongThongTin();

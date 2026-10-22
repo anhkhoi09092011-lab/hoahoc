@@ -324,3 +324,10 @@ body.trang-auth {
 .auth-card input:focus-visible,
 .auth-card button:focus-visible,
 .auth-card a:focus-visible { outline: 2px solid #bef264; outline-offset: 2px; }
+/* ===== Điện thoại: thu nhỏ thanh tài khoản ===== */
+@media (max-width: 600px) {
+  #thanh-tai-khoan a { font-size: 15px; padding: 10px 20px; }
+  #thanh-tai-khoan .tk-chip .ten-nguoi-dung { font-size: 14px; max-width: 120px; }
+  #thanh-tai-khoan .tk-avatar { width: 30px; height: 30px; }
+  #yc-backdrop .yc-hop { padding: 22px 16px 18px; }
+}
